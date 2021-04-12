@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Paula",
+    "tier": "legendary",
+    "url": "Paula.png",
+    "description": "The one and only Paula of Orchid. She's all care-free knowing that her privacy is safe with their VPN.",
+    "soul": 32,
+    "kcal": 2
+  },
+  {
+    "name": "Epic Mia",
+    "tier": "titanic",
+    "url": "Epic Mia.png",
+    "description": "She may be cute, but she ain't going to give a damn about what you got to say to her.",
+    "soul": 52,
+    "kcal": 1
+  },
+  {
+    "name": "Pete",
+    "tier": "unprecedented",
+    "url": "Pete.png",
+    "description": "Carlos Matos needs your help! To help him out, write down the first digits of your social security number.",
+    "soul": 42,
+    "kcal": 100
+  },
+  {
+    "name": "Ghost Buddies",
+    "tier": "legendary",
+    "url": "Ghost buddies.png",
+    "description": "Whoever said ghosts and cats can't be friends? That's a total lie. They definitely can be.",
+    "soul": 12,
+    "kcal": 12
+  },
+  {
+    "name": "Baby Mia",
+    "tier": "nani",
+    "url": "Baby Mia.png",
+    "description": "Baby Mia receiving a blessing from the ruler of Mars, Elon Musk. All hail the cute Mia!",
+    "soul": 91,
+    "kcal": 3
+  },
+  {
+    "name": "Bunnies",
+    "tier": "epic",
+    "url": "Bunnies.png",
+    "description": "Mia's friends from Orchid. Aren't they both so freaking cute? They also respect your privacy.",
+    "soul": 71,
+    "kcal": 4
+  },
+  {
+    "name": "Elon Musk",
+    "tier": "epic",
+    "url": "Elon Musk.png",
+    "description": "Mia's friends from Orchid. Aren't they both so freaking cute? They also respect your privacy.",
+    "soul": 71,
+    "kcal": 4
+  },
+  {
+    "name": "Paw to cool",
+    "tier": "epic",
+    "url": "Paw to cool.png",
+    "description": "",
+    "soul": 71,
+    "kcal": 4
+  },
+  {
+    "name": "Phanta friends",
+    "tier": "epic",
+    "url": "Phanta friends.png",
+    "description": "",
+    "soul": 71,
+    "kcal": 4
+  }
+]
