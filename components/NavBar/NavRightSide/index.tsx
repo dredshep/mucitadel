@@ -16,6 +16,7 @@ export default function NavRightSide(props: {
   logIn: LogIn;
   logOut: LogOut;
   authData: AuthData;
+  hasMetamask: boolean;
 }) {
   const [loginModalIsVisible, showLoginModal] = React.useState(false);
   const showLoginModalCommand = () => showLoginModal(!loginModalIsVisible);
@@ -30,7 +31,12 @@ export default function NavRightSide(props: {
         onClick={showLoginModalCommand}
       ></div>
       <LoginModal
-        {...{ showLoginModalCommand, loginModalIsVisible, logIn: props.logIn }}
+        {...{
+          showLoginModalCommand,
+          loginModalIsVisible,
+          logIn: props.logIn,
+          hasMetamask: props.hasMetamask,
+        }}
       />
       <Explained
         explanation="Add NFT"

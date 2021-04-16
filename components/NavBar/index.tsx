@@ -31,6 +31,7 @@ export default function NavBar(props: {
   logIn: LogIn;
   logOut: LogOut;
   authData: AuthData;
+  hasMetamask: boolean;
 }) {
   const router = useRouter();
   return (
@@ -46,6 +47,7 @@ export default function NavBar(props: {
         logIn={props.logIn}
         logOut={props.logOut}
         authData={props.authData}
+        hasMetamask={props.hasMetamask}
       />
     </div>
   );

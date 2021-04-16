@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 
 interface Window {
@@ -91,11 +91,16 @@ export default function AuthenticationProvider(props) {
   // We need to retrieve this modifiable authenticationData and then pass it to the children again.
   // Maybe it can be done with a `const [authData, setAuthData] = useState({})`
   const [authData, setAuthData] = useState({ address: undefined });
+  const [hasMetamask, setHasMetamask] = useState(false);
+  useEffect(() => {
+    if (((window as unknown) as Window).ethereum) setHasMetamask(true);
+    else setHasMetamask(false);
+  }, []);
   const logIn = setLogInState(setAuthData);
   const logOut = setLogOutState(setAuthData);
   const cookie = new Cookies();
   const authMethod = cookie.get("authentication_method");
-  if (authMethod === "metamask" && !authData.address) {
+  if (authMethod === "metamask" && hasMetamask && !authData.address) {
     try {
       logIn("metamask");
     } catch (e) {
@@ -103,5 +108,14 @@ export default function AuthenticationProvider(props) {
     }
   }
 
-  return <>{React.cloneElement(props.children, { authData, logIn, logOut })}</>;
+  return (
+    <>
+      {React.cloneElement(props.children, {
+        authData,
+        logIn,
+        logOut,
+        hasMetamask,
+      })}
+    </>
+  );
 }

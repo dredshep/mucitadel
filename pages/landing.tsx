@@ -115,7 +115,7 @@ function Content() {
                   <strong className="text-white font-bold">
                     Alpha Upgrades
                   </strong>{" "}
-                  will activate when there are
+                  will activate when there are{" "}
                   <strong className="text-white font-bold">5350</strong> founder
                   NFT’s left.
                   <br />
