@@ -45,6 +45,7 @@ export default function Home(props: {
   logIn: LogIn;
   logOut: LogOut;
   authData: AuthData;
+  hasMetamask: boolean;
 }) {
   return (
     <div className="App text-white bg-mainbg min-h-screen overflow-y-hidden font-body">
