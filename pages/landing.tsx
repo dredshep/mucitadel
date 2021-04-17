@@ -173,7 +173,7 @@ function Content() {
           </div>
           <div className="max-w-6xl flex mx-auto mt-10">
             <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg">
-              <h1 className="font-extrabold font-title text-3xl mb-2">OG</h1>
+              <h1 className="font-extrabold font-title text-3xl mb-2">GOLD</h1>
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
                 className="rounded-md"
@@ -181,9 +181,9 @@ function Content() {
                 alt=""
               /> */}
               <Card
-                minted="1 of 12"
+                minted="1 of 15"
                 name="Epic Mia"
-                price="5200 DANK"
+                price="5 ETH"
                 rating="1202"
                 tier="Nani"
                 traits={6}
@@ -191,15 +191,15 @@ function Content() {
                 kcalOrUSD={1040}
               />
               <div className="mt-10 mb-4">Price:</div>
-              <div className="text-4xl text-mupurple font-bold">1040 DANK</div>
+              <div className="text-4xl text-mupurple font-bold">5 ETH</div>
               <div className="font-semibold text-secondary mt-5">
                 Card Tier:
               </div>
-              <div>Epic</div>
+              <div>Nani</div>
               <div className="font-semibold text-secondary mt-1">
                 Cards Available:
               </div>
-              <div>1 of 120</div>
+              <div>15 of 15</div>
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
@@ -208,11 +208,11 @@ function Content() {
               <div>3x chance of any trait</div>
               <div>"Accidental Collaboration" Artwork</div>
               <div className="mt-10 flex flex-grow items-end">
-                <Button>BUY EPIC</Button>
+                <Button>BUY GOLD</Button>
               </div>
             </div>
             <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg">
-              <h1 className="font-extrabold font-title text-3xl mb-2">ALPHA</h1>
+              <h1 className="font-extrabold font-title text-3xl mb-2">SILVER</h1>
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
                 className="rounded-md"
@@ -222,7 +222,7 @@ function Content() {
               <Card
                 minted="1 of 150"
                 name="Bunnies"
-                price="1050 DANK"
+                price="2.5 ETH"
                 rating="1202"
                 tier="Epic"
                 traits={6}
@@ -230,15 +230,15 @@ function Content() {
                 kcalOrUSD={210}
               />
               <div className="mt-10 mb-4">Price:</div>
-              <div className="text-4xl text-mupurple font-bold">1040 DANK</div>
+              <div className="text-4xl text-mupurple font-bold">2.5 ETH</div>
               <div className="font-semibold text-secondary mt-5">
                 Card Tier:
               </div>
-              <div>Epic</div>
+              <div>Legendary</div>
               <div className="font-semibold text-secondary mt-1">
                 Cards Available:
               </div>
-              <div>1 of 120</div>
+              <div>150 of 150</div>
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
@@ -247,7 +247,7 @@ function Content() {
               <div>3x chance of any trait</div>
               <div>"Accidental Collaboration" Artwork</div>
               <div className="mt-10 flex flex-grow items-end">
-                <Button>BUY EPIC</Button>
+                <Button>BUY SILVER</Button>
               </div>
             </div>
             <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg">
@@ -257,9 +257,9 @@ function Content() {
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img className="rounded-md" src="images/cards/Pete.png" alt="" /> */}
               <Card
-                minted="1 of 600"
+                minted="1 of 1500"
                 name="Pete"
-                price="320 DANK"
+                price="1 ETH"
                 rating="1202"
                 tier="Common"
                 traits={6}
@@ -267,15 +267,15 @@ function Content() {
                 kcalOrUSD={64}
               />
               <div className="mt-10 mb-4">Price:</div>
-              <div className="text-4xl text-mupurple font-bold">1040 DANK</div>
+              <div className="text-4xl text-mupurple font-bold">1 ETH</div>
               <div className="font-semibold text-secondary mt-5">
                 Card Tier:
               </div>
-              <div>Epic</div>
+              <div>Bronze</div>
               <div className="font-semibold text-secondary mt-1">
                 Cards Available:
               </div>
-              <div>1 of 120</div>
+              <div>1500 of 1500</div>
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
@@ -283,7 +283,7 @@ function Content() {
               <div>3x chance of any trait</div>
               <div>"Accidental Collaboration" Artwork</div>
               <div className="mt-10 flex flex-grow items-end">
-                <Button>BUY EPIC</Button>
+                <Button>BUY BRONZE</Button>
               </div>
             </div>
           </div>
