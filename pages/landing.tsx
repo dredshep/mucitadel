@@ -188,7 +188,7 @@ function Content() {
                 tier="Nani"
                 traits={6}
                 url="images/cards/Epic Mia.png"
-                kcalOrUSD={1040}
+                kcalOrUSD={12500}
               />
               <div className="mt-10 mb-4">Price:</div>
               <div className="text-4xl text-mupurple font-bold">5 ETH</div>
@@ -224,10 +224,10 @@ function Content() {
                 name="Bunnies"
                 price="2.5 ETH"
                 rating="1202"
-                tier="Epic"
+                tier="Legendary"
                 traits={6}
                 url="images/cards/Bunnies.png"
-                kcalOrUSD={210}
+                kcalOrUSD={6250}
               />
               <div className="mt-10 mb-4">Price:</div>
               <div className="text-4xl text-mupurple font-bold">2.5 ETH</div>
@@ -252,7 +252,7 @@ function Content() {
             </div>
             <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg">
               <h1 className="font-extrabold font-title text-3xl mb-2">
-                COMMON
+                BRONZE
               </h1>
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img className="rounded-md" src="images/cards/Pete.png" alt="" /> */}
@@ -261,17 +261,17 @@ function Content() {
                 name="Pete"
                 price="1 ETH"
                 rating="1202"
-                tier="Common"
+                tier="Epic"
                 traits={6}
                 url="images/cards/Pete.png"
-                kcalOrUSD={64}
+                kcalOrUSD={2500}
               />
               <div className="mt-10 mb-4">Price:</div>
               <div className="text-4xl text-mupurple font-bold">1 ETH</div>
               <div className="font-semibold text-secondary mt-5">
                 Card Tier:
               </div>
-              <div>Bronze</div>
+              <div>Epic</div>
               <div className="font-semibold text-secondary mt-1">
                 Cards Available:
               </div>
