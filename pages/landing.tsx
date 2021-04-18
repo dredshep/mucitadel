@@ -62,8 +62,12 @@ function Content() {
       </div>
       {/* <div className="bg-memeunity-banner bg-no-repeat"> */}
       <div className="mb-20">
-        <div className="h-full w-full bg-mainbg bg-opacity-50">
-          <div className="bg-asidebg">
+        <div className="h-full w-full bg-black bg-opacity-50">
+          <div
+            className="bg-mainbg"
+            // style={{ backgroundColor: "black" }}
+            // style={{ backgroundImage: "url('/images/Bagre.png')" }}
+          >
             <h1 className="mx-auto max-w-max text-4xl font-title font-extrabold tracking-wide py-14 text-mupurple">
               MemeUnity Cards Live Sale
             </h1>
@@ -212,7 +216,9 @@ function Content() {
               </div>
             </div>
             <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg">
-              <h1 className="font-extrabold font-title text-3xl mb-2">SILVER</h1>
+              <h1 className="font-extrabold font-title text-3xl mb-2">
+                SILVER
+              </h1>
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
                 className="rounded-md"

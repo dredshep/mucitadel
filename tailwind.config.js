@@ -12,6 +12,7 @@ module.exports = {
       "inputbg-hover": "#2f2239",
       mupurple: "#9b50ff",
       gray: "#706C61",
+      black: "#000",
       "mupurple-hover": "#892eff",
       "mupurple-active": "#6e00ff",
       phantasmablue: "#17b1e8",
