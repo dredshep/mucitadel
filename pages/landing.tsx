@@ -52,10 +52,10 @@ function Card(props: {
 function Content() {
   return (
     <div className="w-full h-full font-body">
-      <div className="w-full">
+      <div className="w-full bg-black flex justify-center">
         <img
-          className="w-full object-cover"
-          style={{ height: "640px" }}
+          // className="w-full object-cover"
+          // style={{ height: "640px" }}
           src="images/Carrusel.png"
           alt="Memeunity Card Carrousel"
         />
