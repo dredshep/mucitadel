@@ -56,7 +56,7 @@ function Content() {
         <img
           className="w-full object-cover"
           style={{ height: "640px" }}
-          src="images/layout.png"
+          src="images/Carrusel.png"
           alt="Memeunity Card Carrousel"
         />
       </div>
@@ -72,7 +72,7 @@ function Content() {
               MemeUnity Cards Live Sale
             </h1>
             <div className="max-w-6xl flex mx-auto">
-              <div
+              {/* <div
                 className="flex-shrink-0 flex justify-center relative -ml-12 mt-11 animate-bounce"
                 style={{ width: "60%" }}
               >
@@ -91,8 +91,34 @@ function Content() {
                   alt="Epic Mia - MU Citadel MemeUnity NFT Card"
                   className="w-60 absolute"
                 />
-              </div>
-              <div>
+              </div> */}
+              <figure className="flex flex-grow-0 w-3/4 self-center">
+                <img
+                  src="images/metal-tiers/bronze.png"
+                  alt="Bronze MemeUnity Tier for Membership Cards."
+                  className="w-full object-contain"
+                  style={{ animation: "bounce 1s infinite" }}
+                />
+                <img
+                  src="images/metal-tiers/silver.png"
+                  alt="Silver MemeUnity Tier for Membership Cards."
+                  className="w-full object-contain ml-5"
+                  style={{
+                    animation: "bounce 1s infinite",
+                    animationDelay: "0.3s",
+                  }}
+                />
+                <img
+                  src="images/metal-tiers/gold.png"
+                  alt="Gold MemeUnity Tier for Membership Cards."
+                  className="w-full object-contain ml-5"
+                  style={{
+                    animation: "bounce 1s infinite",
+                    animationDelay: "0.6s",
+                  }}
+                />
+              </figure>
+              <div className="ml-10 ">
                 <h2 className="font-bold text-white font-title text-3xl mb-5">
                   Free Bonuses with Common Card Purchases
                 </h2>
