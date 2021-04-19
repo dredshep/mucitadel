@@ -97,15 +97,15 @@ function Content() {
                   src="images/metal-tiers/bronze.png"
                   alt="Bronze MemeUnity Tier for Membership Cards."
                   className="w-full object-contain"
-                  style={{ animation: "bounce 1s infinite" }}
+                  style={{ animation: "bounce 3s infinite" }}
                 />
                 <img
                   src="images/metal-tiers/silver.png"
                   alt="Silver MemeUnity Tier for Membership Cards."
                   className="w-full object-contain ml-5"
                   style={{
-                    animation: "bounce 1s infinite",
-                    animationDelay: "0.3s",
+                    animation: "bounce 3s infinite",
+                    animationDelay: "1s",
                   }}
                 />
                 <img
@@ -113,8 +113,8 @@ function Content() {
                   alt="Gold MemeUnity Tier for Membership Cards."
                   className="w-full object-contain ml-5"
                   style={{
-                    animation: "bounce 1s infinite",
-                    animationDelay: "0.6s",
+                    animation: "bounce 3s infinite",
+                    animationDelay: "2s",
                   }}
                 />
               </figure>
