@@ -33,15 +33,20 @@ to one address, not to an account. Information is retrieved easily from the data
 address the user has associated.
 */
 
-async function logInWithMetamask() {
+const log = (v) => (console.log(v), v);
+
+async function logInWithMetamask(before: () => void, after: () => void) {
   const ethereum = ((window as unknown) as Window).ethereum;
   try {
+    before();
     await ethereum.request({ method: "eth_requestAccounts" });
     const addy = await ethereum.request({ method: "eth_accounts" });
+    after();
     console.log({ addy });
     return addy;
   } catch (e) {
     // Metamask error. Null means "error, reload window and try again".
+    console.log("breach of construct");
     return null;
   }
 }
@@ -60,9 +65,17 @@ function setLogInState(setAuthData) {
     const cookies = new Cookies();
     const cookiedMethod = cookies.get("authentication_method");
     if (newMethod === "metamask" || cookiedMethod === "metamask") {
-      if (newMethod === "metamask")
+      // if (newMethod === "metamask")
+      // cookies.set("authentication_method", "metamask");
+      const before = () => {
+        console.log("trying to log in");
+        cookies.set("authentication_method", "none");
+      };
+      const after = () => {
+        console.log("logged in successfully");
         cookies.set("authentication_method", "metamask");
-      return logInWithMetamask()
+      };
+      return logInWithMetamask(before, after)
         .then((address) => {
           if (address !== null) {
             setAuthData({ address, authenticationMethod: "metamask" });
@@ -102,8 +115,10 @@ export default function AuthenticationProvider(props) {
   const authMethod = cookie.get("authentication_method");
   if (authMethod === "metamask" && hasMetamask && !authData.address) {
     try {
+      console.log("logging in");
       logIn("metamask");
     } catch (e) {
+      console.log("logged out");
       logOut();
     }
   }
