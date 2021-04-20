@@ -52,27 +52,22 @@ function Card(props: {
 function Content() {
   return (
     <div className="w-full h-full font-body">
-      <div className="w-full bg-black flex justify-center">
+      {/* <div className="w-full bg-black flex justify-center">
         <img
           // className="w-full object-cover"
           // style={{ height: "640px" }}
           src="images/Carrusel.png"
           alt="Memeunity Card Carrousel"
         />
-      </div>
+      </div> */}
       {/* <div className="bg-memeunity-banner bg-no-repeat"> */}
-      <div className="mb-20">
-        <div className="h-full w-full bg-black bg-opacity-50">
-          <div
-            className="bg-mainbg"
-            // style={{ backgroundColor: "black" }}
-            // style={{ backgroundImage: "url('/images/Bagre.png')" }}
-          >
-            <h1 className="mx-auto max-w-max text-4xl font-title font-extrabold tracking-wide py-14 text-mupurple">
-              MemeUnity Cards Live Sale
-            </h1>
-            <div className="max-w-6xl flex mx-auto">
-              {/* <div
+      <div className="pb-20 bg-mainbg">
+        <section className="bg-black bg-opacity-50 px-20">
+          <h1 className="mx-auto max-w-max text-4xl font-title font-extrabold tracking-wide py-14 text-mupurple">
+            MemeUnity Cards Live Sale
+          </h1>
+          <div className="max-w-6xl flex mx-auto">
+            {/* <div
                 className="flex-shrink-0 flex justify-center relative -ml-12 mt-11 animate-bounce"
                 style={{ width: "60%" }}
               >
@@ -92,89 +87,92 @@ function Content() {
                   className="w-60 absolute"
                 />
               </div> */}
-              <figure className="flex flex-grow-0 w-3/4 self-center">
+            <figure className="flex flex-grow-0 w-3/4 self-center">
+              <div className="w-full">
                 <img
                   src="images/metal-tiers/bronze.png"
                   alt="Bronze MemeUnity Tier for Membership Cards."
-                  className="w-full object-contain"
+                  className="object-contain"
                   style={{ animation: "bounce 3s infinite" }}
                 />
+              </div>
+              <div className="w-full ml-5">
                 <img
                   src="images/metal-tiers/silver.png"
                   alt="Silver MemeUnity Tier for Membership Cards."
-                  className="w-full object-contain ml-5"
+                  className="object-contain"
                   style={{
                     animation: "bounce 3s infinite",
                     animationDelay: "1s",
                   }}
                 />
+              </div>
+              <div className="w-full ml-5">
                 <img
                   src="images/metal-tiers/gold.png"
                   alt="Gold MemeUnity Tier for Membership Cards."
-                  className="w-full object-contain ml-5"
+                  className="object-contain"
                   style={{
                     animation: "bounce 3s infinite",
                     animationDelay: "2s",
                   }}
                 />
-              </figure>
-              <div className="ml-10 ">
-                <h2 className="font-bold text-white font-title text-3xl mb-5">
-                  Free Bonuses with Common Card Purchases
-                </h2>
-                <p className="text-secondary-hover">
-                  We are super excited to offer these super-powered Ether Cards
-                  bonuses to you all!
-                  <br />
-                  <br />
-                  The two bonuses -{" "}
-                  <strong className="text-white font-bold">
-                    BAT Bonus
-                  </strong> &{" "}
-                  <strong className="text-white font-bold">
-                    Alpha Upgrade
-                  </strong>{" "}
-                  - will see hundreds of lucky purchasers get millions of
-                  dollars in BAT and free Alpha upgrades!
-                  <br />
-                  <br />
-                  <strong className="text-white font-bold">
-                    The BAT Bonus
-                  </strong>{" "}
-                  and{" "}
-                  <strong className="text-white font-bold">
-                    Alpha Upgrades
-                  </strong>{" "}
-                  will activate when there are{" "}
-                  <strong className="text-white font-bold">5350</strong> founder
-                  NFT’s left.
-                  <br />
-                  <br />
-                  <strong className="text-white font-bold">
-                    (See below for details)
-                  </strong>
-                </p>
               </div>
-            </div>
-            <div className="max-w-2xl mx-auto mt-20 pb-5">
+            </figure>
+            <div className="ml-10 ">
               <h2 className="font-bold text-white font-title text-3xl mb-5">
-                Get your membership card.
+                Free Bonuses with Common Card Purchases
               </h2>
               <p className="text-secondary-hover">
-                Here's the chance you’ve been waiting for! You can now get your
-                hands on your very own{" "}
-                <strong className="text-white font-bold">Founder Card</strong>.
-                Just pick one of the three available card types:{" "}
-                <strong className="text-white font-bold">OG</strong>,{" "}
-                <strong className="text-white font-bold">Alpha</strong>, or{" "}
-                <strong className="text-white font-bold">Common</strong>. The
-                Art and Traits you receive on the card are a mystery that even
-                we don’t know what you’ll get!{" "}
+                We are super excited to offer these super-powered Ether Cards
+                bonuses to you all!
+                <br />
+                <br />
+                The two bonuses -{" "}
+                <strong className="text-white font-bold">
+                  BAT Bonus
+                </strong> &{" "}
+                <strong className="text-white font-bold">Alpha Upgrade</strong>{" "}
+                - will see hundreds of lucky purchasers get millions of dollars
+                in BAT and free Alpha upgrades!
+                <br />
+                <br />
+                <strong className="text-white font-bold">
+                  The BAT Bonus
+                </strong>{" "}
+                and{" "}
+                <strong className="text-white font-bold">Alpha Upgrades</strong>{" "}
+                will activate when there are{" "}
+                <strong className="text-white font-bold">5350</strong> founder
+                NFT’s left.
+                <br />
+                <br />
+                <strong className="text-white font-bold">
+                  (See below for details)
+                </strong>
               </p>
             </div>
           </div>
-          {/* END TOP PART */}
-          {/* START CARD INTRO AND BOXES */}
+          <div className="max-w-2xl mx-auto mt-20 pb-5">
+            <h2 className="font-bold text-white font-title text-3xl mb-5">
+              Get your membership card.
+            </h2>
+            <p className="text-secondary-hover">
+              Here's the chance you’ve been waiting for! You can now get your
+              hands on your very own{" "}
+              <strong className="text-white font-bold">Founder Card</strong>.
+              Just pick one of the three available card types:{" "}
+              <strong className="text-white font-bold">OG</strong>,{" "}
+              <strong className="text-white font-bold">Alpha</strong>, or{" "}
+              <strong className="text-white font-bold">Common</strong>. The Art
+              and Traits you receive on the card are a mystery that even we
+              don’t know what you’ll get!{" "}
+            </p>
+          </div>
+        </section>
+        {/* END TOP PART */}
+        {/* START CARD INTRO AND BOXES */}
+        <div className="px-20">
           <div className="max-w-2xl mx-auto text-secondary">
             <div className="w-full flex justify-center text-7xl animate-bounce my-14">
               <div className="text-mupurple hover:text-mupurple-hover cursor-pointer">
@@ -202,14 +200,14 @@ function Content() {
             </em>
           </div>
           <div className="max-w-6xl flex mx-auto mt-10">
-            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg">
+            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg text-center">
               <h1 className="font-extrabold font-title text-3xl mb-2">GOLD</h1>
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
-                className="rounded-md"
-                src="images/cards/Epic Mia.png"
-                alt=""
-              /> */}
+                  className="rounded-md"
+                  src="images/cards/Epic Mia.png"
+                  alt=""
+                /> */}
               <Card
                 minted="1 of 15"
                 name="Epic Mia"
@@ -241,16 +239,16 @@ function Content() {
                 <Button>BUY GOLD</Button>
               </div>
             </div>
-            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg">
+            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg text-center">
               <h1 className="font-extrabold font-title text-3xl mb-2">
                 SILVER
               </h1>
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
-                className="rounded-md"
-                src="images/cards/Bunnies.png"
-                alt=""
-              /> */}
+                  className="rounded-md"
+                  src="images/cards/Bunnies.png"
+                  alt=""
+                /> */}
               <Card
                 minted="1 of 150"
                 name="Bunnies"
@@ -282,7 +280,7 @@ function Content() {
                 <Button>BUY SILVER</Button>
               </div>
             </div>
-            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg">
+            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg text-center">
               <h1 className="font-extrabold font-title text-3xl mb-2">
                 BRONZE
               </h1>
