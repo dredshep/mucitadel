@@ -1,7 +1,7 @@
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Head from "next/head";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import Button from "../components/styled/Button";
@@ -50,6 +50,18 @@ function Card(props: {
 }
 
 function Content() {
+  const [firstJumpEnabled, enableFirstJump] = useState(false);
+  const [secondJumpEnabled, enableSecondJump] = useState(false);
+  const en1 = () => enableFirstJump(true);
+  const en2 = () => enableSecondJump(true);
+  useEffect(() => {
+    const timer1 = setTimeout(en1, 1000);
+    const timer2 = setTimeout(en2, 2000);
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
   return (
     <div className="w-full h-full font-body">
       {/* <div className="w-full bg-black flex justify-center">
@@ -101,10 +113,16 @@ function Content() {
                   src="images/metal-tiers/silver.png"
                   alt="Silver MemeUnity Tier for Membership Cards."
                   className="object-contain"
-                  style={{
-                    animation: "bounce 3s infinite",
-                    animationDelay: "1s",
-                  }}
+                  style={
+                    firstJumpEnabled
+                      ? {
+                          animation: "bounce 3s infinite",
+                          visibility: "visible",
+                          transition: "visibility 0s, opacity 0.5s linear",
+                          opacity: "1",
+                        }
+                      : { visibility: "hidden", opacity: "0" }
+                  }
                 />
               </div>
               <div className="w-full ml-5">
@@ -112,10 +130,16 @@ function Content() {
                   src="images/metal-tiers/gold.png"
                   alt="Gold MemeUnity Tier for Membership Cards."
                   className="object-contain"
-                  style={{
-                    animation: "bounce 3s infinite",
-                    animationDelay: "2s",
-                  }}
+                  style={
+                    secondJumpEnabled
+                      ? {
+                          animation: "bounce 3s infinite",
+                          visibility: "visible",
+                          transition: "visibility 0s, opacity 0.5s linear",
+                          opacity: "1",
+                        }
+                      : { visibility: "hidden", opacity: "0" }
+                  }
                 />
               </div>
             </figure>
