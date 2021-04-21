@@ -52,14 +52,18 @@ function Card(props: {
 function Content() {
   const [firstJumpEnabled, enableFirstJump] = useState(false);
   const [secondJumpEnabled, enableSecondJump] = useState(false);
+  const [thirdJumpEnabled, enableThirdJump] = useState(false);
   const en1 = () => enableFirstJump(true);
   const en2 = () => enableSecondJump(true);
+  const en3 = () => enableThirdJump(true);
   useEffect(() => {
     const timer1 = setTimeout(en1, 1000);
     const timer2 = setTimeout(en2, 2000);
+    const timer3 = setTimeout(en3, 3000);
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
+      clearTimeout(timer3);
     };
   }, []);
   return (
@@ -84,17 +88,17 @@ function Content() {
                 style={{ width: "60%" }}
               >
                 <img
-                  src="images/cards/Paula.png"
+                  src="images/cards/346x461/Paula.png"
                   alt="Epic Mia - MU Citadel MemeUnity NFT Card"
                   className="w-56 absolute transform rotate-12 left-96 top-8"
                 />
                 <img
-                  src="images/cards/Elon Musk.png"
+                  src="images/cards/346x461/Elon Musk.png"
                   alt="Epic Mia - MU Citadel MemeUnity NFT Card"
                   className="w-56 absolute transform -rotate-12 right-96 top-8"
                 />
                 <img
-                  src="images/cards/Epic Mia.png"
+                  src="images/cards/346x461/Epic Mia.png"
                   alt="Epic Mia - MU Citadel MemeUnity NFT Card"
                   className="w-60 absolute"
                 />
@@ -102,16 +106,8 @@ function Content() {
             <figure className="flex flex-grow-0 w-3/4 self-center">
               <div className="w-full">
                 <img
-                  src="images/metal-tiers/bronze.png"
+                  src="images/metal-tiers/bronze-small.png"
                   alt="Bronze MemeUnity Tier for Membership Cards."
-                  className="object-contain"
-                  style={{ animation: "bounce 3s infinite" }}
-                />
-              </div>
-              <div className="w-full ml-5">
-                <img
-                  src="images/metal-tiers/silver.png"
-                  alt="Silver MemeUnity Tier for Membership Cards."
                   className="object-contain"
                   style={
                     firstJumpEnabled
@@ -127,11 +123,28 @@ function Content() {
               </div>
               <div className="w-full ml-5">
                 <img
-                  src="images/metal-tiers/gold.png"
-                  alt="Gold MemeUnity Tier for Membership Cards."
+                  src="images/metal-tiers/silver-small.png"
+                  alt="Silver MemeUnity Tier for Membership Cards."
                   className="object-contain"
                   style={
                     secondJumpEnabled
+                      ? {
+                          animation: "bounce 3s infinite",
+                          visibility: "visible",
+                          transition: "visibility 0s, opacity 0.5s linear",
+                          opacity: "1",
+                        }
+                      : { visibility: "hidden", opacity: "0" }
+                  }
+                />
+              </div>
+              <div className="w-full ml-5">
+                <img
+                  src="images/metal-tiers/gold-small.png"
+                  alt="Gold MemeUnity Tier for Membership Cards."
+                  className="object-contain"
+                  style={
+                    thirdJumpEnabled
                       ? {
                           animation: "bounce 3s infinite",
                           visibility: "visible",
@@ -229,7 +242,7 @@ function Content() {
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
                   className="rounded-md"
-                  src="images/cards/Epic Mia.png"
+                  src="images/cards/346x461/Epic Mia.png"
                   alt=""
                 /> */}
               <Card
@@ -239,7 +252,7 @@ function Content() {
                 rating="1202"
                 tier="Nani"
                 traits={6}
-                url="images/cards/Epic Mia.png"
+                url="images/cards/346x461/Epic Mia.png"
                 kcalOrUSD={12500}
               />
               <div className="mt-10 mb-4">Price:</div>
@@ -270,7 +283,7 @@ function Content() {
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
                   className="rounded-md"
-                  src="images/cards/Bunnies.png"
+                  src="images/cards/346x461/Bunnies.png"
                   alt=""
                 /> */}
               <Card
@@ -280,7 +293,7 @@ function Content() {
                 rating="1202"
                 tier="Legendary"
                 traits={6}
-                url="images/cards/Bunnies.png"
+                url="images/cards/346x461/Bunnies.png"
                 kcalOrUSD={6250}
               />
               <div className="mt-10 mb-4">Price:</div>
@@ -309,7 +322,7 @@ function Content() {
                 BRONZE
               </h1>
               <div className="mb-10 text-sm">Membership Card</div>
-              {/* <img className="rounded-md" src="images/cards/Pete.png" alt="" /> */}
+              {/* <img className="rounded-md" src="images/cards/346x461/Pete.png" alt="" /> */}
               <Card
                 minted="1 of 1500"
                 name="Pete"
@@ -317,7 +330,7 @@ function Content() {
                 rating="1202"
                 tier="Epic"
                 traits={6}
-                url="images/cards/Pete.png"
+                url="images/cards/346x461/Voiceover Pete.png"
                 kcalOrUSD={2500}
               />
               <div className="mt-10 mb-4">Price:</div>
