@@ -57,9 +57,9 @@ function Content() {
   const en2 = () => enableSecondJump(true);
   const en3 = () => enableThirdJump(true);
   useEffect(() => {
-    const timer1 = setTimeout(en1, 1000);
-    const timer2 = setTimeout(en2, 2000);
-    const timer3 = setTimeout(en3, 3000);
+    const timer1 = setTimeout(en1, 0);
+    const timer2 = setTimeout(en2, 1000);
+    const timer3 = setTimeout(en3, 2000);
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
@@ -78,32 +78,32 @@ function Content() {
       </div> */}
       {/* <div className="bg-memeunity-banner bg-no-repeat"> */}
       <div className="pb-20 bg-mainbg">
-        <section className="bg-black bg-opacity-50 px-20">
-          <h1 className="mx-auto max-w-max text-4xl font-title font-extrabold tracking-wide py-14 text-mupurple">
+        <section className="bg-black bg-opacity-50 px-5 md:px-10 lg:px-20">
+          <h1 className="mx-auto max-w-max text-4xl font-title font-extrabold tracking-wide py-14 text-mupurple text-center">
             MemeUnity Cards Live Sale
           </h1>
-          <div className="max-w-6xl flex mx-auto">
+          <div className="max-w-6xl flex mx-auto flex-col mdish:flex-row">
             {/* <div
                 className="flex-shrink-0 flex justify-center relative -ml-12 mt-11 animate-bounce"
                 style={{ width: "60%" }}
               >
                 <img
-                  src="images/cards/346x461/Paula.png"
+                  src="images/cards/full-size/Paula.png"
                   alt="Epic Mia - MU Citadel MemeUnity NFT Card"
                   className="w-56 absolute transform rotate-12 left-96 top-8"
                 />
                 <img
-                  src="images/cards/346x461/Elon Musk.png"
+                  src="images/cards/full-size/Elon Musk.png"
                   alt="Epic Mia - MU Citadel MemeUnity NFT Card"
                   className="w-56 absolute transform -rotate-12 right-96 top-8"
                 />
                 <img
-                  src="images/cards/346x461/Epic Mia.png"
+                  src="images/cards/full-size/Epic Mia.png"
                   alt="Epic Mia - MU Citadel MemeUnity NFT Card"
                   className="w-60 absolute"
                 />
               </div> */}
-            <figure className="flex flex-grow-0 w-3/4 self-center">
+            <figure className="flex flex-grow-0 flex-shrink-0 w-full max-w-lg mdish:max-w-sm h-72 items-center mdish:items-end lg:max-w-md lgish:max-w-lg self-center">
               <div className="w-full">
                 <img
                   src="images/metal-tiers/bronze-small.png"
@@ -156,7 +156,7 @@ function Content() {
                 />
               </div>
             </figure>
-            <div className="ml-10 ">
+            <div className="ml-0 mdish:ml-10 ">
               <h2 className="font-bold text-white font-title text-3xl mb-5">
                 Free Bonuses with Common Card Purchases
               </h2>
@@ -209,7 +209,7 @@ function Content() {
         </section>
         {/* END TOP PART */}
         {/* START CARD INTRO AND BOXES */}
-        <div className="px-20">
+        <div className="px-5 md:px-10 lg:px-20">
           <div className="max-w-2xl mx-auto text-secondary">
             <div className="w-full flex justify-center text-7xl animate-bounce my-14">
               <div className="text-mupurple hover:text-mupurple-hover cursor-pointer">
@@ -236,27 +236,27 @@ function Content() {
               of the images you will get on your cards.
             </em>
           </div>
-          <div className="max-w-6xl flex mx-auto mt-10">
-            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg text-center">
+          <div className="max-w-6xl flex flex-wrap lg:flex-nowrap mx-auto mt-10 justify-center">
+            <div className="flex flex-col items-center w-full mx-auto lg:mr-4 rounded-2xl py-6 px-3 lg:p-6 bg-asidebg text-center">
               <h1 className="font-extrabold font-title text-3xl mb-2">GOLD</h1>
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
                   className="rounded-md"
-                  src="images/cards/346x461/Epic Mia.png"
+                  src="images/cards/full-size/Epic Mia.png"
                   alt=""
                 /> */}
               <Card
                 minted="1 of 15"
                 name="Epic Mia"
-                price="5 ETH"
+                price="15 ETH"
                 rating="1202"
                 tier="Nani"
                 traits={6}
-                url="images/cards/346x461/Epic Mia.png"
+                url="images/cards/full-size/Epic Mia.png"
                 kcalOrUSD={12500}
               />
               <div className="mt-10 mb-4">Price:</div>
-              <div className="text-4xl text-mupurple font-bold">5 ETH</div>
+              <div className="text-4xl text-mupurple font-bold">15 ETH</div>
               <div className="font-semibold text-secondary mt-5">
                 Card Tier:
               </div>
@@ -272,18 +272,18 @@ function Content() {
               <div>Highest probability of famous artwork</div>
               <div>3x chance of any trait</div>
               <div>"Accidental Collaboration" Artwork</div>
-              <div className="mt-10 flex flex-grow items-end">
-                <Button>BUY GOLD</Button>
+              <div className="mt-10 flex flex-gro w-full px-6w items-end w-full px-6">
+                <Button className="w-full">BUY GOLD</Button>
               </div>
             </div>
-            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg text-center">
+            <div className="flex flex-col items-center w-full mx-auto lg:mx-4 mt-5 lg:mt-0 rounded-2xl px-3 py-6 lg:p-6 bg-asidebg text-center">
               <h1 className="font-extrabold font-title text-3xl mb-2">
                 SILVER
               </h1>
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
                   className="rounded-md"
-                  src="images/cards/346x461/Bunnies.png"
+                  src="images/cards/full-size/Bunnies.png"
                   alt=""
                 /> */}
               <Card
@@ -293,7 +293,7 @@ function Content() {
                 rating="1202"
                 tier="Legendary"
                 traits={6}
-                url="images/cards/346x461/Bunnies.png"
+                url="images/cards/full-size/Bunnies.png"
                 kcalOrUSD={6250}
               />
               <div className="mt-10 mb-4">Price:</div>
@@ -313,16 +313,16 @@ function Content() {
               <div>Higher probability of famous artwork</div>
               <div>3x chance of any trait</div>
               <div>"Accidental Collaboration" Artwork</div>
-              <div className="mt-10 flex flex-grow items-end">
-                <Button>BUY SILVER</Button>
+              <div className="mt-10 flex flex-grow items-end w-full px-6">
+                <Button className="max-w-full w-full">BUY SILVER</Button>
               </div>
             </div>
-            <div className="flex flex-col items-center w-full mx-4 rounded-2xl p-6 bg-asidebg text-center">
+            <div className="flex flex-col items-center w-full mx-auto lg:ml-4 mt-5 lg:mt-0 rounded-2xl px-3 py-6 lg:p-6 bg-asidebg text-center">
               <h1 className="font-extrabold font-title text-3xl mb-2">
                 BRONZE
               </h1>
               <div className="mb-10 text-sm">Membership Card</div>
-              {/* <img className="rounded-md" src="images/cards/346x461/Pete.png" alt="" /> */}
+              {/* <img className="rounded-md" src="images/cards/full-size/Pete.png" alt="" /> */}
               <Card
                 minted="1 of 1500"
                 name="Pete"
@@ -330,7 +330,7 @@ function Content() {
                 rating="1202"
                 tier="Epic"
                 traits={6}
-                url="images/cards/346x461/Voiceover Pete.png"
+                url="images/cards/full-size/Voiceover Pete.png"
                 kcalOrUSD={2500}
               />
               <div className="mt-10 mb-4">Price:</div>
@@ -349,8 +349,8 @@ function Content() {
               <div>Chance to get 1 of 9 Cryptopunks</div>
               <div>3x chance of any trait</div>
               <div>"Accidental Collaboration" Artwork</div>
-              <div className="mt-10 flex flex-grow items-end">
-                <Button>BUY BRONZE</Button>
+              <div className="mt-10 flex flex-grow items-end w-full px-6">
+                <Button className="max-w-full w-full">BUY BRONZE</Button>
               </div>
             </div>
           </div>
@@ -371,68 +371,73 @@ function Content() {
               </div>
             </div>
           </div>
-          <div className="max-w-6xl mx-auto mt-20 flex w-full space-x-5">
+          <div className="max-w-6xl mx-auto mt-20 flex flex-col sm:flex-row w-full space-x-0 space-y-10 sm:space-y-0 sm:space-x-5">
             <div className="w-full">
-              <h1 className="text-3xl font-bold font-title mb-3">BONUS 1:</h1>
-              <div className="text-secondary">
-                Free BAT tokens reward on every{" "}
-                <strong className="text-white font-normal">5th</strong> common
-                card sale. We’ve created a $5.9 million BAT token pool to reward
-                all future Common card buyers with an equivalent amount of their
-                purchase.
+              <div className="h-auto sm:h-44">
+                <h1 className="text-3xl font-bold font-title mb-3">BONUS 1:</h1>
+                <div className="text-secondary">
+                  Free BAT tokens reward on every{" "}
+                  <strong className="text-white font-normal">5th</strong> common
+                  card sale. We’ve created a $5.9 million BAT token pool to
+                  reward all future Common card buyers with an equivalent amount
+                  of their purchase.
+                </div>
+              </div>
+
+              <div className="w-full">
+                <h1 className="text-2xl font-bold mt-5 mb-3">Example:</h1>
+                <div className="text-secondary">
+                  If you pay 2.0 ETH for card sale{" "}
+                  <strong className="text-white font-normal">5345</strong>, then
+                  you will receive that same 2.0 ETH (~$3,400) in BAT tokens. If
+                  you are the fifth buyer and you pay 5.0 ETH, then you will
+                  receive 5.0 ETH (~$8,500)!
+                  <br />
+                  <br />
+                  <em>
+                    Free BAT token rewards on card sales:{" "}
+                    <strong className="text-white font-normal">
+                      5345, 5340, 5335, 5330...
+                    </strong>
+                  </em>
+                </div>
               </div>
             </div>
             <div className="w-full">
-              <h1 className="text-3xl font-bold font-title mb-3">BONUS 2:</h1>
-              <div className="text-secondary">
-                FREE Alpha upgrade on every{" "}
-                <strong className="text-white font-normal">25th</strong> Common
-                card sale.
+              <div className="h-auto sm:h-44">
+                <h1 className="text-3xl font-bold font-title mb-3">BONUS 2:</h1>
+                <div className="text-secondary">
+                  FREE Alpha upgrade on every{" "}
+                  <strong className="text-white font-normal">25th</strong>{" "}
+                  Common card sale.
+                </div>
+              </div>
+              <div className="w-full">
+                <h1 className="text-2xl font-bold mt-5 mb-3">Example:</h1>
+                <div className="text-secondary">
+                  {" "}
+                  If you purchase the{" "}
+                  <strong className="text-white font-normal">25th</strong> card,
+                  you will receive the ability to upgrade your Common card to an
+                  Alpha card for free.
+                  <br />
+                  <br />
+                  <em>
+                    Free Alpha Card upgrade on card sale:{" "}
+                    <strong className="text-white font-normal">
+                      5318, 5293, 5268, 5243...
+                    </strong>
+                    <br />
+                    <br />
+                    NOTE: $ value is correct at the time of writing and will
+                    change based on ETH’s current price.
+                  </em>
+                </div>
               </div>
             </div>
           </div>
-          <div className="max-w-6xl mx-auto flex w-full space-x-5">
-            <div className="w-full">
-              <h1 className="text-2xl font-bold mt-5 mb-3">Example:</h1>
-              <div className="text-secondary">
-                If you pay 2.0 ETH for card sale{" "}
-                <strong className="text-white font-normal">5345</strong>, then
-                you will receive that same 2.0 ETH (~$3,400) in BAT tokens. If
-                you are the fifth buyer and you pay 5.0 ETH, then you will
-                receive 5.0 ETH (~$8,500)!
-                <br />
-                <br />
-                <em>
-                  Free BAT token rewards on card sales:{" "}
-                  <strong className="text-white font-normal">
-                    5345, 5340, 5335, 5330...
-                  </strong>
-                </em>
-              </div>
-            </div>
-            <div className="w-full">
-              <h1 className="text-2xl font-bold mt-5 mb-3">Example:</h1>
-              <div className="text-secondary">
-                {" "}
-                If you purchase the{" "}
-                <strong className="text-white font-normal">25th</strong> card,
-                you will receive the ability to upgrade your Common card to an
-                Alpha card for free.
-                <br />
-                <br />
-                <em>
-                  Free Alpha Card upgrade on card sale:{" "}
-                  <strong className="text-white font-normal">
-                    5318, 5293, 5268, 5243...
-                  </strong>
-                  <br />
-                  <br />
-                  NOTE: $ value is correct at the time of writing and will
-                  change based on ETH’s current price.
-                </em>
-              </div>
-            </div>
-          </div>
+          {/* <div className="max-w-6xl mx-auto flex w-full space-x-5">
+          </div> */}
           <div className="max-w-2xl mx-auto mt-20 text-secondary">
             In order to buy your card(s), please ensure your{" "}
             <strong className="text-white font-normal">wallet</strong> is
