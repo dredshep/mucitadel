@@ -1,3 +1,5 @@
+import Link from "../styled/Link";
+
 export default function PrivacyPolicy() {
   return (
     <div className="purehtml md:max-w-2xl lg:max-w-3xl xl:max-w-6xl mx-3 md:mx-auto text-white-active">
@@ -16,11 +18,12 @@ export default function PrivacyPolicy() {
         privacy. If you have any questions or concerns about this privacy
         notice, or our practices with regards to your personal information,
         please contact us at{" "}
-        <a href="mailto:contact@memeunity.com">contact@memeunity.com</a>.
+        <Link href="mailto:contact@memeunity.com">contact@memeunity.com</Link>.
       </p>
       <p>
         When you visit our website{" "}
-        <a href="https://memeunity.com">https://memeunity.com</a> (the &quot;
+        <Link href="https://memeunity.com">https://memeunity.com</Link> (the
+        &quot;
         <strong>Website</strong>&quot;), and more generally, use any of our
         services (the &quot;<strong>Services</strong>&quot;, which include the
         Website), we appreciate that you are trusting us with your personal
@@ -51,64 +54,64 @@ export default function PrivacyPolicy() {
       </h2>
       <ol className="list-decimal">
         <li>
-          <a href="#1-what-information-do-we-collect-">
+          <Link href="#1-what-information-do-we-collect-">
             WHAT INFORMATION DO WE COLLECT?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#2-how-do-we-use-your-information-">
+          <Link href="#2-how-do-we-use-your-information-">
             HOW DO WE USE YOUR INFORMATION?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#3-will-your-information-be-shared-with-anyone-">
+          <Link href="#3-will-your-information-be-shared-with-anyone-">
             WILL YOUR INFORMATION BE SHARED WITH ANYONE?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#4-is-your-information-transferred-internationally-">
+          <Link href="#4-is-your-information-transferred-internationally-">
             IS YOUR INFORMATION TRANSFERRED INTERNATIONALLY?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#5-how-long-do-we-keep-your-information-">
+          <Link href="#5-how-long-do-we-keep-your-information-">
             HOW LONG DO WE KEEP YOUR INFORMATION?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#6-how-do-we-keep-your-information-safe-">
+          <Link href="#6-how-do-we-keep-your-information-safe-">
             HOW DO WE KEEP YOUR INFORMATION SAFE?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#7-do-we-collect-information-from-minors-">
+          <Link href="#7-do-we-collect-information-from-minors-">
             DO WE COLLECT INFORMATION FROM MINORS?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#8-what-are-your-privacy-rights-">
+          <Link href="#8-what-are-your-privacy-rights-">
             WHAT ARE YOUR PRIVACY RIGHTS?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#9-controls-for-do-not-track-features">
+          <Link href="#9-controls-for-do-not-track-features">
             CONTROLS FOR DO-NOT-TRACK FEATURES
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#10-do-california-residents-have-specific-privacy-rights-">
+          <Link href="#10-do-california-residents-have-specific-privacy-rights-">
             DO CALIFORNIA RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#11-do-we-make-updates-to-this-notice-">
+          <Link href="#11-do-we-make-updates-to-this-notice-">
             DO WE MAKE UPDATES TO THIS NOTICE?
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#12-how-can-you-contact-us-about-this-notice-">
+          <Link href="#12-how-can-you-contact-us-about-this-notice-">
             HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
-          </a>
+          </Link>
         </li>
       </ol>
       <h2
@@ -161,8 +164,10 @@ export default function PrivacyPolicy() {
             testimonial, we will obtain your consent to use your name and the
             content of the testimonial. If you wish to update, or delete your
             testimonial, please contact us at{" "}
-            <a href="mailto:contact@memeunity.com">contact@memeunity.com</a> and
-            be sure to include your name, testimonial location, and contact
+            <Link href="mailto:contact@memeunity.com">
+              contact@memeunity.com
+            </Link>{" "}
+            and be sure to include your name, testimonial location, and contact
             information.
           </p>
         </li>
@@ -261,9 +266,9 @@ export default function PrivacyPolicy() {
             Website, subscribing to marketing or otherwise contacting us, we
             will collect personal information from you. You can opt-out of our
             marketing emails at any time (see the &quot;
-            <a href="file:///C:/Users/sn/projects/web/next/mucitadel/public/memeunity-privacy-policy.html#privacyrights">
+            <Link href="file:///C:/Users/sn/projects/web/next/mucitadel/public/memeunity-privacy-policy.html#privacyrights">
               WHAT ARE YOUR PRIVACY RIGHTS?
-            </a>
+            </Link>
             &quot; below).
           </p>
         </li>
@@ -371,9 +376,9 @@ export default function PrivacyPolicy() {
         outside, please be aware that your information may be transferred to,
         stored, and processed by us in our facilities and by those third parties
         with whom we may share your personal information (see &quot;
-        <a href="file:///C:/Users/sn/projects/web/next/mucitadel/public/memeunity-privacy-policy.html#infoshare">
+        <Link href="file:///C:/Users/sn/projects/web/next/mucitadel/public/memeunity-privacy-policy.html#infoshare">
           WILL YOUR INFORMATION BE SHARED WITH ANYONE?
-        </a>
+        </Link>
         &quot; above), in and other countries.
       </p>
       <p>
@@ -467,7 +472,7 @@ export default function PrivacyPolicy() {
         will deactivate the account and take reasonable measures to promptly
         delete such data from our records. If you become aware of any data we
         may have collected from children under age 18, please contact us at{" "}
-        <a href="mailto:contact@memeunity.com">contact@memeunity.com</a>.
+        <Link href="mailto:contact@memeunity.com">contact@memeunity.com</Link>.
       </p>
       <h2
         className="text-3xl mt-5 mb-3 font-bold font-title"
@@ -486,17 +491,17 @@ export default function PrivacyPolicy() {
         processing your personal information, you also have the right to
         complain to your local data protection supervisory authority. You can
         find their contact details here:{" "}
-        <a href="http://ec.europa.eu/justice/data-protection/bodies/authorities/index_en.htm">
+        <Link href="http://ec.europa.eu/justice/data-protection/bodies/authorities/index_en.htm">
           http://ec.europa.eu/justice/data-protection/bodies/authorities/index_en.htm
-        </a>
+        </Link>
         .
       </p>
       <p>
         If you are a resident in Switzerland, the contact details for the data
         protection authorities are available here:{" "}
-        <a href="https://www.edoeb.admin.ch/edoeb/en/home.html">
+        <Link href="https://www.edoeb.admin.ch/edoeb/en/home.html">
           https://www.edoeb.admin.ch/edoeb/en/home.html
-        </a>
+        </Link>
         .
       </p>
       <h2
@@ -584,8 +589,8 @@ export default function PrivacyPolicy() {
       </h2>
       <p>
         If you have questions or comments about this notice, you may email us at{" "}
-        <a href="mailto:contact@memeunity.com">contact@memeunity.com</a> or by
-        post to:
+        <Link href="mailto:contact@memeunity.com">contact@memeunity.com</Link>{" "}
+        or by post to:
       </p>
       <ul className="list-none font-bold">
         <li>Memeunity, LLC</li>

@@ -1,3 +1,5 @@
+import Link from "../styled/Link";
+
 export default function ToS() {
   return (
     <div className="purehtml md:max-w-2xl lg:max-w-3xl xl:max-w-6xl mx-3 md:mx-auto text-white-active">
@@ -14,9 +16,9 @@ export default function ToS() {
         These Terms of Use constitute a legally binding agreement made between
         you, whether personally or on behalf of an entity (“you”) and Memeunity,
         LLC (“Company”, “we”, “us”, or “our”), concerning your access to and use
-        of the <a href="https://memeunity.com">https://memeunity.com</a> website
-        as well as any other media form, media channel, mobile website or mobile
-        application related, linked, or otherwise connected thereto
+        of the <Link href="https://memeunity.com">https://memeunity.com</Link>{" "}
+        website as well as any other media form, media channel, mobile website
+        or mobile application related, linked, or otherwise connected thereto
         (collectively, the “Site”). You agree that by accessing the Site, you
         have read, understood, and agreed to be bound by all of these Terms of
         Use. IF YOU DO NOT AGREE WITH ALL OF THESE TERMS OF USE, THEN YOU ARE
@@ -471,9 +473,9 @@ export default function ToS() {
         We care about data privacy and security. Please review our Privacy
         Policy:{" "}
         <strong className="text-white">
-          <a href="https://memeunity.com/legal/privacy-policy">
+          <Link href="https://memeunity.com/legal/privacy-policy">
             https://memeunity.com/legal/privacy-policy
-          </a>
+          </Link>
         </strong>
         . By using the Site, you agree to be bound by our Privacy Policy, which
         is incorporated into these Terms of Use. Please be advised the Site is
@@ -737,7 +739,9 @@ export default function ToS() {
         </li>
         <li>
           <strong className="text-white">
-            <a href="mailto:contact@memeunity.com">contact@memeunity.com</a>
+            <Link href="mailto:contact@memeunity.com">
+              contact@memeunity.com
+            </Link>
           </strong>
         </li>
       </ul>
