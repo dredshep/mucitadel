@@ -98,7 +98,7 @@ function Content() {
                   className="w-56 absolute transform -rotate-12 right-96 top-8"
                 />
                 <img
-                  src="images/cards/full-size/Epic Mia.png"
+                  src="images/cards/full-size/epic-mia.png"
                   alt="Epic Mia - MU Citadel MemeUnity NFT Card"
                   className="w-60 absolute"
                 />
@@ -242,7 +242,7 @@ function Content() {
               <div className="mb-10 text-sm">Membership Card</div>
               {/* <img
                   className="rounded-md"
-                  src="images/cards/full-size/Epic Mia.png"
+                  src="images/cards/full-size/epic-mia.png"
                   alt=""
                 /> */}
               <Card
@@ -252,7 +252,7 @@ function Content() {
                 rating="1202"
                 tier="Nani"
                 traits={6}
-                url="images/cards/full-size/Epic Mia.png"
+                url="images/cards/full-size/epic-mia.png"
                 kcalOrUSD={12500}
               />
               <div className="mt-10 mb-4">Price:</div>
