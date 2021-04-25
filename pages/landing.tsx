@@ -272,7 +272,7 @@ function Content() {
               <div>Highest probability of famous artwork</div>
               <div>3x chance of any trait</div>
               <div>"Accidental Collaboration" Artwork</div>
-              <div className="mt-10 flex flex-gro w-full px-6w items-end w-full px-6">
+              <div className="mt-10 flex flex-gro w-full px-6w items-end px-6">
                 <Button className="w-full">BUY GOLD</Button>
               </div>
             </div>
