@@ -1,6 +1,6 @@
 export default function PrivacyPolicy() {
   return (
-    <div className="md:max-w-2xl lg:max-w-3xl xl:max-w-6xl mx-3 md:mx-auto text-white-active">
+    <div className="purehtml md:max-w-2xl lg:max-w-3xl xl:max-w-6xl mx-3 md:mx-auto text-white-active">
       {/* <p>Privacy Policy - MU</p> */}
       <h1 className="text-4xl flex justify-center mt-10 mb-3 font-title">
         <strong className="flex justify-center">PRIVACY POLICY</strong>

@@ -43,8 +43,8 @@ function SubFooter() {
       <div className="max-w-sm sm:max-w-md md:max-w-lg mx-auto">
         <div className="flex justify-around sm:justify-between ">
           <div>Copyright 2021 ©️ MemeUnity</div>
-          <div>Privacy Policy</div>
-          <div>Terms of Service</div>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/terms-of-service">Terms of Service</a>
         </div>
       </div>
     </div>
@@ -113,7 +113,7 @@ export default function Footer() {
               <li>
                 <Link href="https://www.phantasma.io/wallets" target="_blank">
                   <FontAwesomeIcon icon={faLink} className="mr-3" />
-                  Phantasma Wallet
+                  Phantasma&nbsp;Wallet
                 </Link>
               </li>
             </ul>

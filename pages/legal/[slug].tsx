@@ -15,12 +15,7 @@ export default function Legal(props) {
     const isHTML = props.isHTML;
     return (
       <>
-        <div
-          className={
-            (isHTML ? "purehtml" : "") +
-            " App text-white bg-mainbg min-h-screen overflow-y-hidden font-body"
-          }
-        >
+        <div className="App text-white bg-mainbg min-h-screen overflow-y-hidden font-body">
           <Head>
             <title>MU Citadel - the tree where memes grow</title>
           </Head>
