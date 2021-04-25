@@ -6,6 +6,7 @@ import Head from "next/head";
 import AuthenticationProvider from "../components/AuthenticationProvider";
 import CookieModal from "../components/CookieModal";
 import "../styles/globals.css";
+import "../styles/purehtml.scss";
 
 TimeAgo.addLocale(en);
 

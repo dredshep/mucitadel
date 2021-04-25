@@ -26,6 +26,7 @@
     "react-paginate": "^7.1.0",
     "react-responsive": "^8.2.0",
     "react-time-ago": "^6.2.2",
+    "sass": "^1.32.11",
     "swr": "^0.5.4",
     "universal-cookie": "^4.0.4",
     "web3": "^1.3.4"
