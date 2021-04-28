@@ -80,7 +80,7 @@ function Content() {
       <div className="pb-20 bg-mainbg">
         <section className="bg-black bg-opacity-50 px-5 md:px-10 lg:px-20">
           <h1 className="mx-auto max-w-max text-4xl font-title font-extrabold tracking-wide py-14 text-mupurple text-center">
-            MemeUnity Cards Live Sale
+            memeunity Membership Card Sale
           </h1>
           <div className="max-w-6xl flex mx-auto flex-col mdish:flex-row">
             {/* <div
@@ -267,10 +267,16 @@ function Content() {
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
-              <div>Chance to get 1 of 9 Cryptopunks</div>
-              <div>Highest probability of famous artwork</div>
-              <div>3x chance of any trait</div>
-              <div>"Accidental Collaboration" Artwork</div>
+              <div>Chance of pulling 1 of 3 Nani NFT Designs</div>
+              <div>50k MUU Token Airdrop monthly</div>
+              <div>100% MUCitadel Fee Discount</div>
+              <div><a href="https://cryptomasks.co/shop/">Custom Limited Edition MU Swag Pack</a></div>
+              <div>-Limited Edition Placard</div>
+              <div>-Limited Edition Canvas Artwork</div>
+              <div>-Limited Edition Backpack</div>
+              <div>-MU Dank Logo Shirt</div>
+              <div>-MU Dank Hat</div>
+              <div>-MU Dank Gaiter</div>
               <div className="mt-10 flex flex-gro w-full px-6w items-end px-6">
                 <Button className="w-full">BUY GOLD</Button>
               </div>
@@ -308,10 +314,10 @@ function Content() {
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
-              <div>Chance to get 1 of 9 Cryptopunks</div>
-              <div>Higher probability of famous artwork</div>
-              <div>3x chance of any trait</div>
-              <div>"Accidental Collaboration" Artwork</div>
+              <div>Chance of pulling 1 of 3 Legendary NFT Designs</div>
+              <div>20k MUU Token Airdrop monthly</div>
+              <div>50% MUCitadel Marketplace fee discount</div>
+              <div><a href="https://cryptomasks.co/shop/">MU Swag Pack (DANK shirt, hat, gaiter)</a></div>
               <div className="mt-10 flex flex-grow items-end w-full px-6">
                 <Button className="max-w-full w-full">BUY SILVER</Button>
               </div>
@@ -345,9 +351,10 @@ function Content() {
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
-              <div>Chance to get 1 of 9 Cryptopunks</div>
-              <div>3x chance of any trait</div>
-              <div>"Accidental Collaboration" Artwork</div>
+              <div>Chance of pulling 1 of 3 Epic NFT Designs</div>
+              <div>2.5k MUU Token Airdrop monthly</div>
+              <div>25% MUCitadel Marketplace fee discount</div>
+              <div><a href="https://cryptomasks.co/shop/shirts/memeunity-dank-shirt/">MU DANK Logo Shirt</a></div>
               <div className="mt-10 flex flex-grow items-end w-full px-6">
                 <Button className="max-w-full w-full">BUY BRONZE</Button>
               </div>
