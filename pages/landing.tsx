@@ -103,7 +103,7 @@ function Content() {
                   className="w-60 absolute"
                 />
               </div> */}
-            <figure className="flex flex-grow-0 flex-shrink-0 w-full max-w-lg mdish:max-w-sm h-72 items-center mdish:items-end lg:max-w-md lgish:max-w-lg self-center">
+            {/* <figure className="flex flex-grow-0 flex-shrink-0 w-full max-w-lg mdish:max-w-sm h-72 items-center mdish:items-end lg:max-w-md lgish:max-w-lg self-center">
               <div className="w-full">
                 <img
                   src="images/metal-tiers/bronze-small.png"
@@ -155,6 +155,13 @@ function Content() {
                   }
                 />
               </div>
+            </figure>
+             */}
+            <figure>
+              <img
+                src="/images/3 cards4.png"
+                alt="Three memeunity card tiers: bronze, silver and gold."
+              />
             </figure>
             <div className="ml-0 mdish:ml-10 ">
               <h2 className="font-bold text-white font-title text-3xl mb-5">

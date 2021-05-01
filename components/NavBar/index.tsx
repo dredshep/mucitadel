@@ -9,7 +9,7 @@ import SearchBar from "./SearchBar/Index";
 
 function MainLogo() {
   return (
-    <img src="/images/mucitadel-white.png" className="" alt="MemeUnity Logo" />
+    <img src="/images/mucitadel-white.svg" className="" alt="MemeUnity Logo" />
   );
 }
 
