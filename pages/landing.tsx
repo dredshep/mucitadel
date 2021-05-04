@@ -80,7 +80,7 @@ function Content() {
       <div className="pb-20 bg-mainbg">
         <section className="bg-black bg-opacity-50 px-5 md:px-10 lg:px-20">
           <h1 className="mx-auto max-w-max text-4xl font-title font-extrabold tracking-wide py-14 text-mupurple text-center">
-            MemeUnity Cards Live Sale
+            memeunity Membership Card Sale
           </h1>
           <div className="max-w-6xl flex mx-auto flex-col mdish:flex-row">
             {/* <div
@@ -165,30 +165,30 @@ function Content() {
             </figure>
             <div className="ml-0 mdish:ml-10 ">
               <h2 className="font-bold text-white font-title text-3xl mb-5">
-                Free Bonuses with Common Card Purchases
+                Free Bonuses with ALL card purchases!
               </h2>
               <p className="text-secondary-hover">
-                We are super excited to offer these super-powered Ether Cards
+                We are super excited to offer these super-powered memeunity Membership Card
                 bonuses to you all!
                 <br />
                 <br />
                 The two bonuses -{" "}
                 <strong className="text-white font-bold">
-                  BAT Bonus
+                  MUU Token Airdrops
                 </strong> &{" "}
-                <strong className="text-white font-bold">Alpha Upgrade</strong>{" "}
-                - will see hundreds of lucky purchasers get millions of dollars
-                in BAT and free Alpha upgrades!
+                <strong className="text-white font-bold">MUCitadel fee discounts!</strong>{" "}
+                - membership card buyers/holders will receive varying MUU token
+                airdrops + marketplace fee discounts!
                 <br />
                 <br />
                 <strong className="text-white font-bold">
-                  The BAT Bonus
+                  MUU Token Airdrops
                 </strong>{" "}
                 and{" "}
-                <strong className="text-white font-bold">Alpha Upgrades</strong>{" "}
+                <strong className="text-white font-bold">MUCitadel fee discounts</strong>{" "}
                 will activate when there are{" "}
-                <strong className="text-white font-bold">5350</strong> founder
-                NFT’s left.
+                <strong className="text-white font-bold">500</strong> membership
+                cards sold.
                 <br />
                 <br />
                 <strong className="text-white font-bold">
@@ -204,13 +204,13 @@ function Content() {
             <p className="text-secondary-hover">
               Here's the chance you’ve been waiting for! You can now get your
               hands on your very own{" "}
-              <strong className="text-white font-bold">Founder Card</strong>.
+              <strong className="text-white font-bold">Membership Card</strong>.
               Just pick one of the three available card types:{" "}
-              <strong className="text-white font-bold">OG</strong>,{" "}
-              <strong className="text-white font-bold">Alpha</strong>, or{" "}
-              <strong className="text-white font-bold">Common</strong>. The Art
-              and Traits you receive on the card are a mystery that even we
-              don’t know what you’ll get!{" "}
+              <strong className="text-white font-bold">GOLD</strong>,{" "}
+              <strong className="text-white font-bold">SILVER</strong>, or{" "}
+              <strong className="text-white font-bold">BRONZE</strong>. There are
+              3 different card designs per tier, each a mystery and
+              are equally random in chance!{" "}
             </p>
           </div>
         </section>
@@ -225,22 +225,21 @@ function Content() {
             </div>
             Each category comes with distinct features, although any card has a
             chance of hitting the jackpot with a superb find. You’ll be able to
-            see the card immediately after the sale. While luck is still part of
-            the game and the details on the card are a mystery, you can increase
-            your chances of getting a rare Trait by selecting higher-tier
-            memberships.
+            see the card 2 weeks after the sale, when our MUCitadel marketplace
+            launches. Increase your bonuses by collecting all 3 cards from each
+            tier - creating a 3-piece set gives ultimate rewards!
             <br />
             <br />
-            Pick from the three available series: OG (Original Gangster), with
-            only 90 pieces ever minted, Alpha, with 900 pieces minted, and
-            Common, with 9,000 pieces minted.
+            Pick from the three available series: GOLD (Nani Tier), with
+            only 15 cards ever minted, SILVER (Legendary Tier), with 150 cards
+            minted, and BRONZE (Epic Tier), with 1500 cards minted.
             <br />
             <br />
             <em>
-              NOTE: Images and traits shown are{" "}
-              <strong className="text-white font-bold">examples</strong> and{" "}
-              <strong className="text-white font-bold">not indicative</strong>{" "}
-              of the images you will get on your cards.
+              NOTE: Card images shown are{" "}
+              <strong className="text-white font-bold">random</strong> and{" "}
+              <strong className="text-white font-bold">not a guarantee</strong>{" "}
+              of which card you will receive.
             </em>
           </div>
           <div className="max-w-6xl flex flex-wrap lg:flex-nowrap mx-auto mt-10 justify-center">
@@ -260,7 +259,7 @@ function Content() {
                 tier="Nani"
                 traits={6}
                 url="images/cards/full-size/epic-mia.png"
-                kcalOrUSD={12500}
+                kcalOrUSD={40000}
               />
               <div className="mt-10 mb-4">Price:</div>
               <div className="text-4xl text-mupurple font-bold">15 ETH</div>
@@ -275,10 +274,16 @@ function Content() {
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
-              <div>Chance to get 1 of 9 Cryptopunks</div>
-              <div>Highest probability of famous artwork</div>
-              <div>3x chance of any trait</div>
-              <div>"Accidental Collaboration" Artwork</div>
+              <div>Chance of pulling 1 of 3 Nani NFT Designs</div>
+              <div>50k MUU Token Airdrop monthly</div>
+              <div>100% MUCitadel Fee Discount</div>
+              <div><a href="https://cryptomasks.co/shop/">Custom Limited Edition MU Swag Pack</a></div>
+              <div>-Limited Edition Placard</div>
+              <div>-Limited Edition Canvas Artwork</div>
+              <div>-Limited Edition Backpack</div>
+              <div>-MU Dank Logo Shirt</div>
+              <div>-MU Dank Hat</div>
+              <div>-MU Dank Gaiter</div>
               <div className="mt-10 flex flex-gro w-full px-6w items-end px-6">
                 <Button className="w-full">BUY GOLD</Button>
               </div>
@@ -296,15 +301,15 @@ function Content() {
               <Card
                 minted="1 of 150"
                 name="Bunnies"
-                price="2.5 ETH"
+                price="1 ETH"
                 rating="1202"
                 tier="Legendary"
                 traits={6}
                 url="images/cards/full-size/Bunnies.png"
-                kcalOrUSD={6250}
+                kcalOrUSD={2700}
               />
               <div className="mt-10 mb-4">Price:</div>
-              <div className="text-4xl text-mupurple font-bold">2.5 ETH</div>
+              <div className="text-4xl text-mupurple font-bold">1 ETH</div>
               <div className="font-semibold text-secondary mt-5">
                 Card Tier:
               </div>
@@ -316,10 +321,10 @@ function Content() {
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
-              <div>Chance to get 1 of 9 Cryptopunks</div>
-              <div>Higher probability of famous artwork</div>
-              <div>3x chance of any trait</div>
-              <div>"Accidental Collaboration" Artwork</div>
+              <div>Chance of pulling 1 of 3 Legendary NFT Designs</div>
+              <div>20k MUU Token Airdrop monthly</div>
+              <div>50% MUCitadel Marketplace fee discount</div>
+              <div><a href="https://cryptomasks.co/shop/">MU Swag Pack (DANK shirt, hat, gaiter)</a></div>
               <div className="mt-10 flex flex-grow items-end w-full px-6">
                 <Button className="max-w-full w-full">BUY SILVER</Button>
               </div>
@@ -333,15 +338,15 @@ function Content() {
               <Card
                 minted="1 of 1500"
                 name="Pete"
-                price="1 ETH"
+                price="0.25 ETH"
                 rating="1202"
                 tier="Epic"
                 traits={6}
                 url="images/cards/full-size/Voiceover Pete.png"
-                kcalOrUSD={2500}
+                kcalOrUSD={680}
               />
               <div className="mt-10 mb-4">Price:</div>
-              <div className="text-4xl text-mupurple font-bold">1 ETH</div>
+              <div className="text-4xl text-mupurple font-bold">0.25 ETH</div>
               <div className="font-semibold text-secondary mt-5">
                 Card Tier:
               </div>
@@ -353,9 +358,10 @@ function Content() {
               <div className="font-semibold text-secondary mt-1">
                 Chances & Benefits:
               </div>
-              <div>Chance to get 1 of 9 Cryptopunks</div>
-              <div>3x chance of any trait</div>
-              <div>"Accidental Collaboration" Artwork</div>
+              <div>Chance of pulling 1 of 3 Epic NFT Designs</div>
+              <div>2.5k MUU Token Airdrop monthly</div>
+              <div>25% MUCitadel Marketplace fee discount</div>
+              <div><a href="https://cryptomasks.co/shop/shirts/memeunity-dank-shirt/">MU DANK Logo Shirt</a></div>
               <div className="mt-10 flex flex-grow items-end w-full px-6">
                 <Button className="max-w-full w-full">BUY BRONZE</Button>
               </div>
