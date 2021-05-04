@@ -316,14 +316,17 @@ function Product2(props: SampleCard) {
   return (
     <div className="flex flex-row px-5 pb-5 md:py-0 md:px-0 space-x-0 md:space-x-5 bg-asidebg rounded-none md:rounded-xl mt-0 md:mt-10 w-full max-w-lg md:max-w-3xl mx-auto">
       <div className="hidden md:flex flex-shrink-0" style={{ width: "45%" }}>
-        <img className="object-contain" src={"/images/cards/" + props.url} />
+        <img
+          className="object-contain"
+          src={"/images/cards/full-size/" + props.url}
+        />
       </div>
       <div className="w-full">
         <div className="flex flex-row items-center mt-5">
           <div className="w-24 xs:w-24 flex-shrink-0 mr-3 md:hidden">
             <img
               className="w-full object-cover"
-              src={"/images/cards/" + props.url}
+              src={"/images/cards/346x461/" + props.url}
             />
           </div>
           <div>
