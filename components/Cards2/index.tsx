@@ -63,7 +63,7 @@ export function Card2(props: SampleCard & { href: string }) {
             <div className="w-28 tiny:w-32 xlish:w-40 flex-shrink-0">
               <img
                 className="max-w-full"
-                src={`/images/cards/${props.url}`}
+                src={`/images/cards/346x461/${props.url}`}
                 alt={props.name}
               />
             </div>
