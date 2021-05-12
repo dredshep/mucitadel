@@ -32,6 +32,8 @@ export default function NavBar(props: {
   logOut: LogOut;
   authData: AuthData;
   hasMetamask: boolean;
+  term: string;
+  onChangeTerm: any;
 }) {
   const router = useRouter();
   return (
@@ -42,7 +44,11 @@ export default function NavBar(props: {
       <ActiveLink href={router.pathname === "/" ? "#" : "/"}>
         <Logo sidebar={props.sidebar} />
       </ActiveLink>
-      <SearchBar className="hidden lg:flex" />
+      <SearchBar
+        className="hidden lg:flex"
+        value={props.term}
+        onChange={props.onChangeTerm}
+      />
       <NavRightSide
         logIn={props.logIn}
         logOut={props.logOut}

@@ -2,30 +2,9 @@ import React from "react";
 import FilterByPrice from "./FilterByPrice";
 import FilterByTier from "./FilterByTier";
 
-// function useOutsideAlerter(
-//   ref: React.MutableRefObject<any>,
-//   showSidebar: React.Dispatch<React.SetStateAction<boolean>>,
-// ) {
-//   useEffect(() => {
-//       /**
-//        * Alert if clicked on outside of element
-//        */
-//       function handleClickOutside(event) {
-//           if (ref.current && !ref.current.contains(event.target)) {
-//             showSidebar(false)
-//           }
-//       }
-//       // Bind the event listener
-//       document.addEventListener("mouseup", handleClickOutside);
-//       return () => {
-//           // Unbind the event listener on clean up
-//           document.removeEventListener("mouseup", handleClickOutside);
-//       };
-//   }, [ref]);
-// }
-
 export default function Sidebar() {
   const [sidebarIsHidden, showSidebar] = React.useState(true);
+
   function showSidebarCommand() {
     // alert(sidebarIsHidden)
     if (sidebarIsHidden === false) {

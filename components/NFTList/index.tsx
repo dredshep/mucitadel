@@ -1,4 +1,3 @@
-import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import {
   faInfoCircle,
   faShareAlt,
@@ -6,7 +5,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { ORDER_TYPES } from "../../constant";
 import ActiveLink from "../ActiveLink";
 
 type SampleCard = {
@@ -16,6 +16,10 @@ type SampleCard = {
   description: string;
   soul: number;
   kcal: number;
+  price: number;
+  mintDate: string;
+  trending: number;
+  currency: string;
   className?: string;
 };
 
@@ -41,8 +45,7 @@ function useOutsideAlerter(
   }, [ref]);
 }
 
-export function Card2(props: SampleCard & { href: string }) {
-  const randomNumberBetween1and1000 = Math.floor(Math.random() * 1000) + 1;
+export function NFTCard(props: SampleCard & { href: string }) {
   const [popdownIsVisible, showPopdown] = React.useState(false);
 
   const wrapperRef = useRef(null);
@@ -73,9 +76,7 @@ export function Card2(props: SampleCard & { href: string }) {
                 <div className="font-title text-secondary text-xs md:text-sm font-semibold">
                   Trending Rating
                 </div>
-                <div className="font-base font-body">
-                  {randomNumberBetween1and1000}
-                </div>
+                <div className="font-base font-body">{props.trending}</div>
               </div>
               <div className="flex flex-row justify-between items-center">
                 <div className="font-title text-secondary text-xs md:text-sm font-semibold">
@@ -96,7 +97,8 @@ export function Card2(props: SampleCard & { href: string }) {
                   Price
                 </div>
                 <div className="font-base font-body">
-                  {props.soul} <span className="text-phantasmablue">SOUL</span>
+                  {props.price}{" "}
+                  <span className="text-phantasmablue">{props.currency}</span>
                 </div>
               </div>
             </div>
@@ -108,9 +110,9 @@ export function Card2(props: SampleCard & { href: string }) {
             <li className="w-full h-full flex items-center justify-center">
               <FontAwesomeIcon icon={faShareAlt} />
             </li>
-            <li className="w-full h-full flex items-center justify-center">
+            {/* <li className="w-full h-full flex items-center justify-center"> // ant: disable wishlist feature
               <FontAwesomeIcon icon={faHeart} />
-            </li>
+            </li> */}
             <li className="w-full h-full flex items-center justify-center font-bold font-title">
               <FontAwesomeIcon icon={faShoppingCart} />
             </li>
@@ -125,34 +127,49 @@ function Container(props: { children: any }) {
   return <div className="px-auto">{props.children}</div>;
 }
 
-export default function Cards2() {
-  // const sampleCardsJson = (await axios.get("/api/sampleCards")).data;
-  // const sampleCards: SampleCard[] = JSON.parse(sampleCardsJson);
-  // console.log(sampleCards);
-  const [cards, setCards] = useState([]);
+const NFTList = ({ configurations, searchTerm }) => {
+  const [nftList, setNftList] = useState([]);
   useEffect(() => {
-    const getCards = async () => setCards((await axios.get("/api/cards")).data);
-    getCards();
-    // return () => {
-    // }
+    const getNftList = async () =>
+      setNftList((await axios.get("/api/cards")).data);
+    getNftList();
   }, []);
+
+  const sortedList = useMemo(() => {
+    let sortedList = [...nftList];
+    if (searchTerm) {
+      sortedList = sortedList.filter((nft) =>
+        nft.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    if (configurations.orderType === ORDER_TYPES.ASCENDING) {
+      sortedList.sort((nft1, nft2) =>
+        nft1[configurations.sortType] > nft2[configurations.sortType] ? 1 : -1
+      );
+    } else {
+      sortedList.sort((nft1, nft2) =>
+        nft1[configurations.sortType] < nft2[configurations.sortType] ? 1 : -1
+      );
+    }
+
+    return sortedList;
+  }, [nftList, configurations, searchTerm]);
+
   return (
-    // <div className="mt-7 grid md:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-2 mx-auto gap-10">
-    //   {[...Array(12).keys()].map(() => Card2)}
-    // </div>
     <Container>
       <div className="flex flex-row flex-wrap justify-center mx-auto tiny:-ml-5">
-        {cards.map((sampleCard, i) => (
-          // <ActiveLink href={"/card/" + i} key={sampleCard.name}>
-          <Card2
+        {sortedList.map((nft, i) => (
+          <NFTCard
             className="mt-10 mx-auto tiny:mr-5 tiny:ml-5"
             href={"/card/" + i}
-            key={sampleCard.name}
-            {...sampleCard}
+            key={nft.name}
+            currency={configurations.currency}
+            {...nft}
           />
-          // </ActiveLink>
         ))}
       </div>
     </Container>
   );
-}
+};
+
+export default NFTList;

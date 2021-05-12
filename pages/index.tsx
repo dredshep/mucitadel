@@ -1,8 +1,8 @@
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import Head from "next/head";
-import Cards2 from "../components/Cards2";
+import { useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
+import NFTList from "../components/NFTList";
 import Sidebar from "../components/Sidebar";
 import Toolbar from "../components/Toolbar";
 import {
@@ -10,36 +10,39 @@ import {
   LogIn,
   LogOut,
 } from "../components/types/AuthenticationProvider";
+import { CURRENCIES, ORDER_TYPES, SORT_TYPES } from "../constant";
 
-function Content() {
+function Content({ searchTerm }) {
+  const [configurations, setConfigurations] = useState({
+    currency: CURRENCIES[1], // soul
+    sortType: SORT_TYPES[1].value, // name
+    orderType: ORDER_TYPES.ASCENDING,
+  });
+
+  const handleChangeConfiguration = (configurationName) => (value) => {
+    setConfigurations({
+      ...configurations,
+      [configurationName]: value,
+    });
+  };
+
   return (
     <div className="flex flex-row h-full">
       <Sidebar />
       <div className="inline-flex flex-col box-border w-full">
-        <Toolbar />
-        <Cards2 />
+        <Toolbar
+          currency={configurations.currency}
+          sortType={configurations.sortType}
+          orderType={configurations.orderType}
+          onSelectCurrency={handleChangeConfiguration("currency")}
+          onChangeOrderType={handleChangeConfiguration("orderType")}
+          onChangeSortType={handleChangeConfiguration("sortType")}
+        />
+        <NFTList configurations={configurations} searchTerm={searchTerm} />
       </div>
     </div>
   );
 }
-
-function MainLogo() {
-  return (
-    <img src="/images/White Mask.png" className="h-10" alt="MemeUnity Logo" />
-  );
-}
-
-function Logo() {
-  return (
-    <div className="flex flex-row items-center w-48 justify-between">
-      <MainLogo />
-      <div className="font-title text-xl font-bold tracking-wider">
-        MU&nbsp;Citadel
-      </div>
-    </div>
-  );
-}
-faTimes;
 
 export default function Home(props: {
   logIn: LogIn;
@@ -47,13 +50,20 @@ export default function Home(props: {
   authData: AuthData;
   hasMetamask: boolean;
 }) {
+  const [searchTerm, setSearchTerm] = useState("");
+
   return (
     <div className="App text-white bg-mainbg min-h-screen overflow-y-hidden font-body">
       <Head>
         <title>MU Citadel - the tree where memes grow</title>
       </Head>
-      <NavBar sidebar={true} {...props} />
-      <Content />
+      <NavBar
+        sidebar={true}
+        term={searchTerm}
+        onChangeTerm={setSearchTerm}
+        {...props}
+      />
+      <Content searchTerm={searchTerm} />
       <Footer />
     </div>
   );

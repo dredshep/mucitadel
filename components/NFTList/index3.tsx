@@ -43,7 +43,7 @@ function useOutsideAlerter(
   }, [ref]);
 }
 
-export function Card2(props: SampleCard) {
+export function NFTCard(props: SampleCard) {
   const randomNumberBetween1and1000 = Math.floor(Math.random() * 1000) + 1;
   const [popdownIsVisible, showPopdown] = React.useState(false);
   function showPopdownCommand(e: SyntheticEvent) {
@@ -160,13 +160,13 @@ export default function Cards2() {
   }, []);
   return (
     // <div className="mt-7 grid md:grid-cols-3 2xl:grid-cols-6 xl:grid-cols-2 mx-auto gap-10">
-    //   {[...Array(12).keys()].map(() => Card2)}
+    //   {[...Array(12).keys()].map(() => NFTCard)}
     // </div>
     <Container>
       <div className="flex flex-row flex-wrap justify-center">
         {cards.map((sampleCard, i) => (
           <ActiveLink href={"/card/" + i} key={sampleCard.name}>
-            <Card2
+            <NFTCard
               className="mt-10 mx-auto tiny:mr-5 tiny:ml-5"
               {...sampleCard}
             />

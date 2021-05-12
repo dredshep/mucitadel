@@ -1,6 +1,6 @@
 import Tiers from "./Tiers";
 
-export default function FilterByTier() {
+const FilterByTier = () => {
   return (
     <div className="pt-4">
       {/* Section title */}
@@ -18,4 +18,6 @@ export default function FilterByTier() {
       </div>
     </div>
   );
-}
+};
+
+export default FilterByTier;

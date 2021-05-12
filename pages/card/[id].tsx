@@ -5,10 +5,9 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import ReactTimeAgo from "react-time-ago";
-import { Card2 } from "../../components/Cards2";
 import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
-import Button from "../../components/styled/Button";
+import { NFTCard } from "../../components/NFTList";
 import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
 
@@ -282,11 +281,11 @@ function RelatedSection(props: { cards: SampleCard[] }) {
   const cards = (
     <div className="flex flex-col md:flex-row mx-auto justify-center w-max md:w-full box-border">
       <div>
-        <Card2 {...props.cards[1]} href="/card/1" />
+        <NFTCard {...props.cards[1]} href="/card/1" />
       </div>
       <div className="w-10 h-10 flex-shrink-0"></div>
       <div>
-        <Card2 {...props.cards[2]} href="/card/2" />
+        <NFTCard {...props.cards[2]} href="/card/2" />
       </div>
     </div>
   );
@@ -388,11 +387,11 @@ function Product2(props: SampleCard) {
           <div className="w-1/2 md:w-auto px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Buy</div></div>
           <div className="w-1/2 md:w-auto px-6 rounded-full bg-mupurple text-white flex justify-around items-center"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Add to wishlist</div></div>
         </div> */}
-          <div className="flex row w-full mt-6 md:mt-4">
-            <WhiteButton className="w-full text-lg">Buy</WhiteButton>
-            <Button className="w-full ml-4 mr-4 text-lg">
+          <div className="flex row w-full mt-6 md:mt-4 justify-center">
+            <WhiteButton className="w-full ml-4 mr-8 text-lg">Buy</WhiteButton>
+            {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
               Add to wishlist
-            </Button>
+            </Button> */}
           </div>
           {/* <div className="flex flex-row font-semibold text-sm xs:text-xl justify-start md:justify-center space-x-2 xs:space-x-5  my-4 w-full">
             <div className="w-1/2 md:w-auto px-3 tiny:px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6">
