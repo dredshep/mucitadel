@@ -97,8 +97,10 @@ export function NFTCard(props: SampleCard & { href: string }) {
                   Price
                 </div>
                 <div className="font-base font-body">
-                  {props.price}{" "}
-                  <span className="text-phantasmablue">{props.currency}</span>
+                  {props.price[props.currency]}{" "}
+                  <span className="text-phantasmablue uppercase">
+                    {props.currency}
+                  </span>
                 </div>
               </div>
             </div>
@@ -137,19 +139,56 @@ const NFTList = ({ configurations, searchTerm }) => {
 
   const sortedList = useMemo(() => {
     let sortedList = [...nftList];
+    sortedList = sortedList.filter((nft) => nft.price[configurations.currency]);
+
     if (searchTerm) {
       sortedList = sortedList.filter((nft) =>
         nft.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+
+    if (configurations.tier) {
+      sortedList = sortedList.filter((nft) => nft.tier === configurations.tier);
+    }
+
+    if (configurations.minPrice) {
+      sortedList = sortedList.filter(
+        (nft) => nft.price[configurations.currency] >= configurations.minPrice
+      );
+    }
+
+    if (configurations.maxPrice) {
+      sortedList = sortedList.filter(
+        (nft) => nft.price[configurations.currency] <= configurations.maxPrice
+      );
+    }
+
     if (configurations.orderType === ORDER_TYPES.ASCENDING) {
-      sortedList.sort((nft1, nft2) =>
-        nft1[configurations.sortType] > nft2[configurations.sortType] ? 1 : -1
-      );
+      if (configurations.sortType === "price") {
+        sortedList.sort((nft1, nft2) =>
+          nft1.price[configurations.currency] >
+          nft2.price[configurations.currency]
+            ? 1
+            : -1
+        );
+      } else {
+        sortedList.sort((nft1, nft2) =>
+          nft1[configurations.sortType] > nft2[configurations.sortType] ? 1 : -1
+        );
+      }
     } else {
-      sortedList.sort((nft1, nft2) =>
-        nft1[configurations.sortType] < nft2[configurations.sortType] ? 1 : -1
-      );
+      if (configurations.sortType === "price") {
+        sortedList.sort((nft1, nft2) =>
+          nft1.price[configurations.currency] <
+          nft2.price[configurations.currency]
+            ? 1
+            : -1
+        );
+      } else {
+        sortedList.sort((nft1, nft2) =>
+          nft1[configurations.sortType] < nft2[configurations.sortType] ? 1 : -1
+        );
+      }
     }
 
     return sortedList;

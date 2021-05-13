@@ -1,13 +1,22 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../styled/Button";
 
 const numberRegex = /^[+]?\d+([.]\d+)?$/;
 
-const FilterByPrice = ({}) => {
-  const [min, setMin] = useState("");
-  const [max, setMax] = useState("");
+const FilterByPrice = (props: {
+  minPrice: Number;
+  maxPrice: Number;
+  onSetPriceRange: any;
+}) => {
+  const [min, setMin] = useState(null);
+  const [max, setMax] = useState(null);
+
+  useEffect(() => {
+    setMin(props.minPrice);
+    setMax(props.maxPrice);
+  }, [props.minPrice, props.maxPrice]);
 
   const handleMinChange = (event) => {
     const min = event.target.value;
@@ -20,16 +29,23 @@ const FilterByPrice = ({}) => {
   const handleMaxChange = (event) => {
     const max = event.target.value;
 
-    if (numberRegex.test(max)) {
+    if (max === "" || numberRegex.test(max)) {
       setMax(max);
     }
+  };
+
+  const handleSetPriceRange = () => {
+    props.onSetPriceRange(
+      min ? parseInt(min) : null,
+      max ? parseInt(max) : null
+    );
   };
 
   return (
     <div className="sticky flex flex-column items-start">
       <div className="px-4 mb-6">
         {/* Section title */}
-        <div className="text-left pb-6 mt-5">
+        <div className="text-left pb-5 mt-5">
           {/* <i class="fas fa-tags"></i> */}
           <span className="font-semibold font-title text-secondary">
             FILTER BY PRICE
@@ -41,7 +57,7 @@ const FilterByPrice = ({}) => {
           <input
             className="shadow w-1/3 rounded bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover transition-colors duration-75 text-center focus:outline-none"
             type="text"
-            value={min}
+            value={min || ""}
             placeholder="Min"
             onChange={handleMinChange}
           />
@@ -49,10 +65,13 @@ const FilterByPrice = ({}) => {
             className="shadow w-1/3 rounded bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover transition-colors duration-75 text-center focus:outline-none"
             type="text"
             placeholder="Max"
-            value={max}
+            value={max || ""}
             onChange={handleMaxChange}
           />
-          <Button className="pl-2 pr-2 rounded-r-md rounded-l-md">
+          <Button
+            onClick={handleSetPriceRange}
+            className="pl-2 pr-2 rounded-r-md rounded-l-md"
+          >
             <FontAwesomeIcon icon={faSearch} />
           </Button>
         </div>

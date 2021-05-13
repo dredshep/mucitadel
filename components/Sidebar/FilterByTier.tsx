@@ -1,6 +1,9 @@
 import Tiers from "./Tiers";
 
-const FilterByTier = () => {
+const FilterByTier = (props: {
+  selectedTier: string;
+  onSetTierFilter: void;
+}) => {
   return (
     <div className="pt-4">
       {/* Section title */}
@@ -13,7 +16,10 @@ const FilterByTier = () => {
       {/* Items */}
       <div className="pt-4 mb-20 text-left">
         <ol className="font-body">
-          <Tiers />
+          <Tiers
+            selectedTier={props.selectedTier}
+            onSelectTier={props.onSetTierFilter}
+          />
         </ol>
       </div>
     </div>

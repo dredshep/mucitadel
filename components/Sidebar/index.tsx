@@ -1,8 +1,17 @@
 import React from "react";
+import FilterByCurrency from "./FilterByCurrency";
 import FilterByPrice from "./FilterByPrice";
 import FilterByTier from "./FilterByTier";
 
-export default function Sidebar() {
+export default function Sidebar(props: {
+  minPrice: Number;
+  maxPrice: Number;
+  tier: string;
+  currency: string;
+  onSetPriceRange: any;
+  onSelectTierFilter: any;
+  onSelectCurrency: any;
+}) {
   const [sidebarIsHidden, showSidebar] = React.useState(true);
 
   function showSidebarCommand() {
@@ -43,8 +52,19 @@ export default function Sidebar() {
           }
         >
           <div className="sticky top-0 ">
-            <FilterByPrice />
-            <FilterByTier />
+            <FilterByCurrency
+              selectedCurrency={props.currency}
+              onSelectCurrency={props.onSelectCurrency}
+            />
+            <FilterByPrice
+              minPrice={props.minPrice}
+              maxPrice={props.maxPrice}
+              onSetPriceRange={props.onSetPriceRange}
+            />
+            <FilterByTier
+              selectedTier={props.tier}
+              onSetTierFilter={props.onSelectTierFilter}
+            />
           </div>
         </div>
       </aside>

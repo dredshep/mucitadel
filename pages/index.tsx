@@ -12,11 +12,14 @@ import {
 } from "../components/types/AuthenticationProvider";
 import { CURRENCIES, ORDER_TYPES, SORT_TYPES } from "../constant";
 
-function Content({ searchTerm }) {
+function Content(props: { searchTerm: string }) {
   const [configurations, setConfigurations] = useState({
-    currency: CURRENCIES[1], // soul
+    currency: CURRENCIES[2], // usd
     sortType: SORT_TYPES[1].value, // name
     orderType: ORDER_TYPES.ASCENDING,
+    minPrice: null,
+    maxPrice: null,
+    tier: "",
   });
 
   const handleChangeConfiguration = (configurationName) => (value) => {
@@ -26,19 +29,45 @@ function Content({ searchTerm }) {
     });
   };
 
+  const handleReleaseFilter = () => {
+    setConfigurations({
+      ...configurations,
+      minPrice: null,
+      maxPrice: null,
+      tier: "",
+    });
+  };
+
+  const handleChangePriceRange = (min, max) => {
+    setConfigurations({
+      ...configurations,
+      minPrice: min,
+      maxPrice: max,
+    });
+  };
+
   return (
     <div className="flex flex-row h-full">
-      <Sidebar />
-      <div className="inline-flex flex-col box-border w-full">
+      <Sidebar
+        minPrice={configurations.minPrice}
+        maxPrice={configurations.maxPrice}
+        tier={configurations.tier}
+        currency={configurations.currency}
+        onSetPriceRange={handleChangePriceRange}
+        onSelectTierFilter={handleChangeConfiguration("tier")}
+        onSelectCurrency={handleChangeConfiguration("currency")}
+      />
+      <div className="inline-flex flex-col box-border w-full pb-16">
         <Toolbar
-          currency={configurations.currency}
-          sortType={configurations.sortType}
-          orderType={configurations.orderType}
-          onSelectCurrency={handleChangeConfiguration("currency")}
+          configurations={configurations}
+          onReleaseFilter={handleReleaseFilter}
           onChangeOrderType={handleChangeConfiguration("orderType")}
           onChangeSortType={handleChangeConfiguration("sortType")}
         />
-        <NFTList configurations={configurations} searchTerm={searchTerm} />
+        <NFTList
+          configurations={configurations}
+          searchTerm={props.searchTerm}
+        />
       </div>
     </div>
   );
