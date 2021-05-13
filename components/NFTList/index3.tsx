@@ -8,18 +8,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
+import { NFT } from "../../types/nft";
 import ActiveLink from "../ActiveLink";
 import Link from "../Link";
-
-type SampleCard = {
-  name: string;
-  tier: string;
-  url: string;
-  description: string;
-  soul: number;
-  kcal: number;
-  className?: string;
-};
 
 function useOutsideAlerter(
   ref: React.MutableRefObject<any>,
@@ -43,7 +34,7 @@ function useOutsideAlerter(
   }, [ref]);
 }
 
-export function NFTCard(props: SampleCard) {
+export function NFTCard(props: NFT) {
   const randomNumberBetween1and1000 = Math.floor(Math.random() * 1000) + 1;
   const [popdownIsVisible, showPopdown] = React.useState(false);
   function showPopdownCommand(e: SyntheticEvent) {

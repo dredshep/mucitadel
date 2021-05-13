@@ -23,7 +23,7 @@ function Content() {
   const { user } = router.query;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-16">
       <div className="w-full h-64">
         <img
           className="w-full h-full object-cover"

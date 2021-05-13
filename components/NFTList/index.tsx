@@ -7,21 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ORDER_TYPES } from "../../constant";
+import { NFT } from "../../types/nft";
 import ActiveLink from "../ActiveLink";
-
-type SampleCard = {
-  name: string;
-  tier: string;
-  url: string;
-  description: string;
-  soul: number;
-  kcal: number;
-  price: number;
-  mintDate: string;
-  trending: number;
-  currency: string;
-  className?: string;
-};
 
 function useOutsideAlerter(
   ref: React.MutableRefObject<any>,
@@ -45,7 +32,7 @@ function useOutsideAlerter(
   }, [ref]);
 }
 
-export function NFTCard(props: SampleCard & { href: string }) {
+export function NFTCard(props: NFT & { href: string }) {
   const [popdownIsVisible, showPopdown] = React.useState(false);
 
   const wrapperRef = useRef(null);
@@ -129,7 +116,8 @@ function Container(props: { children: any }) {
   return <div className="px-auto">{props.children}</div>;
 }
 
-const NFTList = ({ configurations, searchTerm }) => {
+const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
+  const { configurations, searchTerm = "" } = props;
   const [nftList, setNftList] = useState([]);
   useEffect(() => {
     const getNftList = async () =>
@@ -139,55 +127,65 @@ const NFTList = ({ configurations, searchTerm }) => {
 
   const sortedList = useMemo(() => {
     let sortedList = [...nftList];
-    sortedList = sortedList.filter((nft) => nft.price[configurations.currency]);
-
-    if (searchTerm) {
-      sortedList = sortedList.filter((nft) =>
-        nft.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (configurations.tier) {
-      sortedList = sortedList.filter((nft) => nft.tier === configurations.tier);
-    }
-
-    if (configurations.minPrice) {
+    if (configurations) {
       sortedList = sortedList.filter(
-        (nft) => nft.price[configurations.currency] >= configurations.minPrice
+        (nft) => nft.price[configurations.currency]
       );
-    }
 
-    if (configurations.maxPrice) {
-      sortedList = sortedList.filter(
-        (nft) => nft.price[configurations.currency] <= configurations.maxPrice
-      );
-    }
-
-    if (configurations.orderType === ORDER_TYPES.ASCENDING) {
-      if (configurations.sortType === "price") {
-        sortedList.sort((nft1, nft2) =>
-          nft1.price[configurations.currency] >
-          nft2.price[configurations.currency]
-            ? 1
-            : -1
-        );
-      } else {
-        sortedList.sort((nft1, nft2) =>
-          nft1[configurations.sortType] > nft2[configurations.sortType] ? 1 : -1
+      if (searchTerm) {
+        sortedList = sortedList.filter((nft) =>
+          nft.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
-    } else {
-      if (configurations.sortType === "price") {
-        sortedList.sort((nft1, nft2) =>
-          nft1.price[configurations.currency] <
-          nft2.price[configurations.currency]
-            ? 1
-            : -1
+
+      if (configurations.tier) {
+        sortedList = sortedList.filter(
+          (nft) => nft.tier === configurations.tier
         );
+      }
+
+      if (configurations.minPrice) {
+        sortedList = sortedList.filter(
+          (nft) => nft.price[configurations.currency] >= configurations.minPrice
+        );
+      }
+
+      if (configurations.maxPrice) {
+        sortedList = sortedList.filter(
+          (nft) => nft.price[configurations.currency] <= configurations.maxPrice
+        );
+      }
+
+      if (configurations.orderType === ORDER_TYPES.ASCENDING) {
+        if (configurations.sortType === "price") {
+          sortedList.sort((nft1, nft2) =>
+            nft1.price[configurations.currency] >
+            nft2.price[configurations.currency]
+              ? 1
+              : -1
+          );
+        } else {
+          sortedList.sort((nft1, nft2) =>
+            nft1[configurations.sortType] > nft2[configurations.sortType]
+              ? 1
+              : -1
+          );
+        }
       } else {
-        sortedList.sort((nft1, nft2) =>
-          nft1[configurations.sortType] < nft2[configurations.sortType] ? 1 : -1
-        );
+        if (configurations.sortType === "price") {
+          sortedList.sort((nft1, nft2) =>
+            nft1.price[configurations.currency] <
+            nft2.price[configurations.currency]
+              ? 1
+              : -1
+          );
+        } else {
+          sortedList.sort((nft1, nft2) =>
+            nft1[configurations.sortType] < nft2[configurations.sortType]
+              ? 1
+              : -1
+          );
+        }
       }
     }
 
@@ -202,7 +200,7 @@ const NFTList = ({ configurations, searchTerm }) => {
             className="mt-10 mx-auto tiny:mr-5 tiny:ml-5"
             href={"/card/" + i}
             key={nft.name}
-            currency={configurations.currency}
+            currency={configurations ? configurations.currency : "usd"}
             {...nft}
           />
         ))}

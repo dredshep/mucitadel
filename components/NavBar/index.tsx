@@ -32,8 +32,8 @@ export default function NavBar(props: {
   logOut: LogOut;
   authData: AuthData;
   hasMetamask: boolean;
-  term: string;
-  onChangeTerm: any;
+  term?: string;
+  onChangeTerm?: any;
 }) {
   const router = useRouter();
   return (

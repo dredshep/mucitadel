@@ -10,6 +10,7 @@ import NavBar from "../../components/NavBar";
 import { NFTCard } from "../../components/NFTList";
 import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
+import { NFT } from "../../types/nft";
 
 type NoLinkPair = {
   pairKey: string;
@@ -262,17 +263,7 @@ function SeriesDetails() {
   );
 }
 
-type SampleCard = {
-  name: string;
-  tier: string;
-  url: string;
-  description: string;
-  soul: number;
-  kcal: number;
-  className?: string;
-};
-
-function RelatedSection(props: { cards: SampleCard[] }) {
+function RelatedSection(props: { cards: NFT[] }) {
   const title = (
     <div className="text-3xl font-bold mb-9 mt-10 mx-auto md:mx-0">
       Related Cards
@@ -305,7 +296,7 @@ function RelatedSection(props: { cards: SampleCard[] }) {
 const keyTextClass = "text-secondary font-semibold font-title";
 const valueTextClass = "text-white font-body";
 
-function Product2(props: SampleCard) {
+function Product2(props: NFT) {
   const currencyButton = (
     <span className="py-1 px-2 ml-2 border border-mupurple rounded-md">
       DANK <FontAwesomeIcon className="text-mupurple" icon={faCaretDown} />
@@ -598,8 +589,7 @@ function Content() {
     {
       pairKey: "Current Owner",
       value: "moonsawyer1331",
-      link:
-        "https://ghostmarket.io/account/pha/P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg/",
+      link: "https://ghostmarket.io/account/pha/P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg/",
       external: false,
     } as LinkPair,
     {
