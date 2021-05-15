@@ -1,10 +1,11 @@
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import Select from "react-select";
 import ReactTimeAgo from "react-time-ago";
+import styled from "styled-components";
 import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import { NFTCard } from "../../components/NFTList";
@@ -33,6 +34,8 @@ type LinkPair = {
 //     </a>
 //   );
 // }
+
+const CurrencySelector = styled(Select)``;
 
 function ExternalMarker(props: { href: string }) {
   return (
@@ -296,12 +299,47 @@ function RelatedSection(props: { cards: NFT[] }) {
 const keyTextClass = "text-secondary font-semibold font-title";
 const valueTextClass = "text-white font-body";
 
+// const CurrencySelector = () => {
+
+//   return (
+//     <>
+//       <div className={style.container}>
+//         {sortList.map((item, index) =>
+//           <div
+//             key={index}
+//             className={classNames(style.option, sortIndex === index && style.selectedItem)}
+//             onClick={() => changeSortHandler(index)}>
+//             {item.label}
+//           </div>
+//         )}
+//       </div>
+//       <div className={style.overlay} onClick={onClose} />
+//     </>
+//   )
+// };
+
 function Product2(props: NFT) {
-  const currencyButton = (
-    <span className="py-1 px-2 ml-2 border border-mupurple rounded-md">
-      DANK <FontAwesomeIcon className="text-mupurple" icon={faCaretDown} />
-    </span>
-  );
+  const [currency, setCurrency] = useState("dank");
+  // const currencyButton = (
+  //   <span className="py-1 px-2 ml-2 border border-mupurple rounded-md">
+  //     DANK <FontAwesomeIcon className="text-mupurple" icon={faCaretDown} />
+  //   </span>
+  // );
+
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      borderBottom: "1px solid #9B50FF",
+      color: state.isSelected ? "red" : "blue",
+      padding: 20,
+    }),
+    singleValue: (provided, state) => {
+      const opacity = state.isDisabled ? 0.5 : 1;
+      const transition = "opacity 300ms";
+
+      return { ...provided, opacity, transition };
+    },
+  };
 
   return (
     <div className="flex flex-row px-5 pb-5 md:py-0 md:px-0 space-x-0 md:space-x-5 bg-asidebg rounded-none md:rounded-xl mt-0 md:mt-10 w-full max-w-lg md:max-w-3xl mx-auto">
@@ -335,12 +373,24 @@ function Product2(props: NFT) {
           <div className="flex flex-col w-7/12 xs:w-2/3 md:w-44">
             <div className={keyTextClass + " mb-2"}>Price</div>
             <div className={valueTextClass + " font-semibold text-lg"}>
-              {props.soul} {currencyButton}
+              {/* {props.soul} */}
+              {/* {currencyButton} */}
+              <Select
+                styles={customStyles}
+                value={currency}
+                options={[
+                  { label: "DANK", value: "dank" },
+                  { label: "ETH", value: "eth" },
+                ]}
+                onChange={setCurrency}
+              />
             </div>
           </div>
           <div className="flex flex-col w-5/12 xs:w-1/3 md:w-44 ">
             <div className={keyTextClass + " mb-2"}>Mint Edition</div>
-            <div className={valueTextClass}>1 out of 3</div>
+            <div className={valueTextClass}>{`${
+              props.mints.totalMints - props.mints.sold
+            } out of ${props.mints.totalMints}`}</div>
           </div>
         </div>
         <div className="flex flex-col-reverse md:flex-col">
@@ -358,18 +408,22 @@ function Product2(props: NFT) {
               <div className="flex flex-row justify-between font-body">
                 <div className={keyTextClass}>Owner</div>
                 <div className="text-white">
-                  <Link className="text-mupurple">moonsawyer1331</Link>
+                  <Link className="text-mupurple">{props.owner}</Link>
                 </div>
               </div>
               {/* Row 2 */}
               <div className="flex flex-row justify-between font-body">
                 <div className={keyTextClass}>Mint date</div>
-                <div className="text-white">Feb 2, 2021</div>
+                <div className="text-white">
+                  {moment.utc(props.mintDate).format("MMM DD, YYYY")}
+                </div>
               </div>
               {/* Row 3 */}
               <div className="flex flex-row justify-between font-body">
                 <div className={keyTextClass}>Listed until</div>
-                <div className="text-white">Feb 3, 2021</div>
+                <div className="text-white">
+                  {moment.utc(props.listedUntil).format("MMM DD, YYYY")}
+                </div>
               </div>
             </div>
           </div>
@@ -379,7 +433,7 @@ function Product2(props: NFT) {
           <div className="w-1/2 md:w-auto px-6 rounded-full bg-mupurple text-white flex justify-around items-center"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Add to wishlist</div></div>
         </div> */}
           <div className="flex row w-full mt-6 md:mt-4 justify-center">
-            <WhiteButton className="w-full ml-4 mr-8 text-lg">Buy</WhiteButton>
+            <WhiteButton className="w-full text-lg mr-6">Buy</WhiteButton>
             {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
               Add to wishlist
             </Button> */}
@@ -538,31 +592,6 @@ function MiniExplorer(props) {
   );
 }
 
-//Fetching posts in get Intial Props to make the app seo friendly
-Home.getInitialProps = async ({ req, query }) => {
-  const log = (v) => (console.log(v), v);
-  const page = query.page || 1; //if page empty we request the first page
-  // This is ecxample site for picking up pagination
-  // const posts = await axios.get(
-  //   `https://gorest.co.in/public-api/posts?_format=json&access-token=cxzNs8fYiyxlk708IHfveKM1z1xxYZw99fYE&page=${page}`
-  // );
-  // console.log(req.rawHeaders);
-  // console.log(Object.keys(req), Object.keys(req.headers));
-  const baseURl = req
-    ? log((req.headers.protocol || "http") + "://" + req.headers.host) // + req.url)
-    : window.location.protocol +
-      "//" +
-      window.location.hostname +
-      (window.location.port ? ":" + window.location.port : "");
-  const posts = await axios.get(baseURl + `/api/posts?page=${page}`);
-  return {
-    totalCount: posts.data.meta.pagination.total,
-    pageCount: posts.data.meta.pagination.pages,
-    currentPage: posts.data.meta.pagination.page,
-    perPage: posts.data.meta.pagination.limit,
-  };
-};
-
 //
 // <div className="flex flex-row h-full mt-10 p-8 bg-asidebg rounded-xl">
 // {/* <div className="w-96"><img className="w-full" src="/images/pete-card.jpg" /></div> */}
@@ -615,7 +644,7 @@ function Content() {
     </div>
   );
   return (
-    <div className="px-0 xl:px-32 flex flex-col">
+    <div className="px-0 xl:px-32 flex flex-col pb-16">
       <Product2 {...currentCard} />
       <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
         <div className="mb-0 lg:mb-10 max-w-full">
