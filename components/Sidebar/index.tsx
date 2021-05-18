@@ -1,31 +1,19 @@
 import React from "react";
+import FilterByCurrency from "./FilterByCurrency";
 import FilterByPrice from "./FilterByPrice";
 import FilterByTier from "./FilterByTier";
 
-// function useOutsideAlerter(
-//   ref: React.MutableRefObject<any>,
-//   showSidebar: React.Dispatch<React.SetStateAction<boolean>>,
-// ) {
-//   useEffect(() => {
-//       /**
-//        * Alert if clicked on outside of element
-//        */
-//       function handleClickOutside(event) {
-//           if (ref.current && !ref.current.contains(event.target)) {
-//             showSidebar(false)
-//           }
-//       }
-//       // Bind the event listener
-//       document.addEventListener("mouseup", handleClickOutside);
-//       return () => {
-//           // Unbind the event listener on clean up
-//           document.removeEventListener("mouseup", handleClickOutside);
-//       };
-//   }, [ref]);
-// }
-
-export default function Sidebar() {
+export default function Sidebar(props: {
+  minPrice: Number;
+  maxPrice: Number;
+  tier: string;
+  currency: string;
+  onSetPriceRange: any;
+  onSelectTierFilter: any;
+  onSelectCurrency: any;
+}) {
   const [sidebarIsHidden, showSidebar] = React.useState(true);
+
   function showSidebarCommand() {
     // alert(sidebarIsHidden)
     if (sidebarIsHidden === false) {
@@ -64,8 +52,19 @@ export default function Sidebar() {
           }
         >
           <div className="sticky top-0 ">
-            <FilterByPrice />
-            <FilterByTier />
+            <FilterByCurrency
+              selectedCurrency={props.currency}
+              onSelectCurrency={props.onSelectCurrency}
+            />
+            <FilterByPrice
+              minPrice={props.minPrice}
+              maxPrice={props.maxPrice}
+              onSetPriceRange={props.onSetPriceRange}
+            />
+            <FilterByTier
+              selectedTier={props.tier}
+              onSetTierFilter={props.onSelectTierFilter}
+            />
           </div>
         </div>
       </aside>

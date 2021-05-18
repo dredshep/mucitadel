@@ -1,9 +1,5 @@
-import { faBell, faPlusSquare } from "@fortawesome/free-regular-svg-icons";
-import {
-  faChartLine,
-  faSignInAlt,
-  faTh,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
+import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import Explained from "../../Explainer/Explained";
@@ -44,7 +40,7 @@ export default function NavRightSide(props: {
       >
         <FontAwesomeIcon icon={faPlusSquare} />
       </Explained>
-      <Explained explanation="Catalogue" className="lg:flex hidden">
+      {/* <Explained explanation="Catalogue" className="lg:flex hidden">
         <FontAwesomeIcon icon={faTh} />
       </Explained>
       <Explained
@@ -55,7 +51,7 @@ export default function NavRightSide(props: {
       </Explained>
       <Explained explanation="Stats" className="lg:flex hidden">
         <FontAwesomeIcon icon={faChartLine} />
-      </Explained>
+      </Explained> */}
       {/* cursor-pointer bg-mupurple py-4 px-4 rounded-full text-xl  font-title tracking-wide font-semibold leading-3 h-11 */}
       <Button
         className={

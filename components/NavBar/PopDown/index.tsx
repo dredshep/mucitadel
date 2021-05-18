@@ -4,11 +4,7 @@ import {
   faUserCircle,
   IconDefinition,
 } from "@fortawesome/free-regular-svg-icons";
-import {
-  faHeartbeat,
-  faSignOutAlt,
-  faWallet,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef } from "react";
 import Explained from "../../Explainer/Explained";
@@ -93,8 +89,8 @@ export default function PopDown(props: {
         </Link>
         <Link icon={faPlusSquare}>Create NFT</Link>
         <Link icon={faClone}>My NFTs</Link>
-        <Link icon={faWallet}>Wallet</Link>
-        <Link icon={faHeartbeat}>Activity</Link>
+        {/* <Link icon={faWallet}>Wallet</Link>
+        <Link icon={faHeartbeat}>Activity</Link> */}
         <Link icon={faSignOutAlt} onClick={props.logOut}>
           Log Out
         </Link>

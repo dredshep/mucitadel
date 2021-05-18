@@ -1,74 +1,173 @@
 [
   {
     "name": "Paula",
+    "owner": "paula",
     "tier": "legendary",
     "url": "Paula.png",
     "description": "The one and only Paula of Orchid. She's all care-free knowing that her privacy is safe with their VPN.",
-    "soul": 32,
-    "kcal": 2
+    "mintDate": "2021-03-31T00:00:00",
+    "listedUntil": "2021-03-31T00:00:00",
+    "mints": {
+      "totalMints": 10,
+      "sold": 2
+    },
+    "trending": 345,
+    "price": {
+      "eth": 1,
+      "usd": 4350,
+      "dank": 0
+    }
   },
   {
     "name": "Epic Mia",
+    "owner": "epicMia",
     "tier": "titanic",
     "url": "Epic Mia.png",
     "description": "She may be cute, but she ain't going to give a damn about what you got to say to her.",
-    "soul": 52,
-    "kcal": 1
+    "mintDate": "2021-04-01T00:00:00",
+    "listedUntil": "2021-04-01T00:00:00",
+    "mints": {
+      "totalMints": 10,
+      "sold": 1
+    },
+    "trending": 248,
+    "price": {
+      "eth": 2,
+      "usd": 9000,
+      "dank": 1000000
+    }
   },
   {
     "name": "Pete",
+    "owner": "pete",
     "tier": "unprecedented",
     "url": "Voiceover Pete.png",
     "description": "Carlos Matos needs your help! To help him out, write down the first digits of your social security number.",
-    "soul": 42,
-    "kcal": 100
+    "mintDate": "2021-04-11T00:00:00",
+    "listedUntil": "2021-04-11T00:00:00",
+    "mints": {
+      "totalMints": 10,
+      "sold": 5
+    },
+    "trending": 200,
+    "price": {
+      "eth": 1.5,
+      "usd": 6000,
+      "dank": 600000
+    }
   },
   {
     "name": "Ghost Buddies",
+    "owner": "ghostBuddies",
     "tier": "legendary",
     "url": "Ghost Buddies.png",
     "description": "Whoever said ghosts and cats can't be friends? That's a total lie. They definitely can be.",
-    "soul": 12,
-    "kcal": 12
+    "mintDate": "2021-02-11T00:00:00",
+    "listedUntil": "2021-02-11T00:00:00",
+    "mints": {
+      "totalMints": 10,
+      "sold": 6
+    },
+    "trending": 180,
+    "price": {
+      "eth": 0,
+      "usd": 8000,
+      "dank": 900000
+    }
   },
   {
     "name": "Baby Mia",
+    "owner": "babyMia",
     "tier": "nani",
     "url": "Baby Mia.png",
     "description": "Baby Mia receiving a blessing from the ruler of Mars, Elon Musk. All hail the cute Mia!",
-    "soul": 91,
-    "kcal": 3
+    "mintDate": "2021-01-20T00:00:00",
+    "listedUntil": "2021-01-20T00:00:00",
+    "mints": {
+      "totalMints": 10,
+      "sold": 7
+    },
+    "trending": 280,
+    "price": {
+      "eth": 10,
+      "usd": 40000,
+      "dank": 10900000
+    }
   },
   {
     "name": "Bunnies",
+    "owner": "bunnies",
     "tier": "epic",
     "url": "Bunnies.png",
     "description": "Mia's friends from Orchid. Aren't they both so freaking cute? They also respect your privacy.",
-    "soul": 71,
-    "kcal": 4
+    "mints": {
+      "totalMints": 10,
+      "sold": 2
+    },
+    "mintDate": "2021-02-20T00:00:00",
+    "listedUntil": "2021-02-20T00:00:00",
+    "trending": 290,
+    "price": {
+      "eth": 0,
+      "usd": 40000,
+      "dank": 0
+    }
   },
   {
     "name": "Elon Musk",
+    "owner": "elonMusk",
     "tier": "epic",
     "url": "Elon Musk.png",
     "description": "Mia's friends from Orchid. Aren't they both so freaking cute? They also respect your privacy.",
-    "soul": 71,
-    "kcal": 4
+    "mints": {
+      "totalMints": 10,
+      "sold": 1
+    },
+    "mintDate": "2021-03-20T00:00:00",
+    "listedUntil": "2021-03-20T00:00:00",
+    "trending": 910,
+    "price": {
+      "eth": 3,
+      "usd": 12000,
+      "dank": 0
+    }
   },
   {
     "name": "Paw to cool",
+    "owner": "pawToCool",
     "tier": "epic",
     "url": "Paw to cool.png",
     "description": "",
-    "soul": 71,
-    "kcal": 4
+    "mints": {
+      "totalMints": 10,
+      "sold": 3
+    },
+    "mintDate": "2020-09-20T00:00:00",
+    "listedUntil": "2020-09-20T00:00:00",
+    "trending": 1010,
+    "price": {
+      "eth": 0,
+      "usd": 12000,
+      "dank": 8000000
+    }
   },
   {
     "name": "Phanta friends",
+    "owner": "phantaFriends",
     "tier": "epic",
     "url": "Phanta Friends.png",
     "description": "",
-    "soul": 71,
-    "kcal": 4
+    "mints": {
+      "totalMints": 10,
+      "sold": 4
+    },
+    "mintDate": "2020-11-30T00:00:00",
+    "listedUntil": "2020-11-30T00:00:00",
+    "trending": 920,
+    "price": {
+      "eth": 7,
+      "usd": 28000,
+      "dank": 0
+    }
   }
 ]

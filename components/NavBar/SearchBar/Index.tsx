@@ -3,18 +3,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import Button from "../../styled/Button";
 
-export default function SearchBar(props) {
+const SearchBar = ({ className, value, onChange }) => {
+  const handleChange = (event) => {
+    onChange(event.target.value);
+  };
+
   return (
     <div
       className={
-        "shadow flex w-6/12 xlish:w-4/12 mx-auto font-body " +
-          props.className || ""
+        "shadow flex w-6/12 xlish:w-4/12 mx-auto font-body " + className || ""
       }
     >
       <input
         className="w-full rounded-l py-1 px-6 bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover focus:outline-none transition-colors duration-75"
         type="text"
         placeholder="Search..."
+        value={value}
+        onChange={onChange && handleChange}
       />
       <Button className="pl-2 pr-2 rounded-l-none rounded-r-md">
         <FontAwesomeIcon icon={faSearch} />
@@ -24,4 +29,6 @@ export default function SearchBar(props) {
       </button> */}
     </div>
   );
-}
+};
+
+export default SearchBar;

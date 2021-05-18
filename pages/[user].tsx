@@ -7,9 +7,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import Cards2 from "../components/Cards2";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
+import NFTList from "../components/NFTList";
 import {
   AuthData,
   LogIn,
@@ -23,7 +23,7 @@ function Content() {
   const { user } = router.query;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-16">
       <div className="w-full h-64">
         <img
           className="w-full h-full object-cover"
@@ -88,7 +88,7 @@ function Content() {
           </div>
         </div>
       </div>
-      <Cards2 />
+      <NFTList />
     </div>
   );
 }

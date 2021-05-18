@@ -1,16 +1,18 @@
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import Select from "react-select";
 import ReactTimeAgo from "react-time-ago";
-import { Card2 } from "../../components/Cards2";
+// import styled from "styled-components";
 import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
-import Button from "../../components/styled/Button";
+import { NFTCard } from "../../components/NFTList";
 import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
+import Tabs from "../../components/Tabs";
+import { NFT } from "../../types/nft";
 
 type NoLinkPair = {
   pairKey: string;
@@ -33,6 +35,8 @@ type LinkPair = {
 //     </a>
 //   );
 // }
+
+// const CurrencySelector = styled(Select)``;
 
 function ExternalMarker(props: { href: string }) {
   return (
@@ -263,17 +267,7 @@ function SeriesDetails() {
   );
 }
 
-type SampleCard = {
-  name: string;
-  tier: string;
-  url: string;
-  description: string;
-  soul: number;
-  kcal: number;
-  className?: string;
-};
-
-function RelatedSection(props: { cards: SampleCard[] }) {
+function RelatedSection(props: { cards: NFT[] }) {
   const title = (
     <div className="text-3xl font-bold mb-9 mt-10 mx-auto md:mx-0">
       Related Cards
@@ -282,11 +276,11 @@ function RelatedSection(props: { cards: SampleCard[] }) {
   const cards = (
     <div className="flex flex-col md:flex-row mx-auto justify-center w-max md:w-full box-border">
       <div>
-        <Card2 {...props.cards[1]} href="/card/1" />
+        <NFTCard {...props.cards[1]} href="/card/1" />
       </div>
       <div className="w-10 h-10 flex-shrink-0"></div>
       <div>
-        <Card2 {...props.cards[2]} href="/card/2" />
+        <NFTCard {...props.cards[2]} href="/card/2" />
       </div>
     </div>
   );
@@ -306,12 +300,51 @@ function RelatedSection(props: { cards: SampleCard[] }) {
 const keyTextClass = "text-secondary font-semibold font-title";
 const valueTextClass = "text-white font-body";
 
-function Product2(props: SampleCard) {
-  const currencyButton = (
-    <span className="py-1 px-2 ml-2 border border-mupurple rounded-md">
-      DANK <FontAwesomeIcon className="text-mupurple" icon={faCaretDown} />
-    </span>
-  );
+// const CurrencySelector = () => {
+
+//   return (
+//     <>
+//       <div className={style.container}>
+//         {sortList.map((item, index) =>
+//           <div
+//             key={index}
+//             className={classNames(style.option, sortIndex === index && style.selectedItem)}
+//             onClick={() => changeSortHandler(index)}>
+//             {item.label}
+//           </div>
+//         )}
+//       </div>
+//       <div className={style.overlay} onClick={onClose} />
+//     </>
+//   )
+// };
+
+function Product2(props: NFT) {
+  const [currency, setCurrency] = useState("dank");
+  // const currencyButton = (
+  //   <span className="py-1 px-2 ml-2 border border-mupurple rounded-md">
+  //     DANK <FontAwesomeIcon className="text-mupurple" icon={faCaretDown} />
+  //   </span>
+  // );
+
+  const getPriceListFromPriceObj = (priceObj: { [key: string]: number }) =>
+    Object.entries(priceObj).map(
+      (pricePair) => pricePair[1] + " " + pricePair[0].toUpperCase()
+    );
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      borderBottom: "1px solid #9B50FF",
+      color: state.isSelected ? "red" : "blue",
+      padding: 20,
+    }),
+    singleValue: (provided, state) => {
+      const opacity = state.isDisabled ? 0.5 : 1;
+      const transition = "opacity 300ms";
+
+      return { ...provided, opacity, transition };
+    },
+  };
 
   return (
     <div className="flex flex-row px-5 pb-5 md:py-0 md:px-0 space-x-0 md:space-x-5 bg-asidebg rounded-none md:rounded-xl mt-0 md:mt-10 w-full max-w-lg md:max-w-3xl mx-auto">
@@ -345,16 +378,56 @@ function Product2(props: SampleCard) {
           <div className="flex flex-col w-7/12 xs:w-2/3 md:w-44">
             <div className={keyTextClass + " mb-2"}>Price</div>
             <div className={valueTextClass + " font-semibold text-lg"}>
-              {props.soul} {currencyButton}
+              {/* {props.soul} */}
+              {/* {currencyButton} */}
+              <Select
+                styles={customStyles}
+                value={currency}
+                options={getPriceListFromPriceObj(props.price).map((price) => ({
+                  label: price,
+                  value: price,
+                }))}
+                onChange={setCurrency}
+              />
             </div>
           </div>
           <div className="flex flex-col w-5/12 xs:w-1/3 md:w-44 ">
             <div className={keyTextClass + " mb-2"}>Mint Edition</div>
-            <div className={valueTextClass}>1 out of 3</div>
+            <div className={valueTextClass}>{`${
+              props.mints.totalMints - props.mints.sold
+            } out of ${props.mints.totalMints}`}</div>
           </div>
         </div>
         <div className="flex flex-col-reverse md:flex-col">
-          <div>
+          <Tabs>
+            {/* CHILD 1 */}
+            <div className="mt-5 h-24 font-body mr-5">{props.description}</div>
+            {/* CHILD 2 */}
+            <div className="flex flex-col space-y-3 mt-5 pr-5">
+              {/* Row 1 */}
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Owner</div>
+                <div className="text-white">
+                  <Link className="text-mupurple">{props.owner}</Link>
+                </div>
+              </div>
+              {/* Row 2 */}
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Mint date</div>
+                <div className="text-white">
+                  {moment.utc(props.mintDate).format("MMM DD, YYYY")}
+                </div>
+              </div>
+              {/* Row 3 */}
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Listed until</div>
+                <div className="text-white">
+                  {moment.utc(props.listedUntil).format("MMM DD, YYYY")}
+                </div>
+              </div>
+            </div>
+          </Tabs>
+          {/* <div>
             <div className="flex h-12 text-base font-body mt-2 text-secondary">
               <div className="border-b-2 border-inputbg w-40 h-full flex items-center box-content">
                 Description
@@ -364,35 +437,36 @@ function Product2(props: SampleCard) {
               </div>
             </div>
             <div className="flex flex-col space-y-3 mt-5 pr-5">
-              {/* Row 1 */}
               <div className="flex flex-row justify-between font-body">
                 <div className={keyTextClass}>Owner</div>
                 <div className="text-white">
-                  <Link className="text-mupurple">moonsawyer1331</Link>
+                  <Link className="text-mupurple">{props.owner}</Link>
                 </div>
               </div>
-              {/* Row 2 */}
               <div className="flex flex-row justify-between font-body">
                 <div className={keyTextClass}>Mint date</div>
-                <div className="text-white">Feb 2, 2021</div>
+                <div className="text-white">
+                  {moment.utc(props.mintDate).format("MMM DD, YYYY")}
+                </div>
               </div>
-              {/* Row 3 */}
               <div className="flex flex-row justify-between font-body">
                 <div className={keyTextClass}>Listed until</div>
-                <div className="text-white">Feb 3, 2021</div>
+                <div className="text-white">
+                  {moment.utc(props.listedUntil).format("MMM DD, YYYY")}
+                </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* BUY BUTTONS SECTION */}
           {/* <div className="flex flex-row font-semibold text-xl justify-start md:justify-center space-x-5 mt-4 w-full">
           <div className="w-1/2 md:w-auto px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Buy</div></div>
           <div className="w-1/2 md:w-auto px-6 rounded-full bg-mupurple text-white flex justify-around items-center"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Add to wishlist</div></div>
         </div> */}
-          <div className="flex row w-full mt-6 md:mt-4">
-            <WhiteButton className="w-full text-lg">Buy</WhiteButton>
-            <Button className="w-full ml-4 mr-4 text-lg">
+          <div className="flex row w-full mt-6 md:mt-4 justify-center">
+            <WhiteButton className="w-full text-lg mr-6">Buy</WhiteButton>
+            {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
               Add to wishlist
-            </Button>
+            </Button> */}
           </div>
           {/* <div className="flex flex-row font-semibold text-sm xs:text-xl justify-start md:justify-center space-x-2 xs:space-x-5  my-4 w-full">
             <div className="w-1/2 md:w-auto px-3 tiny:px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6">
@@ -548,31 +622,6 @@ function MiniExplorer(props) {
   );
 }
 
-//Fetching posts in get Intial Props to make the app seo friendly
-Home.getInitialProps = async ({ req, query }) => {
-  const log = (v) => (console.log(v), v);
-  const page = query.page || 1; //if page empty we request the first page
-  // This is ecxample site for picking up pagination
-  // const posts = await axios.get(
-  //   `https://gorest.co.in/public-api/posts?_format=json&access-token=cxzNs8fYiyxlk708IHfveKM1z1xxYZw99fYE&page=${page}`
-  // );
-  // console.log(req.rawHeaders);
-  // console.log(Object.keys(req), Object.keys(req.headers));
-  const baseURl = req
-    ? log((req.headers.protocol || "http") + "://" + req.headers.host) // + req.url)
-    : window.location.protocol +
-      "//" +
-      window.location.hostname +
-      (window.location.port ? ":" + window.location.port : "");
-  const posts = await axios.get(baseURl + `/api/posts?page=${page}`);
-  return {
-    totalCount: posts.data.meta.pagination.total,
-    pageCount: posts.data.meta.pagination.pages,
-    currentPage: posts.data.meta.pagination.page,
-    perPage: posts.data.meta.pagination.limit,
-  };
-};
-
 //
 // <div className="flex flex-row h-full mt-10 p-8 bg-asidebg rounded-xl">
 // {/* <div className="w-96"><img className="w-full" src="/images/pete-card.jpg" /></div> */}
@@ -599,8 +648,7 @@ function Content() {
     {
       pairKey: "Current Owner",
       value: "moonsawyer1331",
-      link:
-        "https://ghostmarket.io/account/pha/P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg/",
+      link: "https://ghostmarket.io/account/pha/P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg/",
       external: false,
     } as LinkPair,
     {
@@ -626,7 +674,7 @@ function Content() {
     </div>
   );
   return (
-    <div className="px-0 xl:px-32 flex flex-col">
+    <div className="px-0 xl:px-32 flex flex-col pb-16">
       <Product2 {...currentCard} />
       <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
         <div className="mb-0 lg:mb-10 max-w-full">
