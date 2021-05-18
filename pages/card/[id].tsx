@@ -5,12 +5,13 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import Select from "react-select";
 import ReactTimeAgo from "react-time-ago";
-import styled from "styled-components";
+// import styled from "styled-components";
 import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import { NFTCard } from "../../components/NFTList";
 import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
+import Tabs from "../../components/Tabs";
 import { NFT } from "../../types/nft";
 
 type NoLinkPair = {
@@ -35,7 +36,7 @@ type LinkPair = {
 //   );
 // }
 
-const CurrencySelector = styled(Select)``;
+// const CurrencySelector = styled(Select)``;
 
 function ExternalMarker(props: { href: string }) {
   return (
@@ -326,6 +327,10 @@ function Product2(props: NFT) {
   //   </span>
   // );
 
+  const getPriceListFromPriceObj = (priceObj: { [key: string]: number }) =>
+    Object.entries(priceObj).map(
+      (pricePair) => pricePair[1] + " " + pricePair[0].toUpperCase()
+    );
   const customStyles = {
     option: (provided, state) => ({
       ...provided,
@@ -378,10 +383,10 @@ function Product2(props: NFT) {
               <Select
                 styles={customStyles}
                 value={currency}
-                options={[
-                  { label: "DANK", value: "dank" },
-                  { label: "ETH", value: "eth" },
-                ]}
+                options={getPriceListFromPriceObj(props.price).map((price) => ({
+                  label: price,
+                  value: price,
+                }))}
                 onChange={setCurrency}
               />
             </div>
@@ -394,15 +399,10 @@ function Product2(props: NFT) {
           </div>
         </div>
         <div className="flex flex-col-reverse md:flex-col">
-          <div>
-            <div className="flex h-12 text-base font-body mt-2 text-secondary">
-              <div className="border-b-2 border-inputbg w-40 h-full flex items-center box-content">
-                Description
-              </div>
-              <div className="border-b-2 border-mupurple h-full flex items-center w-full box-content pl-5">
-                Details
-              </div>
-            </div>
+          <Tabs>
+            {/* CHILD 1 */}
+            <div className="mt-5 h-24 font-body mr-5">{props.description}</div>
+            {/* CHILD 2 */}
             <div className="flex flex-col space-y-3 mt-5 pr-5">
               {/* Row 1 */}
               <div className="flex flex-row justify-between font-body">
@@ -426,7 +426,37 @@ function Product2(props: NFT) {
                 </div>
               </div>
             </div>
-          </div>
+          </Tabs>
+          {/* <div>
+            <div className="flex h-12 text-base font-body mt-2 text-secondary">
+              <div className="border-b-2 border-inputbg w-40 h-full flex items-center box-content">
+                Description
+              </div>
+              <div className="border-b-2 border-mupurple h-full flex items-center w-full box-content pl-5">
+                Details
+              </div>
+            </div>
+            <div className="flex flex-col space-y-3 mt-5 pr-5">
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Owner</div>
+                <div className="text-white">
+                  <Link className="text-mupurple">{props.owner}</Link>
+                </div>
+              </div>
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Mint date</div>
+                <div className="text-white">
+                  {moment.utc(props.mintDate).format("MMM DD, YYYY")}
+                </div>
+              </div>
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Listed until</div>
+                <div className="text-white">
+                  {moment.utc(props.listedUntil).format("MMM DD, YYYY")}
+                </div>
+              </div>
+            </div>
+          </div> */}
           {/* BUY BUTTONS SECTION */}
           {/* <div className="flex flex-row font-semibold text-xl justify-start md:justify-center space-x-5 mt-4 w-full">
           <div className="w-1/2 md:w-auto px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Buy</div></div>

@@ -8,7 +8,9 @@ export type NFT = {
     sold: number;
     totalMints: number;
   };
-  price: number;
+  price: {
+    [key: string]: number;
+  };
   mintDate: string;
   listedUntil: string;
   trending: number;
