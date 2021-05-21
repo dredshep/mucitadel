@@ -5,10 +5,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ORDER_TYPES } from "../../constant";
 import { NFT } from "../../types/nft";
-import ActiveLink from "../ActiveLink";
 
 function useOutsideAlerter(
   ref: React.MutableRefObject<any>,
@@ -34,12 +34,34 @@ function useOutsideAlerter(
 
 export function NFTCard(props: NFT & { href: string }) {
   const [popdownIsVisible, showPopdown] = React.useState(false);
+  const router = useRouter();
 
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, showPopdown);
+
+  const handleViewInfo = (event) => {
+    event.stopPropagation();
+    alert("Info button clicked");
+  };
+
+  const handleAddShoppingCart = (event) => {
+    event.stopPropagation();
+    alert("Shopping cart button clicked");
+  };
+
+  const handleShare = (event) => {
+    event.stopPropagation();
+    alert("Share button clicked");
+  };
+
+  const handleClick = (e: any) => {
+    e.preventDefault();
+    router.push(props.href);
+  };
+
   return (
     <div key={props.name} className={props.className + " h-full relative"}>
-      <ActiveLink href={props.href}>
+      <div onClick={handleClick}>
         <div className="rounded-3xl font-title glow-on-hover">
           {/* Title */}
           <div className="bg-mupurple flex row items-center relative h-9 lg:h-10 rounded-t-3xl z-0">
@@ -95,21 +117,30 @@ export function NFTCard(props: NFT & { href: string }) {
             </div>
           </div>
           <div className="flex list-none bg-mupurple rounded-b-3xl h-9 lg:h-10">
-            <li className="w-full h-full flex items-center justify-center">
+            <li
+              onClick={handleViewInfo}
+              className="w-full h-full flex items-center justify-center hover:bg-mupurple-hover cursor-pointer rounded-bl-3xl"
+            >
               <FontAwesomeIcon icon={faInfoCircle} />
             </li>
-            <li className="w-full h-full flex items-center justify-center">
+            <li
+              onClick={handleShare}
+              className="w-full h-full flex items-center justify-center hover:bg-mupurple-hover cursor-pointer"
+            >
               <FontAwesomeIcon icon={faShareAlt} />
             </li>
             {/* <li className="w-full h-full flex items-center justify-center"> // ant: disable wishlist feature
               <FontAwesomeIcon icon={faHeart} />
             </li> */}
-            <li className="w-full h-full flex items-center justify-center font-bold font-title">
+            <li
+              onClick={handleAddShoppingCart}
+              className="w-full h-full flex items-center justify-center font-bold font-title hover:bg-mupurple-hover cursor-pointer rounded-br-3xl"
+            >
               <FontAwesomeIcon icon={faShoppingCart} />
             </li>
           </div>
         </div>
-      </ActiveLink>
+      </div>
     </div>
   );
 }
