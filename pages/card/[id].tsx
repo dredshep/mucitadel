@@ -13,6 +13,62 @@ import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
 import Tabs from "../../components/Tabs";
 import { NFT } from "../../types/nft";
+import ethers from "ethers";
+
+
+interface Window {
+  ethereum: any;
+}
+
+/* Smart Contract Initialization */
+const contractAdd = "0x8a86B49E52aeF9C87285d232DB75a0A8899B903B"; 
+const contractAbi = [{}];
+
+
+/* Function for Calling in UI */
+async function buyToken() {
+  /* Token Buying Code */
+  /* Trust Wallet and Metamask Handler */
+  if (((window as unknown) as Window).ethereum && ((window as unknown) as Window).ethereum.isTrust){
+    /* Buying Code Here TrustWallet*/
+    buyNFT();
+
+  }else if (((window as unknown) as Window).ethereum && ((window as unknown) as Window).ethereum.isMetaMask){
+    /* Buying Code Here MetaMask */
+    buyNFT();
+  }else{
+
+  }
+
+}
+
+async function buyNFT() {
+  /* Smart Contract Logic Here */
+    const provider = new ethers.providers.Web3Provider(
+      ((window as unknown) as Window).ethereum
+    );
+    let contract = new ethers.Contract(
+      contractAdd,
+      contractAbi,
+      provider.getSigner()
+    );
+    const accounts = await ((window as unknown) as Window).ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    const account = accounts[0];
+    const weiBalance = await provider.getBalance(account);
+    const ethBalance = parseFloat((((weiBalance as unknown) as number) / 1e18).toString());
+    const price = 0.05;
+    const sufficientFunds = ethBalance > price;
+    if (!sufficientFunds) {
+      return alert("Insufficient funds for fees");
+    }
+    await contract.functions
+      .functionName()
+      .then(async function (result) {
+        console.log(result);
+      });
+}
 
 type NoLinkPair = {
   pairKey: string;
@@ -320,6 +376,7 @@ const valueTextClass = "text-white font-body";
 // };
 
 function Product2(props: NFT) {
+
   const [currency, setCurrency] = useState("dank");
   // const currencyButton = (
   //   <span className="py-1 px-2 ml-2 border border-mupurple rounded-md">
@@ -636,7 +693,7 @@ function MiniExplorer(props) {
 function Content() {
   const [cardArr, setCards] = useState([]);
   useEffect(() => {
-    const getCards = async () => setCards((await axios.get("/api/cards")).data);
+    const getCards = async () => setCards((await axios.get("https://api.mucitadel.io/v1/nft/listnfts")).data);
     getCards();
     // return () => {
     // }
