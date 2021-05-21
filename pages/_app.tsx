@@ -1,4 +1,6 @@
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { ThemeProvider } from "@material-ui/core/styles";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { AppProps } from "next/dist/next-server/lib/router/router";
@@ -7,13 +9,14 @@ import AuthenticationProvider from "../components/AuthenticationProvider";
 import CookieModal from "../components/CookieModal";
 import "../styles/globals.css";
 import "../styles/purehtml.scss";
+import theme from "../styles/theme";
 
 TimeAgo.addLocale(en);
 
 // prettier-ignore
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Head>
         <script src="/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossOrigin="anonymous" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
@@ -36,13 +39,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="theme-color" content="#ffffff"></meta>
 
       </Head>
+      <CssBaseline />
       <AuthenticationProvider>
         <Component {...pageProps} />
       </AuthenticationProvider>
       <CookieModal />
       <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
       <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt=""/></noscript>
-    </>
+    </ThemeProvider>
   );
 }
 
