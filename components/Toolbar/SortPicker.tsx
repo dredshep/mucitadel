@@ -36,20 +36,20 @@ const OrderSelector = (props: {
     <div className="flex mx-0 mt-2 lg:my-auto text-xl justify-between w-24">
       <div
         onClick={() => props.onChangeOrderType(ORDER_TYPES.ASCENDING)}
-        className={`bg-mupurple p-1 h-10 w-10 rounded-full flex justify-around items-center cursor-pointer ${
+        className={`bg-mupurple p-1 h-10 w-10 rounded-full flex justify-around items-center ${
           props.orderType === ORDER_TYPES.ASCENDING
-            ? "opacity-100"
-            : "opacity-60 hover:opacity-80"
+            ? "opacity-100 cursor-default"
+            : "opacity-60 hover:opacity-80 cursor-pointer"
         }`}
       >
         <FontAwesomeIcon icon={faSortAmountUp} />
       </div>
       <div
         onClick={() => props.onChangeOrderType(ORDER_TYPES.DESCENDING)}
-        className={`bg-mupurple p-1 h-10 w-10 rounded-full ml-2 flex justify-around items-center cursor-default ${
+        className={`bg-mupurple p-1 h-10 w-10 rounded-full ml-2 flex justify-around items-center ${
           props.orderType === ORDER_TYPES.DESCENDING
-            ? "opacity-100"
-            : "opacity-60 hover:opacity-80"
+            ? "opacity-100 cursor-default"
+            : "opacity-60 hover:opacity-80 cursor-pointer"
         }`}
       >
         <FontAwesomeIcon icon={faSortAmountDown} />
