@@ -3,12 +3,11 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Formik } from "formik";
 import React, { useRef, useState } from "react";
 import * as Yup from "yup";
-// import PreviewCard from 'pages/MemeCreationPage/PreviewCard';
-import UploadMedia from "../../components/UploadMedia";
 // import ConnectWalletDialog from 'components/ConnectWalletDialog';
 import { FILE_TYPES } from "../../constant/file-types";
-import PageWrapper from "../../parts/PageWrapper";
-import MemeCreationForm from "./MemeCreationForm";
+// import PreviewCard from 'pages/MemeCreationPage/PreviewCard';
+import UploadMedia from "../UploadMedia";
+import MemeDetailForm from "./MemeDetailForm";
 
 /* SMART CONTRACT STARTS */
 // ROPSTEN TESTNET
@@ -464,11 +463,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MemeCreationPage = () => {
+const MemeCreationForm = ({ role }) => {
   const classes = useStyles();
   const [fileBuffer, setFileBuffer] = useState("");
-  const [showPreview, setShowPreview] = useState(false);
-  const [showConnectWallet, setShowConnectWallet] = useState(false);
   const [showEmptyFileError, setShowEmptyFileError] = useState(false);
   const previewRef = useRef(null);
   const previewMobileRef = useRef(null);
@@ -644,10 +641,6 @@ const MemeCreationPage = () => {
     }
   };
 
-  const handleClose = () => {
-    setShowConnectWallet(false);
-  };
-
   const handleSetFileBuffer = (fileBuffer) => {
     if (fileBuffer) {
       setShowEmptyFileError(false);
@@ -657,100 +650,47 @@ const MemeCreationPage = () => {
     setFileBuffer(fileBuffer);
   };
 
-  const handleClosePreview = () => {
-    setShowPreview(false);
-  };
-
+  console.log("ant : role => ", role);
   return (
-    <div className="App text-white bg-mainbg min-h-screen font-body">
-      <PageWrapper>
-        <Typography variant="h4" className={classes.title}>
-          Create Meme NFT Token
-        </Typography>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={(values, { setSubmitting }) => {
-            handleSave(values, setSubmitting);
-          }}
-          validationSchema={Yup.object().shape({
-            Name: Yup.string().required("Name is required"),
-            Description: Yup.string().required("Description is required"),
-            Tier: Yup.string().required("Tier is required"),
-            // Price: Yup.string().required('Price is required'),
-            // Currency: Yup.string().required('Currency is required'),
-            Blockchain: Yup.string().required("Blockchain is required"),
-          })}
-        >
-          {(props) => {
-            const { handleSubmit, values } = props;
-            return (
-              <form onSubmit={handleSubmit}>
-                <Grid container>
-                  {/* <Grid item lg={8} md={8} sm={12} xs={12}> */}
-                  <Grid container justify="space-between">
-                    <Typography variant="h6" className={classes.subtitle}>
-                      Upload file
-                    </Typography>
-                  </Grid>
-                  <UploadMedia
-                    className={classes.uploadContainer}
-                    type={FILE_TYPES[FILE_TYPES.IMAGE.VALUE]}
-                    fileBuffer={fileBuffer}
-                    showEmptyFileError={showEmptyFileError}
-                    setFileBuffer={handleSetFileBuffer}
-                  />
-                  <MemeCreationForm {...props} fileBuffer={fileBuffer} />
-                  {/* </Grid> */}
-                  {/* <Grid item lg={4} md={4} sm={12} xs={12} className={classes.previewWrapper}>
-                    <Typography variant='h6' className={classes.subtitle}>Preview</Typography>
-                    <div className={classes.preview} ref={previewRef}>
-                      <PreviewCard
-                        type={FILE_TYPES.IMAGE.VALUE}
-                        fileBuffer={fileBuffer}
-                        name={values.Name}
-                        description={values.Description}
-                      />
-                    </div>
-                  </Grid> */}
-                </Grid>
-                {/* {showPreview && 
-                  <Dialog
-                    classes={{
-                      paper: classes.dialog
-                    }}
-                    aria-labelledby="simple-dialog-title"
-                    open={true}
-                    onClose={handleClosePreview}>
-                    <Typography variant='h6' className={classes.memeTitle}>Your Meme</Typography>
-                    <div className={classes.preview} ref={previewMobileRef}>
-                      <PreviewCard
-                        dialogMode
-                        type={FILE_TYPES.IMAGE.VALUE}
-                        fileBuffer={fileBuffer}
-                        name={values.Name}
-                        description={values.Description}
-                      />
-                    </div>
-                    <MuButton 
-                      className={classes.button}
-                      onClick={() => handleDownloadPng(previewMobileRef)}
-                      variant="contained" 
-                      color="primary"
-                      startIcon={<GetAppIcon />}>
-                      Download
-                    </MuButton>
-                  </Dialog>
-                } */}
-              </form>
-            );
-          }}
-        </Formik>
-        {/* {showConnectWallet && 
-          <ConnectWalletDialog onClose={handleClose} />
-        } */}
-      </PageWrapper>
-    </div>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={(values, { setSubmitting }) => {
+        handleSave(values, setSubmitting);
+      }}
+      validationSchema={Yup.object().shape({
+        Name: Yup.string().required("Name is required"),
+        Description: Yup.string().required("Description is required"),
+        Tier: Yup.string().required("Tier is required"),
+        Blockchain: Yup.string().required("Blockchain is required"),
+      })}
+    >
+      {(props) => {
+        const { handleSubmit, values } = props;
+        return (
+          <form onSubmit={handleSubmit}>
+            <Grid container>
+              {/* <Grid item lg={8} md={8} sm={12} xs={12}> */}
+              <Grid container justify="space-between">
+                <Typography variant="h6" className={classes.subtitle}>
+                  Upload file
+                </Typography>
+              </Grid>
+              <UploadMedia
+                values={values}
+                role={role}
+                className={classes.uploadContainer}
+                type={FILE_TYPES[FILE_TYPES.IMAGE.VALUE]}
+                fileBuffer={fileBuffer}
+                showEmptyFileError={showEmptyFileError}
+                setFileBuffer={handleSetFileBuffer}
+              />
+              <MemeDetailForm role={role} {...props} fileBuffer={fileBuffer} />
+            </Grid>
+          </form>
+        );
+      }}
+    </Formik>
   );
 };
 
-export default MemeCreationPage;
+export default MemeCreationForm;

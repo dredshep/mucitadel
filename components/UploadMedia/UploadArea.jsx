@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 const UploadArea = ({
   placeholder,
   isDragActive,
+  mode,
   showEmptyFileError,
   getRootProps,
   getInputProps,
@@ -54,39 +55,53 @@ const UploadArea = ({
 
   return (
     <>
-      <Grid
-        container
-        direction="column"
-        alignItems="center"
-        justify="center"
-        {...getRootProps()}
-        className={classes.upload}
-      >
-        <input {...getInputProps()} />
-        <Typography variant="h6" color="textSecondary" align="center">
-          {placeholder}
-        </Typography>
+      {mode === "mini" ? (
+        <div {...getRootProps()}>
+          <input {...getInputProps()} />
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+          >
+            Upload Image
+          </Button>
+        </div>
+      ) : (
         <Grid
           container
-          justify="center"
+          direction="column"
           alignItems="center"
-          className={classes.iconContainer}
+          justify="center"
+          {...getRootProps()}
+          className={classes.upload}
         >
-          <CloudUploadIcon
-            className={clsx(classes.uploadIcon, {
-              [classes.dragActiveIcon]: isDragActive,
-            })}
-          />
+          <input {...getInputProps()} />
+          <Typography variant="h6" color="textSecondary" align="center">
+            {placeholder}
+          </Typography>
+          <Grid
+            container
+            justify="center"
+            alignItems="center"
+            className={classes.iconContainer}
+          >
+            <CloudUploadIcon
+              className={clsx(classes.uploadIcon, {
+                [classes.dragActiveIcon]: isDragActive,
+              })}
+            />
+          </Grid>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+          >
+            Choose file
+          </Button>
         </Grid>
-        <Button
-          className={classes.button}
-          size="small"
-          variant="contained"
-          color="primary"
-        >
-          Choose file
-        </Button>
-      </Grid>
+      )}
       {showEmptyFileError && (
         <Typography className={classes.error}>Image is required</Typography>
       )}

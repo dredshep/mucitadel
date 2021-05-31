@@ -1,7 +1,44 @@
 {
+  // "compilerOptions": {
+  //   "target": "es5",
+  //   "lib": ["dom", "dom.iterable", "esnext", "es6"],
+  //   "allowJs": true,
+  //   "skipLibCheck": true,
+  //   "strict": false,
+  //   "forceConsistentCasingInFileNames": true,
+  //   "noEmit": true,
+  //   "esModuleInterop": true,
+  //   "module": "esnext",
+  //   "moduleResolution": "node",
+  //   "resolveJsonModule": true,
+  //   "isolatedModules": true,
+  //   "jsx": "preserve",
+  //   "downlevelIteration": true
+  //   // "noImplicitAny": true,
+  //   // "noImplicitThis": true
+  //   // "strictNullChecks": true
+  // },
+  "include": [
+    "next-env.d.ts",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/api/cards.js",
+    "trashcan/modal.tsx.",
+    "trashcan/product-wireframe.tsx.",
+    "pages/nft-generator/MemeCreationForm.jsx",
+    "pages/nft-generator/index.jsx",
+    "components/UploadMedia/UploadFileItem.jsx",
+    "components/UploadMedia/UploadArea.jsx",
+    "components/UploadMedia/index.jsx",
+    "components/MintModal/MemeDetailForm.jsx",
+    "components/MintModal/MemeCreationForm.jsx"
+  ],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext", "es6"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -12,19 +49,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "downlevelIteration": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "pages/api/cards.js",
-    "trashcan/modal.tsx.",
-    "trashcan/product-wireframe.tsx."
-  ],
-  "exclude": ["node_modules"]
+    "jsx": "preserve"
+  }
 }
