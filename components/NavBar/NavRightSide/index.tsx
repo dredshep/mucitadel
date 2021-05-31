@@ -3,6 +3,7 @@ import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import Explained from "../../Explainer/Explained";
+import MintModal from "../../MintModal";
 import Button from "../../styled/Button";
 import { AuthData, LogIn, LogOut } from "../../types/AuthenticationProvider";
 import LoginModal from "../LoginModal";
@@ -15,7 +16,14 @@ export default function NavRightSide(props: {
   hasMetamask: boolean;
 }) {
   const [loginModalIsVisible, showLoginModal] = React.useState(false);
+  const [visibleMintModal, setVisibleMintModal] = React.useState(false);
+
   const showLoginModalCommand = () => showLoginModal(!loginModalIsVisible);
+  const handleCloseMintModal = () => setVisibleMintModal(!visibleMintModal);
+  const handleOpenMintModal = () => setVisibleMintModal(true);
+
+  console.log("ant : authData => ", props.authData);
+
   return (
     <div className="text-xl ml-auto lg:ml-0 flex mr-3 h-full">
       <div
@@ -38,8 +46,13 @@ export default function NavRightSide(props: {
         explanation="Add NFT"
         className={`hidden${props.authData?.address ? " lg:flex" : ""}`}
       >
-        <FontAwesomeIcon icon={faPlusSquare} />
+        <FontAwesomeIcon icon={faPlusSquare} onClick={handleOpenMintModal} />
       </Explained>
+      <MintModal
+        role="admin"
+        visible={visibleMintModal}
+        closeMintModal={handleCloseMintModal}
+      />
       {/* <Explained explanation="Catalogue" className="lg:flex hidden">
         <FontAwesomeIcon icon={faTh} />
       </Explained>
