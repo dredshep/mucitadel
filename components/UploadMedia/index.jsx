@@ -117,9 +117,9 @@ const UploadMedia = ({
   type,
   values,
   fileBuffer,
-  setFileBuffer,
   className,
   showEmptyFileError,
+  setFileBuffer,
 }) => {
   const [popup, setPopup] = useState();
   const classes = useStyles();

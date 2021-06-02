@@ -468,7 +468,7 @@ const MemeCreationForm = ({ role }) => {
   const [fileBuffer, setFileBuffer] = useState("");
   const [showEmptyFileError, setShowEmptyFileError] = useState(false);
   const previewRef = useRef(null);
-  const previewMobileRef = useRef(null);
+  // const previewMobileRef = useRef(null);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -483,19 +483,19 @@ const MemeCreationForm = ({ role }) => {
     Currencies: [{ Price: "", Currency: "" }],
   };
 
-  const convertCanvasToBlob = (canvas) => {
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(
-        (blob) => {
-          blob.name = "meme";
-          console.log("updated file", blob);
-          resolve(blob);
-        },
-        "image/jpeg",
-        1
-      );
-    });
-  };
+  // const convertCanvasToBlob = (canvas) => {
+  //   return new Promise((resolve, reject) => {
+  //     canvas.toBlob(
+  //       (blob) => {
+  //         blob.name = "meme";
+  //         console.log("updated file", blob);
+  //         resolve(blob);
+  //       },
+  //       "image/jpeg",
+  //       1
+  //     );
+  //   });
+  // };
 
   const handleDownloadPng = async (ref) => {
     //     if (fileBuffer) {
@@ -634,7 +634,7 @@ const MemeCreationForm = ({ role }) => {
       setShowEmptyFileError(true);
     } else {
       if (matches) {
-        setShowPreview(true);
+        // setShowPreview(true);
       } else {
         handleDownloadPng(previewRef);
       }
