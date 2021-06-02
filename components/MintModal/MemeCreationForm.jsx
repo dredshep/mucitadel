@@ -468,7 +468,7 @@ const MemeCreationForm = ({ role }) => {
   const [fileBuffer, setFileBuffer] = useState("");
   const [showEmptyFileError, setShowEmptyFileError] = useState(false);
   const previewRef = useRef(null);
-  const previewMobileRef = useRef(null);
+  // const previewMobileRef = useRef(null);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -483,19 +483,19 @@ const MemeCreationForm = ({ role }) => {
     Currencies: [{ Price: "", Currency: "" }],
   };
 
-  const convertCanvasToBlob = (canvas) => {
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(
-        (blob) => {
-          blob.name = "meme";
-          console.log("updated file", blob);
-          resolve(blob);
-        },
-        "image/jpeg",
-        1
-      );
-    });
-  };
+  // const convertCanvasToBlob = (canvas) => {
+  //   return new Promise((resolve, reject) => {
+  //     canvas.toBlob(
+  //       (blob) => {
+  //         blob.name = "meme";
+  //         console.log("updated file", blob);
+  //         resolve(blob);
+  //       },
+  //       "image/jpeg",
+  //       1
+  //     );
+  //   });
+  // };
 
   const handleDownloadPng = async (ref) => {
     //     if (fileBuffer) {
@@ -634,7 +634,7 @@ const MemeCreationForm = ({ role }) => {
       setShowEmptyFileError(true);
     } else {
       if (matches) {
-        setShowPreview(true);
+        // setShowPreview(true);
       } else {
         handleDownloadPng(previewRef);
       }
@@ -650,19 +650,26 @@ const MemeCreationForm = ({ role }) => {
     setFileBuffer(fileBuffer);
   };
 
-  console.log("ant : role => ", role);
+  let validationObject = {
+    Name: Yup.string().required("Name is required"),
+    Description: Yup.string().required("Description is required"),
+    Blockchain: Yup.string().required("Blockchain is required"),
+  };
+
+  if (role === "admin") {
+    validationObject = {
+      ...validationObject,
+      Tier: Yup.string().required("Tier is required"),
+    };
+  }
+
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={(values, { setSubmitting }) => {
         handleSave(values, setSubmitting);
       }}
-      validationSchema={Yup.object().shape({
-        Name: Yup.string().required("Name is required"),
-        Description: Yup.string().required("Description is required"),
-        Tier: Yup.string().required("Tier is required"),
-        Blockchain: Yup.string().required("Blockchain is required"),
-      })}
+      validationSchema={Yup.object().shape(validationObject)}
     >
       {(props) => {
         const { handleSubmit, values } = props;

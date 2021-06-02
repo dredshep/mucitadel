@@ -49,7 +49,7 @@ export default function NavRightSide(props: {
         <FontAwesomeIcon icon={faPlusSquare} onClick={handleOpenMintModal} />
       </Explained>
       <MintModal
-        role="admin"
+        role="user"
         visible={visibleMintModal}
         closeMintModal={handleCloseMintModal}
       />

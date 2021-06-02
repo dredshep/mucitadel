@@ -50,23 +50,29 @@ const UploadArea = ({
   showEmptyFileError,
   getRootProps,
   getInputProps,
+  className,
 }) => {
   const classes = useStyles();
 
   return (
     <>
       {mode === "mini" ? (
-        <div {...getRootProps()}>
-          <input {...getInputProps()} />
-          <Button
-            className={classes.button}
-            size="small"
-            variant="contained"
-            color="primary"
-          >
-            Upload Image
-          </Button>
-        </div>
+        <Grid container direction="column" alignItems="center">
+          <div {...getRootProps()}>
+            <input {...getInputProps()} />
+            <Button
+              className={classes.button}
+              size="small"
+              variant="contained"
+              color="primary"
+            >
+              Upload Image
+            </Button>
+          </div>
+          {showEmptyFileError && (
+            <Typography className={classes.error}>Image is required</Typography>
+          )}
+        </Grid>
       ) : (
         <Grid
           container
@@ -74,7 +80,7 @@ const UploadArea = ({
           alignItems="center"
           justify="center"
           {...getRootProps()}
-          className={classes.upload}
+          className={clsx(classes.upload, className)}
         >
           <input {...getInputProps()} />
           <Typography variant="h6" color="textSecondary" align="center">
@@ -101,9 +107,6 @@ const UploadArea = ({
             Choose file
           </Button>
         </Grid>
-      )}
-      {showEmptyFileError && (
-        <Typography className={classes.error}>Image is required</Typography>
       )}
     </>
   );
