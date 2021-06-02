@@ -1,6 +1,7 @@
 import { Grid, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
+import clsx from "clsx";
 import { memo } from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UploadFileItem = ({ type, fileBuffer, onDelete }) => {
+const UploadFileItem = ({ type, fileBuffer, onDelete, className }) => {
   const classes = useStyles();
 
   return (
@@ -36,7 +37,7 @@ const UploadFileItem = ({ type, fileBuffer, onDelete }) => {
       container
       justify="center"
       alignItems="center"
-      className={classes.fileContainer}
+      className={clsx(classes.fileContainer, className)}
     >
       {fileBuffer && (
         <img alt="media" src={fileBuffer} className={classes.image} />

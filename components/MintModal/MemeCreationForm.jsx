@@ -650,19 +650,26 @@ const MemeCreationForm = ({ role }) => {
     setFileBuffer(fileBuffer);
   };
 
-  console.log("ant : role => ", role);
+  let validationObject = {
+    Name: Yup.string().required("Name is required"),
+    Description: Yup.string().required("Description is required"),
+    Blockchain: Yup.string().required("Blockchain is required"),
+  };
+
+  if (role === "admin") {
+    validationObject = {
+      ...validationObject,
+      Tier: Yup.string().required("Tier is required"),
+    };
+  }
+
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={(values, { setSubmitting }) => {
         handleSave(values, setSubmitting);
       }}
-      validationSchema={Yup.object().shape({
-        Name: Yup.string().required("Name is required"),
-        Description: Yup.string().required("Description is required"),
-        Tier: Yup.string().required("Tier is required"),
-        Blockchain: Yup.string().required("Blockchain is required"),
-      })}
+      validationSchema={Yup.object().shape(validationObject)}
     >
       {(props) => {
         const { handleSubmit, values } = props;

@@ -1,5 +1,11 @@
-import { Dialog, Grid, Snackbar, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  Dialog,
+  Grid,
+  Snackbar,
+  Typography,
+  useMediaQuery,
+} from "@material-ui/core";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import { memo, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -66,15 +72,16 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   previewContainer: {
+    flexWrap: "nowrap",
     [theme.breakpoints.down("xs")]: {
-      flexDirection: "column",
+      flexDirection: "column-reverse",
       alignItems: "center",
+      flexWrap: "wrap",
     },
   },
   preview: {
     width: theme.spacing(36),
     height: theme.spacing(48),
-    marginRight: theme.spacing(2),
     position: "relative",
     "&:focus": {
       outline: "0 !important",
@@ -82,6 +89,18 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       marginBottom: theme.spacing(2),
     },
+  },
+  uploadContainer: {
+    height: "auto",
+    width: "calc(100% - 312px)",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+    },
+  },
+  error: {
+    color: theme.palette.primary.main,
+    fontSize: theme.spacing(1.5),
+    marginTop: theme.spacing(0.5),
   },
 }));
 
@@ -107,6 +126,8 @@ const UploadMedia = ({
   const [uploadedFile, setUploadedFile] = useState();
   const [croppedImageSrc, setCroppedImageSrc] = useState(null);
   const [crop, setCrop] = useState(initialCrop);
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("xs"));
 
   const deleteFileHandler = useCallback(() => {
     setFileBuffer(null);
@@ -231,7 +252,29 @@ const UploadMedia = ({
     <div className={className}>
       {role === "user" ? (
         <>
-          <Grid container className={classes.previewContainer}>
+          <Grid
+            container
+            className={classes.previewContainer}
+            justify="space-between"
+          >
+            {isEmpty(fileBuffer) || matches ? (
+              <UploadArea
+                className={classes.uploadContainer}
+                mode={matches && "mini"}
+                placeholder={type.PLACEHOLDER}
+                isDragActive={isDragActive}
+                getRootProps={getRootProps}
+                getInputProps={getInputProps}
+                showEmptyFileError={showEmptyFileError}
+              />
+            ) : (
+              <UploadFileItem
+                className={classes.uploadContainer}
+                type={type.VALUE}
+                fileBuffer={fileBuffer}
+                onDelete={deleteFileHandler}
+              />
+            )}
             <div className={classes.preview}>
               <PreviewCard
                 type={"Image"}
@@ -239,17 +282,10 @@ const UploadMedia = ({
                 name={values.Name}
               />
             </div>
-            {/* {isEmpty(fileBuffer) && ( */}
-            <UploadArea
-              mode="mini"
-              placeholder={type.PLACEHOLDER}
-              isDragActive={isDragActive}
-              getRootProps={getRootProps}
-              getInputProps={getInputProps}
-              showEmptyFileError={showEmptyFileError}
-            />
-            {/* )} */}
           </Grid>
+          {!matches && showEmptyFileError && (
+            <Typography className={classes.error}>Image is required</Typography>
+          )}
         </>
       ) : (
         <>
@@ -268,8 +304,12 @@ const UploadMedia = ({
               onDelete={deleteFileHandler}
             />
           )}
+          {showEmptyFileError && (
+            <Typography className={classes.error}>Image is required</Typography>
+          )}
         </>
       )}
+
       {popup && (
         <Snackbar
           anchorOrigin={{
