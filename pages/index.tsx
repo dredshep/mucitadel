@@ -1,3 +1,4 @@
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import Footer from "../components/Footer";
@@ -8,13 +9,15 @@ import Toolbar from "../components/Toolbar";
 import {
   AuthData,
   LogIn,
-  LogOut,
+  LogOut
 } from "../components/types/AuthenticationProvider";
 import { CURRENCIES, ORDER_TYPES, SORT_TYPES } from "../constant";
+import getCardsFromAPI from "../functions/getCardsFromAPI";
+import { NFT } from "../types/nft";
 
-function Content(props: { searchTerm: string }) {
+function Content(props: { searchTerm: string, nftList: NFT[] }) {
   const [configurations, setConfigurations] = useState({
-    currency: CURRENCIES[2], // usd
+    currency: CURRENCIES[2], // USD
     sortType: SORT_TYPES[1].value, // name
     orderType: ORDER_TYPES.ASCENDING,
     minPrice: null,
@@ -67,6 +70,7 @@ function Content(props: { searchTerm: string }) {
         <NFTList
           configurations={configurations}
           searchTerm={props.searchTerm}
+          nftList={props.nftList}
         />
       </div>
     </div>
@@ -78,6 +82,7 @@ export default function Home(props: {
   logOut: LogOut;
   authData: AuthData;
   hasMetamask: boolean;
+  nftList: NFT[]
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -92,8 +97,13 @@ export default function Home(props: {
         onChangeTerm={setSearchTerm}
         {...props}
       />
-      <Content searchTerm={searchTerm} />
+      <Content searchTerm={searchTerm} nftList={props.nftList} />
       <Footer />
     </div>
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const nftList: NFT[] = await getCardsFromAPI()
+  return { props: { nftList } }
 }

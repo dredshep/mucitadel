@@ -24,7 +24,7 @@
     "**/*.jsx",
     "**/*.ts",
     "**/*.tsx",
-    "pages/api/cards.js",
+    "pages/api/cards.ts",
     "trashcan/modal.tsx.",
     "trashcan/product-wireframe.tsx.",
     "components/UploadMedia/UploadFileItem.jsx",

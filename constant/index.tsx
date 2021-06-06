@@ -1,6 +1,6 @@
 const TIERS = ["titanic", "unprecedented", "rare", "epic", "legendary", "nani"];
 
-const CURRENCIES = ["eth", "dank", "usd"];
+const CURRENCIES = ["ETH", "DANK", "USD"];
 
 const SORT_TYPES = [
   { label: "price", value: "price" },

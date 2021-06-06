@@ -1,12 +1,11 @@
 import {
   faInfoCircle,
   faShareAlt,
-  faShoppingCart,
+  faShoppingCart
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { ORDER_TYPES } from "../../constant";
 import { NFT } from "../../types/nft";
 
@@ -32,9 +31,10 @@ function useOutsideAlerter(
   }, [ref]);
 }
 
-export function NFTCard(props: NFT & { href: string }) {
+export function NFTCard(props: NFT & { href: string, currency: string }) {
   const [popdownIsVisible, showPopdown] = React.useState(false);
   const router = useRouter();
+  console.log(props.id)
 
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, showPopdown);
@@ -75,7 +75,8 @@ export function NFTCard(props: NFT & { href: string }) {
             <div className="w-28 tiny:w-32 xlish:w-40 flex-shrink-0">
               <img
                 className="max-w-full"
-                src={`/images/cards/346x461/${props.url}`}
+                // src={`/images/cards/346x461/${props.url}`}
+                src={props.url}
                 alt={props.name}
               />
             </div>
@@ -149,48 +150,70 @@ function Container(props: { children: any }) {
   return <div className="px-auto">{props.children}</div>;
 }
 
-const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
-  const { configurations, searchTerm = "" } = props;
-  const [nftList, setNftList] = useState([]);
-  useEffect(() => {
-    const getNftList = async () =>
-      setNftList((await axios.get("/api/cards")).data);
-    getNftList();
-  }, []);
+function NFTList (props: { configurations?: any; searchTerm?: string, nftList: NFT[] }) {
+  const { configurations, searchTerm = "", nftList } = props;
+  // const [nftList, setNftList] = useState([]);
 
   const sortedList = useMemo(() => {
-    let sortedList = [...nftList];
+    // let sortedList = nftList.length ? [...nftList] : [];
+    // alert(JSON.stringify(nftList.length))
+    // let sortedList = nftList.map(x => x)
+    // let sortedList = [...nftList]
+    
+    let sortedList= [...(nftList||[]) ]
+    console.log(nftList)
+    const isValidString = (s:string) => typeof s === 'string' && s.length > 0
+    const isValidNumber = (n:number) => typeof n === 'number' && n > 0
+
     if (configurations) {
-      sortedList = sortedList.filter(
-        (nft) => nft.price[configurations.currency]
-      );
+      // only set currency
+      sortedList = sortedList.filter(nft => {
+        const ifNotFirstTrueOtherwiseSecond = (condition1, condition2) => condition1 ? true : condition2
+        const hasCurrency = nft.price[configurations.currency]
+        const fitsSearch = ifNotFirstTrueOtherwiseSecond(!isValidString(searchTerm), nft.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        const isTier = ifNotFirstTrueOtherwiseSecond(!isValidString(configurations.tier), nft.tier === configurations.tier)
+        const isAbovePrice = ifNotFirstTrueOtherwiseSecond(!isValidNumber(configurations.minPrice), nft.price[configurations.currency] >= configurations.minPrice)
+        const isBelowPrice = ifNotFirstTrueOtherwiseSecond(!isValidNumber(configurations.maxPrice), nft.price[configurations.currency] <= configurations.maxPrice)
+        // console.log({hasCurrency, fitsSearch, isTier, isAbovePrice, isBelowPrice})
+        return hasCurrency && fitsSearch && isTier && isAbovePrice && isBelowPrice
+      })
+      // console.log("sorted", sorted)
 
-      if (searchTerm) {
-        sortedList = sortedList.filter((nft) =>
-          nft.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      }
+      // sortedList = sortedList.filter(
+      //   (nft) => nft[configurations.currency]
+      // );
 
-      if (configurations.tier) {
-        sortedList = sortedList.filter(
-          (nft) => nft.tier === configurations.tier
-        );
-      }
+      // if (searchTerm) {
+      //   // only including string
+      //   sortedList = sortedList.filter((nft) =>
+      //     nft.name.toLowerCase().includes(searchTerm.toLowerCase())
+      //   );
+      // }
 
-      if (configurations.minPrice) {
-        sortedList = sortedList.filter(
-          (nft) => nft.price[configurations.currency] >= configurations.minPrice
-        );
-      }
+      // if (configurations.tier) {
+      //   // only set tier
+      //   sortedList = sortedList.filter(
+      //     (nft) => nft.tier === configurations.tier
+      //   );
+      // }
 
-      if (configurations.maxPrice) {
-        sortedList = sortedList.filter(
-          (nft) => nft.price[configurations.currency] <= configurations.maxPrice
-        );
-      }
+      // if (configurations.minPrice) {
+      //   // only above price
+      //   sortedList = sortedList.filter(
+      //     (nft) => nft.price[configurations.currency] >= configurations.minPrice
+      //   );
+      // }
+
+      // if (configurations.maxPrice) {
+      //   // only under price
+      //   sortedList = sortedList.filter(
+      //     (nft) => nft.price[configurations.currency] <= configurations.maxPrice
+      //   );
+      // }
 
       if (configurations.orderType === ORDER_TYPES.ASCENDING) {
         if (configurations.sortType === "price") {
+          // order by price ascending
           sortedList.sort((nft1, nft2) =>
             nft1.price[configurations.currency] >
             nft2.price[configurations.currency]
@@ -198,6 +221,7 @@ const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
               : -1
           );
         } else {
+          // order by generic string from filtering value ascending
           sortedList.sort((nft1, nft2) =>
             nft1[configurations.sortType] > nft2[configurations.sortType]
               ? 1
@@ -206,6 +230,7 @@ const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
         }
       } else {
         if (configurations.sortType === "price") {
+          // order by price descending
           sortedList.sort((nft1, nft2) =>
             nft1.price[configurations.currency] <
             nft2.price[configurations.currency]
@@ -213,6 +238,7 @@ const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
               : -1
           );
         } else {
+          // order by generic string from filtering value descending
           sortedList.sort((nft1, nft2) =>
             nft1[configurations.sortType] < nft2[configurations.sortType]
               ? 1
@@ -225,15 +251,17 @@ const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
     return sortedList;
   }, [nftList, configurations, searchTerm]);
 
+  const log = (v: any) => (console.log(v), v)
+
   return (
     <Container>
       <div className="flex flex-row flex-wrap justify-center mx-auto tiny:-ml-5">
-        {sortedList.map((nft, i) => (
+        {log(sortedList).map((nft) => (
           <NFTCard
             className="mt-10 mx-auto tiny:mr-5 tiny:ml-5"
-            href={"/card/" + i}
-            key={nft.name}
-            currency={configurations ? configurations.currency : "usd"}
+            href={"/card/" + nft.id}
+            key={nft.id}
+            currency={configurations ? configurations.currency : "USD"}
             {...nft}
           />
         ))}
@@ -241,5 +269,6 @@ const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
     </Container>
   );
 };
+
 
 export default NFTList;

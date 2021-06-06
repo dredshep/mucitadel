@@ -1,7 +1,7 @@
 import moment from "moment";
 import React from "react";
-import Link from "../components/styled/Link";
-import Tabs from "../components/Tabs";
+import Link from "../../components/styled/Link";
+import Tabs from "../../components/Tabs";
 
 export default function TabTest() {
   const keyTextClass = "text-secondary font-semibold font-title";

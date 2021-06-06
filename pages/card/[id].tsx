@@ -636,7 +636,7 @@ function MiniExplorer(props) {
 function Content() {
   const [cardArr, setCards] = useState([]);
   useEffect(() => {
-    const getCards = async () => setCards((await axios.get("/api/cards")).data);
+    const getCards = async () => setCards((await axios.get("https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100")).data.data.data);
     getCards();
     // return () => {
     // }
