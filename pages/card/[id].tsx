@@ -3,15 +3,14 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
-import Select from "react-select";
 import ReactTimeAgo from "react-time-ago";
-// import styled from "styled-components";
 import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import { NFTCard } from "../../components/NFTList";
 import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
 import Tabs from "../../components/Tabs";
+import Select from "../../components/UI/Select";
 import { NFT } from "../../types/nft";
 
 type NoLinkPair = {
@@ -291,60 +290,16 @@ function RelatedSection(props: { cards: NFT[] }) {
   );
 }
 
-// function NFTEventsHistory() {
-//   return (
-
-//   )
-// }
-
 const keyTextClass = "text-secondary font-semibold font-title";
 const valueTextClass = "text-white font-body";
 
-// const CurrencySelector = () => {
-
-//   return (
-//     <>
-//       <div className={style.container}>
-//         {sortList.map((item, index) =>
-//           <div
-//             key={index}
-//             className={classNames(style.option, sortIndex === index && style.selectedItem)}
-//             onClick={() => changeSortHandler(index)}>
-//             {item.label}
-//           </div>
-//         )}
-//       </div>
-//       <div className={style.overlay} onClick={onClose} />
-//     </>
-//   )
-// };
-
 function Product2(props: NFT) {
   const [currency, setCurrency] = useState("dank");
-  // const currencyButton = (
-  //   <span className="py-1 px-2 ml-2 border border-mupurple rounded-md">
-  //     DANK <FontAwesomeIcon className="text-mupurple" icon={faCaretDown} />
-  //   </span>
-  // );
 
   const getPriceListFromPriceObj = (priceObj: { [key: string]: number }) =>
     Object.entries(priceObj).map(
       (pricePair) => pricePair[1] + " " + pricePair[0].toUpperCase()
     );
-  const customStyles = {
-    option: (provided, state) => ({
-      ...provided,
-      borderBottom: "1px solid #9B50FF",
-      color: state.isSelected ? "red" : "blue",
-      padding: 20,
-    }),
-    singleValue: (provided, state) => {
-      const opacity = state.isDisabled ? 0.5 : 1;
-      const transition = "opacity 300ms";
-
-      return { ...provided, opacity, transition };
-    },
-  };
 
   return (
     <div className="flex flex-row px-5 pb-5 md:py-0 md:px-0 space-x-0 md:space-x-5 bg-asidebg rounded-none md:rounded-xl mt-0 md:mt-10 w-full max-w-lg md:max-w-3xl mx-auto">
@@ -381,7 +336,7 @@ function Product2(props: NFT) {
               {/* {props.soul} */}
               {/* {currencyButton} */}
               <Select
-                styles={customStyles}
+                placeholder="Select Price"
                 value={currency}
                 options={getPriceListFromPriceObj(props.price).map((price) => ({
                   label: price,
