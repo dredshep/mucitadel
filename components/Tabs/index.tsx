@@ -45,6 +45,7 @@ export default function Tabs(props: { tabs?: tabs; children: any }) {
           ? " border-mupurple"
           : " border-inputbg cursor-pointer hover:border-inputbg-hover hover:text-secondary-hover"
       }
+      key={`tab-${i}`}
       index={i}
     >
       {text}
