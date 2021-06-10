@@ -1,6 +1,8 @@
 import { Grid, Typography, useMediaQuery } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { ethers } from "ethers";
 import { Formik } from "formik";
+import html2canvas from "html2canvas";
 import React, { useRef, useState } from "react";
 import * as Yup from "yup";
 // import ConnectWalletDialog from 'components/ConnectWalletDialog';
@@ -468,176 +470,155 @@ const MemeCreationForm = ({ role }) => {
   const [fileBuffer, setFileBuffer] = useState("");
   const [showEmptyFileError, setShowEmptyFileError] = useState(false);
   const previewRef = useRef(null);
-  // const previewMobileRef = useRef(null);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("sm"));
 
   const initialValues = {
     Name: "",
     Description: "",
-    Tier: undefined,
-    Price: "",
-    Currency: "",
+    Tier: "",
     Blockchain: "ethereum",
     ForSale: true,
     Currencies: [{ Price: "", Currency: "" }],
   };
 
-  // const convertCanvasToBlob = (canvas) => {
-  //   return new Promise((resolve, reject) => {
-  //     canvas.toBlob(
-  //       (blob) => {
-  //         blob.name = "meme";
-  //         console.log("updated file", blob);
-  //         resolve(blob);
-  //       },
-  //       "image/jpeg",
-  //       1
-  //     );
-  //   });
-  // };
+  const convertCanvasToBlob = (canvas) => {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          blob.name = "meme";
+          console.log("updated file", blob);
+          resolve(blob);
+        },
+        "image/jpeg",
+        1
+      );
+    });
+  };
 
-  const handleDownloadPng = async (ref) => {
-    //     if (fileBuffer) {
-    //       const canvas = await html2canvas(ref.current, {
-    //         useCORS: true,
-    //         scale: 3,
-    //         scrollX: -window.scrollX,
-    //         scrollY: matches ? 0 : -window.scrollY,
-    //         windowWidth: document.documentElement.offsetWidth,
-    //         windowHeight: window.innerHeight
-    //       });
-    //       const getUrl = blob =>
-    //         new Promise(resolve => {
-    //           const reader = new FileReader();
-    //           reader.addEventListener("load", function () {
-    //             // convert image file to base64 string
-    //             return resolve(reader.result);
-    //           }, false);
-    //           reader.readAsDataURL(blob)
-    //         })
-    //       const croppedBlob = await convertCanvasToBlob(canvas);
-    //       const dataUrl = await getUrl(croppedBlob);
-    //       const croppedImageUrl = dataUrl;
-    //       // const fetchBlob = await fetch(dataUrl).then(res => res.blob())
-    //       // const fd = new FormData();
-    //       // const file = new File([fetchBlob], "filename.jpeg");
-    //       // console.log('my fucking file m8', file)
-    //       // fd.append("imageupload", file);
-    //       // fd.append("walletadd", "0xAd9b97fa8f28daCa6731d116d6fD2C72A164Ae0b");
-    //       // fd.append("title", "Some icon in gif format");
-    //       // var requestOptions = {
-    //       //   method: 'POST',
-    //       //   body: fd,
-    //       //   redirect: 'follow'
-    //       // };
-    //       // fetch("https://api.mucitadel.io/v1/upload/ipfs", requestOptions)
-    //       //   .then(response => response.text())
-    //       //   .then(result => console.log(result))
-    //       //   .catch(error => console.log('error', error));
-    //       // const url = URL.createObjectURL(croppedImageUrl);
-    //       // const link = document.createElement('a');
-    // // <<<<<<< HEAD
-    //       // if (typeof link.download === 'string') {
-    //       //   link.href = url;
-    //       //   // console.log((url.replace('blob:','')));
-    //       //   link.download = 'meme';
-    //       //   document.body.appendChild(link);
-    //       //   link.click();
-    //       //   document.body.removeChild(link);
-    //       // } else {
-    //       //   window.open(url);
-    //       // }
-    // // =======
-    // //       if (typeof link.download === 'string') {
-    // //         link.href = url;
-    //         // console.log(croppedImageUrl);
-    //         // Contract Functionality
-    //         if (window.ethereum) {
-    //           const provider = new ethers.providers.Web3Provider(
-    //             window.ethereum
-    //           );
-    //           const blob = await fetch(croppedImageUrl).then(res => res.blob());
-    //           const fd = new FormData();
-    //           const file = new File([blob], "filename.jpeg");
-    //           fd.append("imageupload", file);
-    //           fd.append("walletadd", await window.ethereum.request({method: "eth_requestAccounts"}));
-    //           fd.append("title", "Some icon in gif format");
-    //           var requestOptions = {
-    //             method: 'POST',
-    //             body: fd,
-    //             redirect: 'follow'
-    //           };
-    //         fetch("https://api.mucitadel.io/v1/upload/ipfs", requestOptions)
-    //           .then(response => response.text())
-    //           .then(result =>{
-    //             console.log(JSON.parse(result));
-    //             const JsonResult = JSON.parse(result);
-    //             const final = async()=>{
-    //               if (window.ethereum) {
-    //                 const provider = new ethers.providers.Web3Provider(
-    //                   window.ethereum
-    //                 );
-    //                 let contract = new ethers.Contract(
-    //                   contractAdd,
-    //                   contractAbi,
-    //                   provider.getSigner()
-    //                 );
-    //                 const accounts = await window.ethereum.request({
-    //                   method: "eth_requestAccounts",
-    //                 });
-    //                 const account = accounts[0];
-    //                 const hash = JsonResult.data.path;
-    //                 const amount = 1;
-    //                 const e_amount = 0;
-    //                 const d_amount = 0;
-    //                 const weiBalance = await provider.getBalance(account);
-    //                 const ethBalance = parseFloat(weiBalance) / 1e18;
-    //                 const price = 0.005;
-    //                 const sufficientFunds = ethBalance > price;
-    //                 if (!sufficientFunds) {
-    //                   return alert("Insufficient ETH funds for fees");
-    //                 }
-    //                 await contract.functions
-    //                   .Set_nft(hash,amount, e_amount,d_amount)
-    //                   .then(async function (result) {
-    //                     console.log(result);
-    //                     // alert(result, account); //alert("Silver Purchased Sucessfully");
-    //                   });
-    //               } else {
-    //                 alert(
-    //                   "Please install MetaMask or Trust Wallet in order to use blockchain features."
-    //                 );
-    //               }
-    //             }
-    //             final();
-    //           })
-    //           .catch(error => {
-    //             console.log('error', error)
-    //           });
-    //         } else{
-    //           alert("Connect Metamask")
-    //         }
-    //         // link.download = 'meme';
-    //         // document.body.appendChild(link);
-    //         // link.click();
-    //         // document.body.removeChild(link);
-    //       }
-    //       //else {
-    //         //window.open(url);
-    //       //}
-    // // >>>>>>> 4acd7cf17065d0408641e29ffd486e610fe54197
+  const getUrl = (blob) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.addEventListener(
+        "load",
+        function () {
+          // convert image file to base64 string
+          return resolve(reader.result);
+        },
+        false
+      );
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const toDataURL = (url) =>
+    fetch(url)
+      .then((response) => response.blob())
+      .then(
+        (blob) =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          })
+      );
+
+  const handleMintToken = async (values, ref) => {
+    if (fileBuffer) {
+      let croppedImageUrl = "";
+      if (role === "admin") {
+        croppedImageUrl = await toDataURL(fileBuffer);
+      } else {
+        const canvas = await html2canvas(ref.current, {
+          useCORS: true,
+          scale: 3,
+          scrollX: -window.scrollX,
+          scrollY: matches ? 0 : -window.scrollY,
+          windowWidth: document.documentElement.offsetWidth,
+          windowHeight: window.innerHeight,
+        });
+
+        const croppedBlob = await convertCanvasToBlob(canvas);
+        croppedImageUrl = await getUrl(croppedBlob);
+      }
+      console.log("ant : croppedImageUrl => ", croppedImageUrl);
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const blob = await fetch(croppedImageUrl).then((res) => res.blob());
+        const fd = new FormData();
+        const file = new File([blob], "filename.jpeg");
+        fd.append("imageupload", file);
+        fd.append(
+          "walletadd",
+          await window.ethereum.request({ method: "eth_requestAccounts" })
+        );
+        fd.append("title", "Some icon in gif format");
+
+        console.log("ant : form values & file => ", values, fd);
+        // var requestOptions = {
+        //   method: 'POST',
+        //   body: fd,
+        //   redirect: 'follow'
+        // };
+        // fetch("https://api.mucitadel.io/v1/upload/ipfs", requestOptions)
+        //   .then(response => response.text())
+        //   .then(result =>{
+        //     console.log(JSON.parse(result));
+        //     const JsonResult = JSON.parse(result);
+        //     const final = async()=>{
+        //       if (window.ethereum) {
+        //         const provider = new ethers.providers.Web3Provider(
+        //           window.ethereum
+        //         );
+        //         let contract = new ethers.Contract(
+        //           contractAdd,
+        //           contractAbi,
+        //           provider.getSigner()
+        //         );
+        //         const accounts = await window.ethereum.request({
+        //           method: "eth_requestAccounts",
+        //         });
+        //         const account = accounts[0];
+        //         const hash = JsonResult.data.path;
+        //         const amount = 1;
+        //         const e_amount = 0;
+        //         const d_amount = 0;
+        //         const weiBalance = await provider.getBalance(account);
+        //         const ethBalance = parseFloat(weiBalance) / 1e18;
+        //         const price = 0.005;
+        //         const sufficientFunds = ethBalance > price;
+        //         if (!sufficientFunds) {
+        //           return alert("Insufficient ETH funds for fees");
+        //         }
+        //         await contract.functions
+        //           .Set_nft(hash,amount, e_amount,d_amount)
+        //           .then(async function (result) {
+        //             console.log(result);
+        //             // alert(result, account); //alert("Silver Purchased Sucessfully");
+        //           });
+        //       } else {
+        //         alert(
+        //           "Please install MetaMask or Trust Wallet in order to use blockchain features."
+        //         );
+        //       }
+        //     }
+        //     final();
+        //   })
+        //   .catch(error => {
+        //     console.log('error', error)
+        //   });
+      } else {
+        alert("Connect Metamask");
+      }
+    }
   };
 
   const handleSave = async (values, setSubmitting) => {
     if (!fileBuffer) {
       setShowEmptyFileError(true);
     } else {
-      if (matches) {
-        // setShowPreview(true);
-      } else {
-        handleDownloadPng(previewRef);
-      }
+      handleMintToken(values, previewRef);
     }
   };
 
@@ -676,7 +657,6 @@ const MemeCreationForm = ({ role }) => {
         return (
           <form onSubmit={handleSubmit}>
             <Grid container>
-              {/* <Grid item lg={8} md={8} sm={12} xs={12}> */}
               <Grid container justify="space-between">
                 <Typography variant="h6" className={classes.subtitle}>
                   Upload file
@@ -685,6 +665,7 @@ const MemeCreationForm = ({ role }) => {
               <UploadMedia
                 values={values}
                 role={role}
+                previewRef={previewRef}
                 className={classes.uploadContainer}
                 type={FILE_TYPES[FILE_TYPES.IMAGE.VALUE]}
                 fileBuffer={fileBuffer}

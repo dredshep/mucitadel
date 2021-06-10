@@ -29,9 +29,9 @@
     "trashcan/product-wireframe.tsx.",
     "components/UploadMedia/UploadFileItem.jsx",
     "components/UploadMedia/UploadArea.jsx",
-    "components/UploadMedia/index.tsx",
+    "components/UploadMedia/index.jsx",
     "components/MintModal/MemeDetailForm.jsx",
-    "components/MintModal/MemeCreationForm.jsx"
+    "components/MintModal/MemeCreationForm.tsx"
   ],
   "exclude": ["node_modules"],
   "compilerOptions": {

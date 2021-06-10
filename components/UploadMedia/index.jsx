@@ -116,6 +116,7 @@ const UploadMedia = ({
   role,
   type,
   values,
+  previewRef,
   fileBuffer,
   className,
   showEmptyFileError,
@@ -275,7 +276,7 @@ const UploadMedia = ({
                 onDelete={deleteFileHandler}
               />
             )}
-            <div className={classes.preview}>
+            <div className={classes.preview} ref={previewRef}>
               <PreviewCard
                 type={"Image"}
                 fileBuffer={fileBuffer}
