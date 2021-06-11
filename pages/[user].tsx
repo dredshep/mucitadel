@@ -6,6 +6,7 @@ import {
   faShareAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
@@ -15,10 +16,12 @@ import {
   LogIn,
   LogOut,
 } from "../components/types/AuthenticationProvider";
+import getCardsFromAPI from "../functions/getCardsFromAPI";
+import { NFT } from "../types/nft";
 
 const Post = () => {};
 
-function Content() {
+function Content(props: ContentProps) {
   const router = useRouter();
   const { user } = router.query;
 
@@ -88,22 +91,30 @@ function Content() {
           </div>
         </div>
       </div>
-      <NFTList />
+      <NFTList nftList={props.nftList} />
     </div>
   );
 }
 
-export default function User(props: {
+type ContentProps = {
   logIn: LogIn;
   logOut: LogOut;
   authData: AuthData;
   hasMetamask: boolean;
-}) {
+  nftList: NFT[];
+};
+
+export default function User(props: ContentProps) {
   return (
     <div className="App text-white bg-mainbg min-h-screen font-body">
       <NavBar {...props} />
-      <Content />
+      <Content {...props} />
       <Footer />
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const nftList: NFT[] = await getCardsFromAPI();
+  return { props: { nftList } };
+};

@@ -1,5 +1,6 @@
 import axios from "axios";
 import moment from "moment";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
@@ -11,6 +12,7 @@ import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
 import Tabs from "../../components/Tabs";
 import Select from "../../components/UI/Select";
+import getCardsFromAPI from "../../functions/getCardsFromAPI";
 import { NFT } from "../../types/nft";
 
 type NoLinkPair = {
@@ -591,7 +593,14 @@ function MiniExplorer(props) {
 function Content() {
   const [cardArr, setCards] = useState([]);
   useEffect(() => {
-    const getCards = async () => setCards((await axios.get("https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100")).data.data.data);
+    const getCards = async () =>
+      setCards(
+        (
+          await axios.get(
+            "https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100"
+          )
+        ).data.data.data
+      );
     getCards();
     // return () => {
     // }
@@ -659,3 +668,8 @@ export default function Home(props) {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const nftList: NFT[] = await getCardsFromAPI();
+  return { props: { nftList } };
+};
