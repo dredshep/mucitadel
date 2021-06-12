@@ -1,17 +1,18 @@
-import axios from "axios";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import { NFTCard } from "../../components/NFTList";
+import Button from "../../components/styled/Button";
 import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
 import Tabs from "../../components/Tabs";
 import Select from "../../components/UI/Select";
+import capitalizeFirstLetter from "../../functions/capitalizeFirstLetter";
 import getCardsFromAPI from "../../functions/getCardsFromAPI";
 import { NFT } from "../../types/nft";
 
@@ -197,8 +198,8 @@ function makeProp(
   } as NoLinkPair;
 }
 
-function NFTDetails() {
-  const props: (LinkPair | NoLinkPair)[] = [
+function NFTDetails(props: NFT) {
+  const entries: (LinkPair | NoLinkPair)[] = [
     {
       pairKey: "Smart Contract",
       value: "GHOST",
@@ -223,8 +224,8 @@ function NFTDetails() {
       {/* <div className="w-96"><img className="w-full" src="/images/pete-card.jpg" /></div> */}
       {/* <div className="text-lg font-bold">Voiceover Pete</div> */}
       <div className="text-3xl font-bold mb-5 font-title">NFT Details</div>
-      {props.map((props) => (
-        <KeyValue {...props} />
+      {entries.map((entry) => (
+        <KeyValue {...entry} />
       ))}
     </div>
   );
@@ -303,12 +304,20 @@ function Product2(props: NFT) {
       (pricePair) => pricePair[1] + " " + pricePair[0].toUpperCase()
     );
 
+  function handleBuy() {
+    alert(JSON.stringify(props, null, 2));
+  }
+  function handleSell() {
+    alert(JSON.stringify(props, null, 2));
+  }
+
   return (
     <div className="flex flex-row px-5 pb-5 md:py-0 md:px-0 space-x-0 md:space-x-5 bg-asidebg rounded-none md:rounded-xl mt-0 md:mt-10 w-full max-w-lg md:max-w-3xl mx-auto">
       <div className="hidden md:flex flex-shrink-0" style={{ width: "45%" }}>
         <img
           className="object-contain"
-          src={"/images/cards/full-size/" + props.url}
+          // src={"/images/cards/full-size/" + props.url}
+          src={props.url}
         />
       </div>
       <div className="w-full">
@@ -316,14 +325,15 @@ function Product2(props: NFT) {
           <div className="w-24 xs:w-24 flex-shrink-0 mr-3 md:hidden">
             <img
               className="w-full object-cover"
-              src={"/images/cards/346x461/" + props.url}
+              // src={"/images/cards/346x461/" + props.url}
+              src={props.url}
             />
           </div>
           <div>
-            <div className="text-success font-semibold text-lg leading-3 font-body">
+            {/* <div className="text-success font-semibold text-lg leading-3 font-body">
               Market Rank: 137
-            </div>
-            <div className="mt-8 text-white font-bold text-2xl xs:text-4xl leading-9 font-title">
+            </div> */}
+            <div className="mt-4 text-white font-bold text-2xl xs:text-4xl leading-9 font-title">
               {props.name}
             </div>
             <div className="mt-3 text-secondary font-semibold text-lg leading-3 font-body">
@@ -331,7 +341,7 @@ function Product2(props: NFT) {
             </div>
           </div>
         </div>
-        <div className="flex flex-row mt-5 justify-start md:justify-between">
+        <div className="flex flex-row mt-6 justify-start md:justify-between">
           <div className="flex flex-col w-7/12 xs:w-2/3 md:w-44">
             <div className={keyTextClass + " mb-2"}>Price</div>
             <div className={valueTextClass + " font-semibold text-lg"}>
@@ -355,17 +365,22 @@ function Product2(props: NFT) {
             } out of ${props.mints.totalMints}`}</div>
           </div>
         </div>
-        <div className="flex flex-col-reverse md:flex-col">
+        <div className="flex flex-col-reverse md:flex-col h-56">
           <Tabs>
             {/* CHILD 1 */}
-            <div className="mt-5 h-24 font-body mr-5">{props.description}</div>
+            <div className="mt-5 font-body mr-5">{props.description}</div>
             {/* CHILD 2 */}
             <div className="flex flex-col space-y-3 mt-5 pr-5">
               {/* Row 1 */}
               <div className="flex flex-row justify-between font-body">
                 <div className={keyTextClass}>Owner</div>
                 <div className="text-white">
-                  <Link className="text-mupurple">{props.owner}</Link>
+                  <Link
+                    className="text-mupurple"
+                    href={`${props.blockExplorerBaseUrl}address/${props.owner}`}
+                  >
+                    {props.shortOwner}
+                  </Link>
                 </div>
               </div>
               {/* Row 2 */}
@@ -377,9 +392,12 @@ function Product2(props: NFT) {
               </div>
               {/* Row 3 */}
               <div className="flex flex-row justify-between font-body">
-                <div className={keyTextClass}>Listed until</div>
+                <div className={keyTextClass}>Blockchain</div>
                 <div className="text-white">
-                  {moment.utc(props.listedUntil).format("MMM DD, YYYY")}
+                  {/* {moment.utc(props.listedUntil).format("MMM DD, YYYY")} */}
+                  <Link href={props.blockExplorerBaseUrl}>
+                    {capitalizeFirstLetter(props.blockchain)}
+                  </Link>
                 </div>
               </div>
             </div>
@@ -418,13 +436,24 @@ function Product2(props: NFT) {
           {/* <div className="flex flex-row font-semibold text-xl justify-start md:justify-center space-x-5 mt-4 w-full">
           <div className="w-1/2 md:w-auto px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Buy</div></div>
           <div className="w-1/2 md:w-auto px-6 rounded-full bg-mupurple text-white flex justify-around items-center"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Add to wishlist</div></div>
-        </div> */}
-          <div className="flex row w-full mt-6 md:mt-4 justify-center">
-            <WhiteButton className="w-full text-lg mr-6">Buy</WhiteButton>
+        </div> mt-6 md:mt-4 */}
+          <div className="flex row w-full h-full items-end justify-center">
+            <WhiteButton className="w-1/2 text-lg mr-3" onClick={handleBuy}>
+              Buy
+            </WhiteButton>
+            <Button className="w-1/2 text-lg mr-6" onClick={handleSell}>
+              Sell
+            </Button>
             {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
               Add to wishlist
             </Button> */}
           </div>
+          {/* <div className="flex row w-full h-full items-end justify-center"> */}
+          {/* <WhiteButton className="w-1/2 text-lg mr-6">Buy</WhiteButton> */}
+          {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
+              Add to wishlist
+            </Button> */}
+          {/* </div> */}
           {/* <div className="flex flex-row font-semibold text-sm xs:text-xl justify-start md:justify-center space-x-2 xs:space-x-5  my-4 w-full">
             <div className="w-1/2 md:w-auto px-3 tiny:px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6">
               <div className="pt-1 pb-1 md:pt-1 md:pb-1 leading-loose align-middle">
@@ -590,24 +619,25 @@ function MiniExplorer(props) {
 // {propsSection}
 // </div>
 
-function Content() {
-  const [cardArr, setCards] = useState([]);
-  useEffect(() => {
-    const getCards = async () =>
-      setCards(
-        (
-          await axios.get(
-            "https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100"
-          )
-        ).data.data.data
-      );
-    getCards();
-    // return () => {
-    // }
-  }, []);
+function Content({ cardArr }) {
+  // const [cardArr, setCards] = useState([]);
+  // useEffect(() => {
+  //   const getCards = async () =>
+  //     setCards(
+  //       (
+  //         await axios.get(
+  //           "https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100"
+  //         )
+  //       ).data.data.data
+  //     );
+  //   getCards();
+  //   // return () => {
+  //   // }
+  // }, []);
   if (!cardArr.length) return <div>Loading...</div>;
   const router = useRouter();
-  const currentCard = cardArr[Number(router.query.id)];
+  const currentCard = cardArr.find((card) => card.id === router.query.id);
+  console.log({ currentCard });
   const mainProps: (LinkPair | NoLinkPair)[] = [
     {
       pairKey: "Current Owner",
@@ -644,12 +674,12 @@ function Content() {
         <div className="mb-0 lg:mb-10 max-w-full">
           <NFTDetails />
         </div>
-        <div className="mb-0 lg:mb-10 max-w-full">
+        {/* <div className="mb-0 lg:mb-10 max-w-full">
           <SeriesDetails />
-        </div>
-        <div className="mb-0 lg:mb-10 max-w-full">
+        </div> */}
+        {/* <div className="mb-0 lg:mb-10 max-w-full">
           <MiniExplorer />
-        </div>
+        </div> */}
       </div>
       <div className="w-full text-center">
         <RelatedSection cards={cardArr} />
@@ -662,7 +692,7 @@ export default function Home(props) {
   return (
     <div className="App text-white bg-mainbg min-h-screen font-body">
       <NavBar {...props} />
-      <Content />
+      <Content cardArr={props.nftList} />
 
       <Footer />
     </div>

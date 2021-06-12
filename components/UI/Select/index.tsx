@@ -63,6 +63,7 @@ function MUSelect(props: {
     <Select
       isSearchable={false}
       styles={customStyles}
+      instanceId="idk"
       theme={(theme) => ({
         ...theme,
         colors: {
