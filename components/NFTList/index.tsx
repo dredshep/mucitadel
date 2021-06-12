@@ -1,7 +1,7 @@
 import {
   faInfoCircle,
   faShareAlt,
-  faShoppingCart
+  faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -31,10 +31,10 @@ function useOutsideAlerter(
   }, [ref]);
 }
 
-export function NFTCard(props: NFT & { href: string, currency: string }) {
+export function NFTCard(props: NFT & { href: string; currency: string }) {
   const [popdownIsVisible, showPopdown] = React.useState(false);
   const router = useRouter();
-  console.log(props.id)
+  console.log(props.id);
 
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, showPopdown);
@@ -150,7 +150,11 @@ function Container(props: { children: any }) {
   return <div className="px-auto">{props.children}</div>;
 }
 
-function NFTList (props: { configurations?: any; searchTerm?: string, nftList: NFT[] }) {
+function NFTList(props: {
+  configurations?: any;
+  searchTerm?: string;
+  nftList: NFT[];
+}) {
   const { configurations, searchTerm = "", nftList } = props;
   // const [nftList, setNftList] = useState([]);
 
@@ -159,24 +163,39 @@ function NFTList (props: { configurations?: any; searchTerm?: string, nftList: N
     // alert(JSON.stringify(nftList.length))
     // let sortedList = nftList.map(x => x)
     // let sortedList = [...nftList]
-    
-    let sortedList= [...(nftList||[]) ]
-    console.log(nftList)
-    const isValidString = (s:string) => typeof s === 'string' && s.length > 0
-    const isValidNumber = (n:number) => typeof n === 'number' && n > 0
+
+    let sortedList = [...(nftList || [])];
+    console.log(nftList);
+    const isValidString = (s: string) => typeof s === "string" && s.length > 0;
+    const isValidNumber = (n: number) => typeof n === "number" && n > 0;
 
     if (configurations) {
       // only set currency
-      sortedList = sortedList.filter(nft => {
-        const ifNotFirstTrueOtherwiseSecond = (condition1, condition2) => condition1 ? true : condition2
-        const hasCurrency = nft.price[configurations.currency]
-        const fitsSearch = ifNotFirstTrueOtherwiseSecond(!isValidString(searchTerm), nft.name.toLowerCase().includes(searchTerm.toLowerCase()))
-        const isTier = ifNotFirstTrueOtherwiseSecond(!isValidString(configurations.tier), nft.tier === configurations.tier)
-        const isAbovePrice = ifNotFirstTrueOtherwiseSecond(!isValidNumber(configurations.minPrice), nft.price[configurations.currency] >= configurations.minPrice)
-        const isBelowPrice = ifNotFirstTrueOtherwiseSecond(!isValidNumber(configurations.maxPrice), nft.price[configurations.currency] <= configurations.maxPrice)
+      sortedList = sortedList.filter((nft) => {
+        const ifNotFirstTrueOtherwiseSecond = (condition1, condition2) =>
+          condition1 ? true : condition2;
+        const hasCurrency = nft.price[configurations.currency];
+        const fitsSearch = ifNotFirstTrueOtherwiseSecond(
+          !isValidString(searchTerm),
+          nft.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        const isTier = ifNotFirstTrueOtherwiseSecond(
+          !isValidString(configurations.tier),
+          nft.tier === configurations.tier
+        );
+        const isAbovePrice = ifNotFirstTrueOtherwiseSecond(
+          !isValidNumber(configurations.minPrice),
+          nft.price[configurations.currency] >= configurations.minPrice
+        );
+        const isBelowPrice = ifNotFirstTrueOtherwiseSecond(
+          !isValidNumber(configurations.maxPrice),
+          nft.price[configurations.currency] <= configurations.maxPrice
+        );
         // console.log({hasCurrency, fitsSearch, isTier, isAbovePrice, isBelowPrice})
-        return hasCurrency && fitsSearch && isTier && isAbovePrice && isBelowPrice
-      })
+        return (
+          hasCurrency && fitsSearch && isTier && isAbovePrice && isBelowPrice
+        );
+      });
       // console.log("sorted", sorted)
 
       // sortedList = sortedList.filter(
@@ -251,7 +270,7 @@ function NFTList (props: { configurations?: any; searchTerm?: string, nftList: N
     return sortedList;
   }, [nftList, configurations, searchTerm]);
 
-  const log = (v: any) => (console.log(v), v)
+  const log = (v: any) => (console.log(v), v);
 
   return (
     <Container>
@@ -268,7 +287,6 @@ function NFTList (props: { configurations?: any; searchTerm?: string, nftList: N
       </div>
     </Container>
   );
-};
-
+}
 
 export default NFTList;

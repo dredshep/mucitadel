@@ -3,7 +3,7 @@ export default function Button(props: { [key: string]: any; children: any }) {
     <button
       {...props}
       className={
-        "bg-mupurple hover:bg-mupurple-hover active:bg-mupurple-active " +
+        "bg-mupurple hover:bg-mupurple-hover active:bg-mupurple-active text-white font-title " +
         "select-none rounded-lg shadow-md font-semibold text-base " +
         "cursor-pointer focus:outline-none px-4 py-2 " +
         "transition-colors duration-75 " +

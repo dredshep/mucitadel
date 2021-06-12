@@ -270,6 +270,7 @@ function SeriesDetails() {
 }
 
 function RelatedSection(props: { cards: NFT[] }) {
+  const toDisplay = props.cards.slice(0, 2);
   const title = (
     <div className="text-3xl font-bold mb-9 mt-10 mx-auto md:mx-0">
       Related Cards
@@ -277,13 +278,17 @@ function RelatedSection(props: { cards: NFT[] }) {
   );
   const cards = (
     <div className="flex flex-col md:flex-row mx-auto justify-center w-max md:w-full box-border">
-      <div>
-        <NFTCard {...props.cards[1]} href="/card/1" />
-      </div>
-      <div className="w-10 h-10 flex-shrink-0"></div>
-      <div>
-        <NFTCard {...props.cards[2]} href="/card/2" />
-      </div>
+      {(() => {
+        return toDisplay.map((card) => (
+          <div>
+            <NFTCard
+              {...props.cards[1]}
+              href={`/card/${card.id}`}
+              currency={card.price.USD ? "USD" : Object.keys(card.price)[0]}
+            />
+          </div>
+        ));
+      })()}
     </div>
   );
   return (
@@ -672,7 +677,7 @@ function Content({ cardArr }) {
       <Product2 {...currentCard} />
       <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
         <div className="mb-0 lg:mb-10 max-w-full">
-          <NFTDetails />
+          <NFTDetails {...currentCard} />
         </div>
         {/* <div className="mb-0 lg:mb-10 max-w-full">
           <SeriesDetails />
@@ -682,7 +687,11 @@ function Content({ cardArr }) {
         </div> */}
       </div>
       <div className="w-full text-center">
-        <RelatedSection cards={cardArr} />
+        <RelatedSection
+          cards={cardArr.filter(
+            (x: NFT) => x.tier === (currentCard as NFT).tier
+          )}
+        />
       </div>
     </div>
   );
