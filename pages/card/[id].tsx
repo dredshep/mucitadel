@@ -7,6 +7,7 @@ import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import { NFTCard } from "../../components/NFTList";
+import SellModal from "../../components/SellModal";
 import Button from "../../components/styled/Button";
 import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
@@ -282,7 +283,8 @@ function RelatedSection(props: { cards: NFT[] }) {
         return toDisplay.map((card) => (
           <div>
             <NFTCard
-              {...props.cards[1]}
+              {...card}
+              // {...props.cards[1]}
               href={`/card/${card.id}`}
               currency={card.price.USD ? "USD" : Object.keys(card.price)[0]}
             />
@@ -303,18 +305,25 @@ const valueTextClass = "text-white font-body";
 
 function Product2(props: NFT) {
   const [currency, setCurrency] = useState("dank");
+  const [showSellModal, setShowSellModal] = useState(false);
 
   const getPriceListFromPriceObj = (priceObj: { [key: string]: number }) =>
     Object.entries(priceObj).map(
       (pricePair) => pricePair[1] + " " + pricePair[0].toUpperCase()
     );
 
-  function handleBuy() {
+  const handleBuy = () => {
     alert(JSON.stringify(props, null, 2));
-  }
-  function handleSell() {
+  };
+
+  const handleSell = () => {
     alert(JSON.stringify(props, null, 2));
-  }
+    setShowSellModal(true);
+  };
+
+  const handleCloseSellModal = () => {
+    setShowSellModal(false);
+  };
 
   return (
     <div className="flex flex-row px-5 pb-5 md:py-0 md:px-0 space-x-0 md:space-x-5 bg-asidebg rounded-none md:rounded-xl mt-0 md:mt-10 w-full max-w-lg md:max-w-3xl mx-auto">
@@ -471,6 +480,11 @@ function Product2(props: NFT) {
               </div>
             </div>
           </div> */}
+          <SellModal
+            visible={showSellModal}
+            tokenId={props.id}
+            onCloseModal={handleCloseSellModal}
+          />
         </div>
       </div>
     </div>
@@ -663,7 +677,9 @@ function Content({ cardArr }) {
       value: "Sat Feb 27 2021 to Mon Mar 29 2021",
     } as NoLinkPair,
   ].map((obj) => makeProp(...(Object.values(obj) as [string, string])));
-  mainProps.push(makeProp("Description", currentCard.description));
+  if (currentCard) {
+    mainProps.push(makeProp("Description", currentCard.description));
+  }
   const propsSection = (
     <div className="flex flex-col items-start w-full ml-10">
       {mainProps.map((props) => (

@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import React from "react";
-import MemeCreationForm from "./MemeCreationForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,10 +13,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MintModal(props: {
+export default function Modal(props: {
+  title: string;
+  children: any;
   visible: boolean;
-  role: string;
-  closeMintModal: () => void;
+  closeModal: () => void;
 }) {
   const classes = useStyles();
   return (
@@ -36,16 +36,18 @@ export default function MintModal(props: {
               classes.root
             )}
           >
-            <div className="w-full flex justify-between">
-              <div className="px-10 flex justify-around items-center">
-                Create Meme NFT Token
+            <div className="w-full flex justify-between items-center">
+              <div className="px-10 flex justify-around items-center h-10">
+                {props.title}
               </div>
-              <div
-                className="w-14 h-14 flex justify-around cursor-pointer items-center hover:bg-asidebg hover:text-white"
-                onClick={props.closeMintModal}
-              >
-                <FontAwesomeIcon icon={faTimes} />
-              </div>
+              {props.closeModal && (
+                <div
+                  className="w-14 h-14 flex justify-around cursor-pointer items-center hover:bg-asidebg hover:text-white"
+                  onClick={props.closeModal}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </div>
+              )}
             </div>
             {/* <div className="max-w-max pb-3">Choose your login method:</div> */}
             <div
@@ -54,7 +56,7 @@ export default function MintModal(props: {
                 classes.form
               )}
             >
-              <MemeCreationForm role={props.role} />
+              {props.children}
             </div>
           </div>
         </div>

@@ -131,6 +131,7 @@ const MemeCreationForm = ({
   handleChange,
   handleBlur,
   handleSubmit,
+  isSubmitting,
 }) => {
   const classes = useStyles();
 
@@ -228,7 +229,7 @@ const MemeCreationForm = ({
             onBlur={handleBlur}
           />
         </Grid>
-        {values.ForSale && (
+        {values.ForSale && values.Currencies.length < 2 && (
           <MuButton
             size="small"
             className={classes.addCurrency}
@@ -376,6 +377,7 @@ const MemeCreationForm = ({
           onClick={handleSubmit}
           variant="contained"
           color="primary"
+          disabled={isSubmitting}
           startIcon={<GetAppIcon />}
         >
           {"Mint"}
