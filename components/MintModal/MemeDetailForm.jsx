@@ -228,7 +228,7 @@ const MemeCreationForm = ({
             onBlur={handleBlur}
           />
         </Grid>
-        {values.ForSale && (
+        {values.ForSale && values.Currencies.length < 2 && (
           <MuButton
             size="small"
             className={classes.addCurrency}

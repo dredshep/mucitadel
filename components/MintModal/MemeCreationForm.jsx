@@ -3,21 +3,22 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { ethers } from "ethers";
 import { Formik } from "formik";
 import html2canvas from "html2canvas";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import * as Yup from "yup";
+import contractAbi from "../../config/abi/meme.json";
 // import ConnectWalletDialog from 'components/ConnectWalletDialog';
 import { FILE_TYPES } from "../../constant/file-types";
+import Modal from "../UI/Modal";
 // import PreviewCard from 'pages/MemeCreationPage/PreviewCard';
 import UploadMedia from "../UploadMedia";
 import MemeDetailForm from "./MemeDetailForm";
-
+import MUStepper from "./Stepper";
 /* SMART CONTRACT STARTS */
 // ROPSTEN TESTNET
 // MU DANK TESTNET ADD : 0x51a41a08eaf9cffa27c870bb031a736845c21093
 // MU NFT TESTNET ADD : 0xb129903f3399b1F2D1e39B56980596D641cd957E
 
 const contractAdd = "0x09b57aA9F052165a98Dcc06e3c380e5BD29a497f";
-const contractAbi = [ { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "address", "name": "account", "type": "address" }, { "indexed": true, "internalType": "address", "name": "operator", "type": "address" }, { "indexed": false, "internalType": "bool", "name": "approved", "type": "bool" } ], "name": "ApprovalForAll", "type": "event" }, { "inputs": [ { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "uint256", "name": "value", "type": "uint256" } ], "name": "burn", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256[]", "name": "ids", "type": "uint256[]" }, { "internalType": "uint256[]", "name": "values", "type": "uint256[]" } ], "name": "burnBatch", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "value", "type": "uint256" }, { "internalType": "string", "name": "_hash", "type": "string" }, { "internalType": "bytes", "name": "data", "type": "bytes" } ], "name": "mint", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256[]", "name": "values", "type": "uint256[]" }, { "internalType": "string[]", "name": "_hash", "type": "string[]" }, { "internalType": "bytes", "name": "data", "type": "bytes" } ], "name": "mintBatch", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" } ], "name": "OwnershipTransferred", "type": "event" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256[]", "name": "ids", "type": "uint256[]" }, { "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }, { "internalType": "bytes", "name": "data", "type": "bytes" } ], "name": "safeBatchTransferFrom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "id", "type": "uint256" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "bytes", "name": "data", "type": "bytes" } ], "name": "safeTransferFrom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "operator", "type": "address" }, { "internalType": "bool", "name": "approved", "type": "bool" } ], "name": "setApprovalForAll", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "address", "name": "operator", "type": "address" }, { "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256[]", "name": "ids", "type": "uint256[]" }, { "indexed": false, "internalType": "uint256[]", "name": "values", "type": "uint256[]" } ], "name": "TransferBatch", "type": "event" }, { "inputs": [ { "internalType": "address", "name": "newOwner", "type": "address" } ], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "address", "name": "operator", "type": "address" }, { "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "id", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" } ], "name": "TransferSingle", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "string", "name": "value", "type": "string" }, { "indexed": true, "internalType": "uint256", "name": "id", "type": "uint256" } ], "name": "URI", "type": "event" }, { "inputs": [ { "internalType": "address", "name": "account", "type": "address" }, { "internalType": "uint256", "name": "id", "type": "uint256" } ], "name": "balanceOf", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address[]", "name": "accounts", "type": "address[]" }, { "internalType": "uint256[]", "name": "ids", "type": "uint256[]" } ], "name": "balanceOfBatch", "outputs": [ { "internalType": "uint256[]", "name": "", "type": "uint256[]" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "owner", "type": "address" } ], "name": "getAllTokenHash", "outputs": [ { "internalType": "string[]", "name": "", "type": "string[]" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "owner", "type": "address" } ], "name": "getAllTokenIds", "outputs": [ { "internalType": "uint256[]", "name": "", "type": "uint256[]" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256[]", "name": "tokenIds", "type": "uint256[]" } ], "name": "getHashBatch", "outputs": [ { "internalType": "string[]", "name": "", "type": "string[]" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "tokenId", "type": "uint256" } ], "name": "getHashFromTokenID", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "tokenId", "type": "uint256" } ], "name": "getOwnersFromTokenId", "outputs": [ { "internalType": "address[]", "name": "", "type": "address[]" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "owner", "type": "address" } ], "name": "getTokenAmount", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "tokenId", "type": "uint256" } ], "name": "getTokenInitAmount", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "tokenId", "type": "uint256" } ], "name": "getTokenMaker", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "account", "type": "address" }, { "internalType": "address", "name": "operator", "type": "address" } ], "name": "isApprovedForAll", "outputs": [ { "internalType": "bool", "name": "", "type": "bool" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "nextID", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "uint256", "name": "id", "type": "uint256" } ], "name": "ownerOf", "outputs": [ { "internalType": "bool", "name": "", "type": "bool" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" } ], "name": "supportsInterface", "outputs": [ { "internalType": "bool", "name": "", "type": "bool" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "uri", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" } ];
 /* SMART CONTRACT ENDS */
 
 const useStyles = makeStyles((theme) => ({
@@ -61,6 +62,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     marginBottom: theme.spacing(1),
   },
+  mint: {
+    marginLeft: `0 !important`,
+  },
 }));
 
 const MemeCreationForm = ({ role }) => {
@@ -70,6 +74,8 @@ const MemeCreationForm = ({ role }) => {
   const previewRef = useRef(null);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("sm"));
+  const [activeStep, setActiveStep] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
 
   const initialValues = {
     Name: "",
@@ -142,34 +148,36 @@ const MemeCreationForm = ({ role }) => {
       }
       console.log("ant : croppedImageUrl => ", croppedImageUrl);
       if (window.ethereum) {
+        setIsSaving(true);
         /* Step 1 - Create a image Blob File 0% */
         const blob = await fetch(croppedImageUrl).then((res) => res.blob());
         const fd = new FormData();
-        const file = new File([blob], values.Name+".jpeg");
+        const file = new File([blob], values.Name + ".jpeg");
         fd.append("imageupload", file);
         fd.append(
           "walletadd",
-          await window.ethereum.request({ method: "eth_requestAccounts" })
+          await window.ethereum.request({
+            method: "eth_requestAccounts",
+          })
         );
         fd.append("title", values.Description);
 
         console.log("ant : form values & file => ", values, fd);
         var requestOptions = {
-          method: 'POST',
+          method: "POST",
           body: fd,
-          redirect: 'follow'
+          redirect: "follow",
         };
-
-            
 
         /* Step 2 - Upload to IPFS 25%*/
         fetch("https://api.mucitadel.io/v1/upload/ipfs", requestOptions)
-          .then(response => response.text())
-          .then(result =>{
+          .then((response) => response.text())
+          .then((result) => {
+            setActiveStep(1);
             console.log(JSON.parse(result));
             const JsonResult = JSON.parse(result);
             /* Step 3 - Mint Token to Smart Contract 50%*/
-            const final = async()=>{
+            const final = async () => {
               if (window.ethereum) {
                 const provider = new ethers.providers.Web3Provider(
                   window.ethereum
@@ -193,24 +201,36 @@ const MemeCreationForm = ({ role }) => {
                 // }
                 /* Mint Token - 1/1 NFT  */
                 await contract.functions
-                  .mint(account,1,hash,[])
+                  .mint(account, 1, hash, [])
                   .then(async function (result) {
                     console.log(result);
+                    setActiveStep(2);
+
                     /* Step 4 - Upload to API 75%*/
                     var myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+                    myHeaders.append(
+                      "Content-Type",
+                      "application/x-www-form-urlencoded"
+                    );
 
                     /* Currencies Division */
-                    var symbols ="";
+                    var symbols = "";
                     var prices = [];
-                    console.log((values.Currencies)[0])
-                    for(var i=0;i<(values.Currencies).length;i++){
-                      prices[i] = parseInt(parseFloat((values.Currencies)[i])*1e18)
+                    console.log(values.Currencies[0]);
+                    for (var i = 0; i < values.Currencies.length; i++) {
+                      prices[i] = parseInt(
+                        parseFloat(values.Currencies[i]) * 1e18
+                      );
                     }
-                    console.log(prices.join())
+                    console.log(prices.join());
 
                     var fd1 = new URLSearchParams();
-                    fd1.append("owneraddress",await window.ethereum.request({ method: "eth_requestAccounts" }));
+                    fd1.append(
+                      "owneraddress",
+                      await window.ethereum.request({
+                        method: "eth_requestAccounts",
+                      })
+                    );
                     fd1.append("ipfsurl", "test1");
                     fd1.append("s3bucketurl", "test");
                     fd1.append("name", "test");
@@ -226,40 +246,51 @@ const MemeCreationForm = ({ role }) => {
                     fd1.append("contractadd", "test");
                     // fd1.append("txhash", "test");
 
-
-
                     console.log("form values & file => ", fd1);
                     var requestOptions1 = {
-                      method: 'POST',
+                      method: "POST",
                       body: fd1,
                       headers: myHeaders,
-                      redirect: 'follow'
+                      redirect: "follow",
                     };
 
-                    fetch("https://api.mucitadel.io/v1/nft/recordnft", requestOptions1)
-                    .then(response => response.text())
-                    .then(result =>{
-                      /* End Result 100% */
-                      console.log(result)
-                      
-                    }).catch(error => {
-                      console.log('error', error)
-                    });
-                        
+                    fetch(
+                      "https://api.mucitadel.io/v1/nft/recordnft",
+                      requestOptions1
+                    )
+                      .then((response) => response.text())
+                      .then((result) => {
+                        setActiveStep(3);
 
-                  }).catch(error => {
-                    console.log('error', error)
+                        setTimeout(() => {
+                          setIsSaving(false);
+                        }, [1000]);
+                        /* End Result 100% */
+                        console.log(result);
+                      })
+                      .catch((error) => {
+                        setActiveStep(0);
+                        setIsSaving(false);
+                        console.log("error", error);
+                      });
+                  })
+                  .catch((error) => {
+                    setActiveStep(0);
+                    setIsSaving(false);
+                    console.log("error", error);
                   });
               } else {
                 alert(
                   "Please install MetaMask or Trust Wallet in order to use blockchain features."
                 );
               }
-            }
+            };
             final();
           })
-          .catch(error => {
-            console.log('error', error)
+          .catch((error) => {
+            setActiveStep(0);
+            setIsSaving(false);
+            console.log("error", error);
           });
       } else {
         alert("Connect Metamask");
@@ -297,40 +328,66 @@ const MemeCreationForm = ({ role }) => {
     };
   }
 
+  const creationSteps = useMemo(() => {
+    if (activeStep === 0) {
+      return ["Uploading Image", "Mint NFT", "Record NFT"];
+    } else if (activeStep === 1) {
+      return ["Uploaded Image", "Minting NFT", "Record NFT"];
+    } else if (activeStep === 2) {
+      return ["Uploaded Image", "Minted NFT", "Recording NFT"];
+    } else {
+      return ["Uploaded Image", "Minted NFT", "Recorded NFT"];
+    }
+  }, [activeStep]);
+
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={(values, { setSubmitting }) => {
-        handleSave(values, setSubmitting);
-      }}
-      validationSchema={Yup.object().shape(validationObject)}
-    >
-      {(props) => {
-        const { handleSubmit, values } = props;
-        return (
-          <form onSubmit={handleSubmit}>
-            <Grid container>
-              <Grid container justify="space-between">
-                <Typography variant="h6" className={classes.subtitle}>
-                  Upload file
-                </Typography>
+    <>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values, { setSubmitting }) => {
+          handleSave(values, setSubmitting);
+        }}
+        validationSchema={Yup.object().shape(validationObject)}
+      >
+        {(props) => {
+          const { handleSubmit, values } = props;
+          return (
+            <form onSubmit={handleSubmit}>
+              <Grid container>
+                <Grid container justify="space-between">
+                  <Typography variant="h6" className={classes.subtitle}>
+                    Upload file
+                  </Typography>
+                </Grid>
+                <UploadMedia
+                  values={values}
+                  role={role}
+                  previewRef={previewRef}
+                  className={classes.uploadContainer}
+                  type={FILE_TYPES[FILE_TYPES.IMAGE.VALUE]}
+                  fileBuffer={fileBuffer}
+                  showEmptyFileError={showEmptyFileError}
+                  setFileBuffer={handleSetFileBuffer}
+                />
+                <MemeDetailForm
+                  role={role}
+                  {...props}
+                  fileBuffer={fileBuffer}
+                />
               </Grid>
-              <UploadMedia
-                values={values}
-                role={role}
-                previewRef={previewRef}
-                className={classes.uploadContainer}
-                type={FILE_TYPES[FILE_TYPES.IMAGE.VALUE]}
-                fileBuffer={fileBuffer}
-                showEmptyFileError={showEmptyFileError}
-                setFileBuffer={handleSetFileBuffer}
-              />
-              <MemeDetailForm role={role} {...props} fileBuffer={fileBuffer} />
-            </Grid>
-          </form>
-        );
-      }}
-    </Formik>
+            </form>
+          );
+        }}
+      </Formik>
+      <Modal visible={isSaving} title={"Mint Meme"}>
+        {isSaving && (
+          <MUStepper activeStep={activeStep} steps={creationSteps} />
+        )}
+        {activeStep === 3 && (
+          <Typography className={classes.mint}>Successfully Mint!</Typography>
+        )}
+      </Modal>
+    </>
   );
 };
 
