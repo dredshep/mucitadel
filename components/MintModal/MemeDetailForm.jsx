@@ -131,6 +131,7 @@ const MemeCreationForm = ({
   handleChange,
   handleBlur,
   handleSubmit,
+  isSubmitting,
 }) => {
   const classes = useStyles();
 
@@ -376,6 +377,7 @@ const MemeCreationForm = ({
           onClick={handleSubmit}
           variant="contained"
           color="primary"
+          disabled={isSubmitting}
           startIcon={<GetAppIcon />}
         >
           {"Mint"}

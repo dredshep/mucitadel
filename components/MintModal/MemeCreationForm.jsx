@@ -128,8 +128,9 @@ const MemeCreationForm = ({ role }) => {
           })
       );
 
-  const handleMintToken = async (values, ref) => {
+  const handleMintToken = async (values, ref, setSubmitting) => {
     if (fileBuffer) {
+      setSubmitting(true);
       let croppedImageUrl = "";
       if (role === "admin") {
         croppedImageUrl = await toDataURL(fileBuffer);
@@ -260,21 +261,23 @@ const MemeCreationForm = ({ role }) => {
                     )
                       .then((response) => response.text())
                       .then((result) => {
+                        setSubmitting(false);
                         setActiveStep(3);
-
                         setTimeout(() => {
                           setIsSaving(false);
-                        }, [1000]);
+                        }, [500]);
                         /* End Result 100% */
                         console.log(result);
                       })
                       .catch((error) => {
+                        setSubmitting(false);
                         setActiveStep(0);
                         setIsSaving(false);
                         console.log("error", error);
                       });
                   })
                   .catch((error) => {
+                    setSubmitting(false);
                     setActiveStep(0);
                     setIsSaving(false);
                     console.log("error", error);
@@ -288,6 +291,7 @@ const MemeCreationForm = ({ role }) => {
             final();
           })
           .catch((error) => {
+            setSubmitting(false);
             setActiveStep(0);
             setIsSaving(false);
             console.log("error", error);
@@ -302,7 +306,7 @@ const MemeCreationForm = ({ role }) => {
     if (!fileBuffer) {
       setShowEmptyFileError(true);
     } else {
-      handleMintToken(values, previewRef);
+      handleMintToken(values, previewRef, setSubmitting);
     }
   };
 

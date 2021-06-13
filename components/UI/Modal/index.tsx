@@ -36,7 +36,7 @@ export default function Modal(props: {
               classes.root
             )}
           >
-            <div className="w-full flex justify-between">
+            <div className="w-full flex justify-between items-center">
               <div className="px-10 flex justify-around items-center h-10">
                 {props.title}
               </div>
