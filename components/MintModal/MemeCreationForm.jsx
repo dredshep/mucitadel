@@ -300,7 +300,7 @@ const MemeCreationForm = ({ role }) => {
                     };
 
                     fetch(
-                      "http://localhost:4000/v1/nft/recordnft",
+                      "https://api.mucitadel.io/v1/nft/recordnft",
                       requestOptions1
                     )
                       .then((response) => response.text())
