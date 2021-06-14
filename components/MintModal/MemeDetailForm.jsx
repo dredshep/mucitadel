@@ -213,7 +213,7 @@ const MemeCreationForm = ({
           margin="normal"
         />
       </Grid>
-      <Grid
+      {/* <Grid
         container
         justify="space-between"
         alignItems="center"
@@ -245,8 +245,8 @@ const MemeCreationForm = ({
             Add Currency
           </MuButton>
         )}
-      </Grid>
-      {values.ForSale && (
+      </Grid> */}
+      {/* {values.ForSale && (
         <>
           {values.Currencies.map((currency, index) => {
             return (
@@ -332,7 +332,7 @@ const MemeCreationForm = ({
             );
           })}
         </>
-      )}
+      )} */}
       <Grid container>
         <Typography className={classes.formLabel}>Blockchain</Typography>
         <Grid className={classes.selectContainer}>
@@ -366,6 +366,7 @@ const MemeCreationForm = ({
             id="price-selector"
           >
             <MenuItem value="ethereum">Ethereum</MenuItem>
+            <MenuItem value="binance">Binance</MenuItem>
           </Select>
           <FormHelperText className={classes.helperText}>
             {errors.Blockchain && touched.Blockchain && errors.Blockchain}

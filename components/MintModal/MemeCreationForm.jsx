@@ -13,12 +13,17 @@ import Modal from "../UI/Modal";
 import UploadMedia from "../UploadMedia";
 import MemeDetailForm from "./MemeDetailForm";
 import MUStepper from "./Stepper";
+var window = require("global/window")
+
 /* SMART CONTRACT STARTS */
 // ROPSTEN TESTNET
 // MU DANK TESTNET ADD : 0x51a41a08eaf9cffa27c870bb031a736845c21093
 // MU NFT TESTNET ADD : 0xb129903f3399b1F2D1e39B56980596D641cd957E
 
 const contractAdd = "0x09b57aA9F052165a98Dcc06e3c380e5BD29a497f";
+const contractAddB = "0xd74cB3afa717Eb37db36a4ec678cc8537E351e12";
+let chainID  = "";
+
 /* SMART CONTRACT ENDS */
 
 const useStyles = makeStyles((theme) => ({
@@ -128,6 +133,15 @@ const MemeCreationForm = ({ role }) => {
           })
       );
 
+      /* Detects Chain Change needs to run all time */
+      // const chainChange = async()=>{
+      //   // await window.ethereum.on('chainChanged', (_chainId) => window.location.reload())
+
+      //   chainID = await window.ethereum.request({ method: 'eth_chainId' });
+      //   console.log(chainID);
+      // };
+      // chainChange();
+
   const handleMintToken = async (values, ref, setSubmitting) => {
     if (fileBuffer) {
       setSubmitting(true);
@@ -149,6 +163,27 @@ const MemeCreationForm = ({ role }) => {
       }
       console.log("ant : croppedImageUrl => ", croppedImageUrl);
       if (window.ethereum) {
+        /* ETH Main - 1,Ropstem - 3, Binance Main :56	, Binance Testnet :97 */
+        chainID = parseInt(await window.ethereum.chainId);
+        console.log(chainID);
+
+        if(values.Blockchain=="ethereum"){
+          if(chainID ==1 || chainID == 3){
+            /* Do Nothing */
+          }else{
+            alert("Wrong Blockchain Connected switch to Ethereum Blockchain");
+            return false;
+          }
+        }else if(values.Blockchain=="binance"){
+          if(chainID ==56 || chainID == 97){
+            /* Do Nothing */
+          }else{
+            alert("Wrong Blockchain Connected switch to Binance Blockchain");
+            return false;
+          }
+         
+        }
+
         setIsSaving(true);
         /* Step 1 - Create a image Blob File 0% */
         const blob = await fetch(croppedImageUrl).then((res) => res.blob());
@@ -170,6 +205,8 @@ const MemeCreationForm = ({ role }) => {
           redirect: "follow",
         };
 
+        
+
         /* Step 2 - Upload to IPFS 25%*/
         fetch("https://api.mucitadel.io/v1/upload/ipfs", requestOptions)
           .then((response) => response.text())
@@ -183,8 +220,17 @@ const MemeCreationForm = ({ role }) => {
                 const provider = new ethers.providers.Web3Provider(
                   window.ethereum
                 );
+                let ContractInteraction = "";
+
+                if(values.Blockchain == "ethereum"){
+                  ContractInteraction = contractAdd;
+                }else if(values.Blockchain == "binance"){
+                  ContractInteraction = contractAddB;
+                }
+
+
                 let contract = new ethers.Contract(
-                  contractAdd,
+                  ContractInteraction,
                   contractAbi,
                   provider.getSigner()
                 );
@@ -193,13 +239,15 @@ const MemeCreationForm = ({ role }) => {
                 });
                 const account = accounts[0];
                 const hash = JsonResult.data.path;
-                const weiBalance = await provider.getBalance(account);
-                const ethBalance = parseFloat(weiBalance) / 1e18;
-                const price = 0.005;
-                const sufficientFunds = ethBalance > price;
-                // if (!sufficientFunds) {
-                //   return alert("Insufficient ETH funds for fees");
-                // }
+                const s3 =JsonResult.data.s3;
+                let nextTokenID="";
+
+                await contract.functions
+                  .nextID()
+                  .then(async function (result) {
+                    nextTokenID = parseInt(result[0]._hex,16);
+                  });
+              
                 /* Mint Token - 1/1 NFT  */
                 await contract.functions
                   .mint(account, 1, hash, [])
@@ -215,15 +263,15 @@ const MemeCreationForm = ({ role }) => {
                     );
 
                     /* Currencies Division */
-                    var symbols = "";
-                    var prices = [];
-                    console.log(values.Currencies[0]);
-                    for (var i = 0; i < values.Currencies.length; i++) {
-                      prices[i] = parseInt(
-                        parseFloat(values.Currencies[i]) * 1e18
-                      );
-                    }
-                    console.log(prices.join());
+                    // var symbols = "";
+                    // var prices = [];
+                    // console.log(values.Currencies[0]);
+                    // for (var i = 0; i < values.Currencies.length; i++) {
+                    //   prices[i] = parseInt(
+                    //     parseFloat(values.Currencies[i]) * 1e18
+                    //   );
+                    // }
+                    // console.log(prices.join());
 
                     var fd1 = new URLSearchParams();
                     fd1.append(
@@ -232,20 +280,16 @@ const MemeCreationForm = ({ role }) => {
                         method: "eth_requestAccounts",
                       })
                     );
-                    fd1.append("ipfsurl", "test1");
-                    fd1.append("s3bucketurl", "test");
-                    fd1.append("name", "test");
-                    fd1.append("tier", "test");
-                    fd1.append("description", "test");
+                    fd1.append("ipfsurl", hash);
+                    fd1.append("s3bucketurl", s3);
+                    fd1.append("name", values.Name);
+                    fd1.append("tier", values.Tier);
+                    fd1.append("description", values.Description);
                     fd1.append("amount", "1");
-                    fd1.append("price", "null");
-                    fd1.append("symbol", "null");
-                    fd1.append("trending", "0");
-                    fd1.append("blockchain", "ethereum");
+                    fd1.append("blockchain", values.Blockchain);
                     fd1.append("collection", "test");
-                    fd1.append("tokenid", "0");
-                    fd1.append("contractadd", "test");
-                    // fd1.append("txhash", "test");
+                    fd1.append("tokenid", nextTokenID);
+                    fd1.append("txhash", result.hash);
 
                     console.log("form values & file => ", fd1);
                     var requestOptions1 = {
@@ -256,7 +300,7 @@ const MemeCreationForm = ({ role }) => {
                     };
 
                     fetch(
-                      "https://api.mucitadel.io/v1/nft/recordnft",
+                      "http://localhost:4000/v1/nft/recordnft",
                       requestOptions1
                     )
                       .then((response) => response.text())

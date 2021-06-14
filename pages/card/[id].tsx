@@ -318,6 +318,8 @@ function Product2(props: NFT) {
 
   const handleSell = () => {
     alert(JSON.stringify(props, null, 2));
+    const data = JSON.stringify(props, null, 2);
+    console.log(data);
     setShowSellModal(true);
   };
 
@@ -483,6 +485,7 @@ function Product2(props: NFT) {
           <SellModal
             visible={showSellModal}
             tokenId={props.id}
+            // userAddress={props.id}
             onCloseModal={handleCloseSellModal}
           />
         </div>
