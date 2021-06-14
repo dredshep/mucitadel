@@ -9,6 +9,10 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       background: "transparent",
     },
+
+    "&:disabled": {
+      color: "white",
+    },
   },
 }));
 
