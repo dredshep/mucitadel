@@ -1,7 +1,7 @@
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
@@ -716,6 +716,7 @@ function Content({ cardArr }) {
 }
 
 export default function Home(props) {
+  useEffect(() => alert(props.milliseconds));
   return (
     <div className="App text-white bg-mainbg min-h-screen font-body">
       <NavBar {...props} />
@@ -727,6 +728,9 @@ export default function Home(props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  const before = new Date().getTime();
   const nftList: NFT[] = await getCardsFromAPI();
-  return { props: { nftList } };
+  const after = new Date().getTime();
+  var milliseconds = Math.abs(before - after);
+  return { props: { nftList, milliseconds } };
 };
