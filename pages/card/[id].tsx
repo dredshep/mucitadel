@@ -202,21 +202,20 @@ function NFTDetails(props: NFT) {
   const entries: (LinkPair | NoLinkPair)[] = [
     {
       pairKey: "Smart Contract",
-      value: "GHOST",
-      link: "https://explorer.phantasma.io/token/GHOST",
+      value: capitalizeFirstLetter(props.blockchain),
+      link: `${props.blockExplorerBaseUrl}address/${props.contractAddress}`,
       external: true,
     } as LinkPair,
     {
       pairKey: "NFT ID",
-      value:
-        "104920549433542394393888664408303023894970105957056315840031505911066476125106",
+      value: props.id,
     } as NoLinkPair,
-    {
-      pairKey: "Blockchain",
-      value: "Phantasma",
-      link: "https://ghostmarket.io/assets/pha/",
-      external: false,
-    } as LinkPair,
+    // {
+    //   pairKey: "Blockchain",
+    //   value: "Phantasma",
+    //   link: "https://ghostmarket.io/assets/pha/",
+    //   external: false,
+    // } as LinkPair,
   ].map((obj) => makeProp(...(Object.values(obj) as [string, string])));
 
   return (
@@ -269,8 +268,10 @@ function SeriesDetails() {
   );
 }
 
-function RelatedSection(props: { cards: NFT[] }) {
-  const toDisplay = props.cards.slice(0, 2);
+function RelatedSection(props: { cards: NFT[]; currentCard: NFT }) {
+  const toDisplay = props.cards
+    .filter((x) => x.id !== props.currentCard.id)
+    .slice(0, 2);
   const title = (
     <div className="text-3xl font-bold mb-9 mt-10 mx-auto md:mx-0">
       Related Cards
@@ -282,9 +283,10 @@ function RelatedSection(props: { cards: NFT[] }) {
         return toDisplay.map((card) => (
           <div>
             <NFTCard
-              {...props.cards[1]}
+              {...card}
               href={`/card/${card.id}`}
               currency={card.price.USD ? "USD" : Object.keys(card.price)[0]}
+              key={card.id}
             />
           </div>
         ));
@@ -688,6 +690,7 @@ function Content({ cardArr }) {
       </div>
       <div className="w-full text-center">
         <RelatedSection
+          currentCard={currentCard}
           cards={cardArr.filter(
             (x: NFT) => x.tier === (currentCard as NFT).tier
           )}
