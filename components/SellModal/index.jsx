@@ -16,6 +16,27 @@ import React from "react";
 import MuButton from "../UI/Button/MuButton";
 import Modal from "../UI/Modal";
 
+import marketcontractAbi from "../../config/abi/marketplace.json";
+import contractAbi from "../../config/abi/meme.json";
+import tokencontractAbi from "../../config/abi/token.json";
+
+import { ethers } from "ethers";
+var window = require("global/window")
+
+
+const contractAdd = "0x09b57aA9F052165a98Dcc06e3c380e5BD29a497f";
+const contractAddB = "0xd74cB3afa717Eb37db36a4ec678cc8537E351e12";
+
+const tokencontractAdd = "0x51A41A08eaF9Cffa27c870BB031a736845C21093";
+const tokencontractAddB = "0xa09513B6cB170A311f7cD733B02b75468f47C5C0";
+
+const marketcontractAdd = "0xb89FbeC6199Ba9251aD2Ec18e5daa4E47A54C794";
+const marketcontractAddB = "0x12e73746A1997B8C0f7432BB97Bdd9cB37360651";
+
+
+let chainID  = "";
+
+
 const useStyles = makeStyles((theme) => ({
   form: {
     width: theme.spacing(60),
@@ -111,7 +132,70 @@ const SellModal = ({ visible, tokenId, onCloseModal }) => {
 
   const handleSave = (values, setSubmitting) => {
     setSubmitting(false);
+    console.log(values.Currencies[0])
+    handleSell();
   };
+
+  const handleSell = async()=>{
+    if (window.ethereum) {
+
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum
+      );
+      
+      
+      /* Selecting the right Blockchain */
+      // let ContractInteraction = "";
+
+      // if(values.Blockchain == "ethereum"){
+      //   ContractInteraction = contractAdd;
+      // }else if(values.Blockchain == "binance"){
+      //   ContractInteraction = contractAddB;
+      // }
+
+      /* Taking ETH as Default For Test */
+      let ContractInteraction = contractAdd;
+      let marketplace= marketcontractAdd;
+
+
+      let contract = new ethers.Contract(
+        ContractInteraction,
+        contractAbi,
+        provider.getSigner()
+      );
+
+
+
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      console.log(accounts.toString(),marketplace)
+      /* Check if Contract is Approved */
+      const approval = await contract.functions.isApprovedForAll(
+        accounts.toString(),
+        marketplace
+      )
+      console.log(approval.toString())
+      
+      if(approval.toString()=="false"){
+        /* If Token is not appoved for selling in contract approval dialog box will appear */
+        await contract.functions.setApprovalForAll(
+          marketplace,
+          "true"
+        )
+      }
+      /* Fetch Token ID using Token Hash */
+      
+      
+      // await contract.functions
+      //   .readyToSellToken()
+      //   .then(async function (result) {
+      //     nextTokenID = parseInt(result[0]._hex,16);
+      //   });
+    } else {
+      alert("Connect Metamask");
+    }
+  }
 
   const validateForm = (values) => {
     let errors = {};
