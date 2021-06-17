@@ -347,8 +347,12 @@ function Product2(props: NFT) {
         MarketPlaceAddress = marketcontractAddB;
         nftAddress = contractAddB;
       }
+
+      /* Taking Mannual Approach for Test */
       const currencyAmount = 5560;
       const currencySymbol = "DANK";
+      // const currencyAmount = 1;
+      // const currencySymbol = "ETH";
       console.log(currencyAmount,currencySymbol)
 
       let contract = new ethers.Contract(
@@ -428,6 +432,32 @@ function Product2(props: NFT) {
             return false;
           }
         }  
+      }else if(currencySymbol == "ETH"){
+
+        for (var i=0;i<userAsk[0].length;i++){
+          if(parseInt(userAsk[0][i][3])==tokenID){
+
+            var OrderID = parseInt(userAskOrder[0][i]);            
+
+            /* This Will Buy The Token */
+            await contract.functions
+            .buyToken(
+              OrderID,
+              currencySymbol,
+              parseInt(userAsk[0][i][2]),
+              {value:(currencyAmount*1e18).toString()}
+            )
+            .then(async function (result) {
+              console.log(result);
+              return false;
+            });
+
+          }else{
+            alert("No Sell Order for the NFT Found");
+            return false;
+          }
+        }  
+
       }
       
     } else {
