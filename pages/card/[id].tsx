@@ -336,7 +336,6 @@ function Product2(props: NFT) {
       let ContractInteraction = "";
       let MarketPlaceAddress = "";
       let nftAddress = "";
-      // console.log(props.blockchain)
 
       if(props.blockchain == "ethereum"){
         ContractInteraction = tokencontractAdd;
@@ -405,7 +404,7 @@ function Product2(props: NFT) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
           await contractToken.functions.approve(
             MarketPlaceAddress,
-            currencyAmount*1e18
+            1e30
           );
           return false;
         }
@@ -634,7 +633,7 @@ function Product2(props: NFT) {
           <SellModal
             visible={showSellModal}
             tokenId={props.id}
-            // userAddress={props.id}
+            properties={props}
             onCloseModal={handleCloseSellModal}
           />
         </div>
