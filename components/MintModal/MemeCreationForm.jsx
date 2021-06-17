@@ -15,13 +15,10 @@ import MemeDetailForm from "./MemeDetailForm";
 import MUStepper from "./Stepper";
 var window = require("global/window")
 
-/* SMART CONTRACT STARTS */
-// ROPSTEN TESTNET
-// MU DANK TESTNET ADD : 0x51a41a08eaf9cffa27c870bb031a736845c21093
-// MU NFT TESTNET ADD : 0xb129903f3399b1F2D1e39B56980596D641cd957E
+import { contractAdd,contractAddB,tokencontractAdd,tokencontractAddB,marketcontractAdd,marketcontractAddB } from "../../constant/blockchain";
 
-const contractAdd = "0x09b57aA9F052165a98Dcc06e3c380e5BD29a497f";
-const contractAddB = "0xd74cB3afa717Eb37db36a4ec678cc8537E351e12";
+/* SMART CONTRACT STARTS */
+
 let chainID  = "";
 
 /* SMART CONTRACT ENDS */

@@ -19,19 +19,11 @@ import Modal from "../UI/Modal";
 import marketcontractAbi from "../../config/abi/marketplace.json";
 import contractAbi from "../../config/abi/meme.json";
 import tokencontractAbi from "../../config/abi/token.json";
+import { contractAdd,contractAddB,tokencontractAdd,tokencontractAddB,marketcontractAdd,marketcontractAddB } from "../../constant/blockchain";
 
 import { ethers } from "ethers";
 var window = require("global/window")
 
-
-const contractAdd = "0x09b57aA9F052165a98Dcc06e3c380e5BD29a497f";
-const contractAddB = "0xd74cB3afa717Eb37db36a4ec678cc8537E351e12";
-
-const tokencontractAdd = "0x51A41A08eaF9Cffa27c870BB031a736845C21093";
-const tokencontractAddB = "0xa09513B6cB170A311f7cD733B02b75468f47C5C0";
-
-const marketcontractAdd = "0xb89FbeC6199Ba9251aD2Ec18e5daa4E47A54C794";
-const marketcontractAddB = "0x12e73746A1997B8C0f7432BB97Bdd9cB37360651";
 
 
 let chainID  = "";
@@ -181,8 +173,9 @@ const SellModal = ({ visible, tokenId, onCloseModal }) => {
         /* If Token is not appoved for selling in contract approval dialog box will appear */
         await contract.functions.setApprovalForAll(
           marketplace,
-          "true"
-        )
+          1
+        );
+        return false;
       }
       /* Fetch Token ID using Token Hash */
       
@@ -195,6 +188,7 @@ const SellModal = ({ visible, tokenId, onCloseModal }) => {
     } else {
       alert("Connect Metamask");
     }
+    
   }
 
   const validateForm = (values) => {

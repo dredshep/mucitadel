@@ -16,6 +16,7 @@ import Select from "../../components/UI/Select";
 import capitalizeFirstLetter from "../../functions/capitalizeFirstLetter";
 import getCardsFromAPI from "../../functions/getCardsFromAPI";
 import { NFT } from "../../types/nft";
+import { contractAdd,contractAddB,tokencontractAdd,tokencontractAddB,marketcontractAdd,marketcontractAddB } from "../../constant/blockchain";
 
 
 import marketcontractAbi from "../../config/abi/marketplace.json";
@@ -24,16 +25,6 @@ import tokencontractAbi from "../../config/abi/token.json";
 
 import { ethers } from "ethers";
 var window = require("global/window")
-
-
-const contractAdd = "0x09b57aA9F052165a98Dcc06e3c380e5BD29a497f";
-const contractAddB = "0xd74cB3afa717Eb37db36a4ec678cc8537E351e12";
-
-const tokencontractAdd = "0x51A41A08eaF9Cffa27c870BB031a736845C21093";
-const tokencontractAddB = "0xa09513B6cB170A311f7cD733B02b75468f47C5C0";
-
-const marketcontractAdd = "0xb89FbeC6199Ba9251aD2Ec18e5daa4E47A54C794";
-const marketcontractAddB = "0x12e73746A1997B8C0f7432BB97Bdd9cB37360651";
 
 
 type NoLinkPair = {
@@ -343,27 +334,37 @@ function Product2(props: NFT) {
       
       /* Selecting the right Blockchain */
       let ContractInteraction = "";
+      let MarketPlaceAddress = "";
+      let nftAddress = "";
+      // console.log(props.blockchain)
 
       if(props.blockchain == "ethereum"){
-        ContractInteraction = contractAdd;
+        ContractInteraction = tokencontractAdd;
+        MarketPlaceAddress = marketcontractAdd;
+        nftAddress = contractAdd;
       }else if(props.blockchain == "binance"){
-        ContractInteraction = contractAddB;
+        ContractInteraction = tokencontractAddB;
+        MarketPlaceAddress = marketcontractAddB;
+        nftAddress = contractAddB;
       }
-
-      /* Taking ETH as Default For Test */
-      // let ContractInteraction = contractAdd;
-      let ContractInteractionToken = tokencontractAdd;
-      let marketplace= marketcontractAdd;
-
+      const currencyAmount = 5560;
+      const currencySymbol = "DANK";
+      console.log(currencyAmount,currencySymbol)
 
       let contract = new ethers.Contract(
-        ContractInteraction,
+        MarketPlaceAddress,
+        marketcontractAbi,
+        provider.getSigner()
+      );
+
+      let nftcontract = new ethers.Contract(
+        nftAddress,
         contractAbi,
         provider.getSigner()
       );
 
       let contractToken = new ethers.Contract(
-        ContractInteractionToken,
+        ContractInteraction,
         tokencontractAbi,
         provider.getSigner()
       );
@@ -373,31 +374,62 @@ function Product2(props: NFT) {
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
-      console.log(accounts.toString(),marketplace)
-      /* Check if Contract is Approved */
-      const approval = await contractToken.functions.allowance(
-        accounts.toString(),
-        marketplace
-      )
-      console.log(parseInt(approval))
-      
-      if(parseInt(approval)==0){
-        /* If Token is not appoved for selling in contract approval dialog box will appear */
-        // await contractToken.functions.approve(
-        //   marketplace,
-          
-        // )
-        // console.log(props)
-      }
+
       /* Fetch Token ID using Token Hash */
+
+      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(props.id));
+
+
+      const userAsk =  await contract.functions.getAsksByUser((await window.ethereum.request({
+        method: "eth_requestAccounts",
+      })).toString());
+
+      const userAskOrder =  await contract.functions.getOrdersKeyFromUser((await window.ethereum.request({
+        method: "eth_requestAccounts",
+      })).toString());
       
+      console.log(accounts.toString(),MarketPlaceAddress)
+      if(currencySymbol == "DANK"){
+        /* Check if Contract is Approved */
+        const approval = await contractToken.functions.allowance(
+          accounts.toString(),
+          MarketPlaceAddress
+        )
+        console.log(parseInt(approval))
+        
+        if(parseInt(approval)<currencyAmount*1e18){
+          /* If Token is not appoved for selling in contract approval dialog box will appear */
+          await contractToken.functions.approve(
+            MarketPlaceAddress,
+            currencyAmount*1e18
+          );
+          return false;
+        }
+
+        for (var i=0;i<userAsk[0].length;i++){
+          if(parseInt(userAsk[0][i][3])==tokenID){
+
+            var OrderID = parseInt(userAskOrder[0][i]);            
+
+            /* This Will Buy The Token */
+            await contract.functions
+            .buyToken(
+              OrderID,
+              currencySymbol,
+              parseInt(userAsk[0][i][2])
+            )
+            .then(async function (result) {
+              console.log(result);
+              return false;
+            });
+
+          }else{
+            alert("No Sell Order for the NFT Found");
+            return false;
+          }
+        }  
+      }
       
-      /* This Will Buy The Token */
-      // await contract.functions
-      //   .buyToken()
-      //   .then(async function (result) {
-      //     nextTokenID = parseInt(result[0]._hex,16);
-      //   });
     } else {
       alert("Connect Metamask");
     }
