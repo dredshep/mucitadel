@@ -208,6 +208,12 @@ function NFTDetails(props: NFT) {
       external: true,
     } as LinkPair,
     {
+      pairKey: "NFT Owner",
+      value: props.shortOwner,
+      link: `${props.blockExplorerBaseUrl}address/${props.owner}`,
+      external: true,
+    } as LinkPair,
+    {
       pairKey: "NFT ID",
       value: props.id,
     } as NoLinkPair,
@@ -716,7 +722,15 @@ function Content({ cardArr }) {
 }
 
 export default function Home(props) {
-  useEffect(() => alert(props.milliseconds));
+  useEffect(() =>
+    console.log(
+      JSON.stringify(
+        { milliseconds: props.milliseconds, id: props.id },
+        null,
+        2
+      )
+    )
+  );
   return (
     <div className="App text-white bg-mainbg min-h-screen font-body">
       <NavBar {...props} />
@@ -727,10 +741,11 @@ export default function Home(props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const id = context.query.id;
   const before = new Date().getTime();
   const nftList: NFT[] = await getCardsFromAPI();
   const after = new Date().getTime();
   var milliseconds = Math.abs(before - after);
-  return { props: { nftList, milliseconds } };
+  return { props: { nftList, milliseconds, id } };
 };
