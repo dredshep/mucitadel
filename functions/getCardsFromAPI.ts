@@ -7,11 +7,38 @@ function shortenAddress(address) {
   return [firstPart, secondPart].join("...");
 }
 
+type DankPrice = {
+  dank_price_eth: string;
+  eth_price: string;
+  dank_price_usd: number;
+};
+
 export default async function () {
-  const data = (await axios
-    .get("https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100")
-    .then((res) => res.data.data.data)) as RawNFT[];
-  const rates = (await axios.get("https://dankprice.memeunity.com")).data;
+  // const getData = (): Promise<RawNFT[]> =>
+  //   axios
+  //     .get("https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100")
+  //     .then((res) => res.data.data.data);
+  // const getRates = () =>
+  //   axios.get("https://dankprice.memeunity.com").then((x) => x.data);
+
+  const getAll = (): Promise<[RawNFT[], any]> =>
+    new Promise((resolve, reject) =>
+      axios
+        .all([
+          axios.get(
+            "https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100"
+          ),
+          axios.get("https://dankprice.memeunity.com"),
+        ])
+        .then(
+          axios.spread((obj1, obj2) =>
+            resolve([obj1.data.data.data as RawNFT[], obj2.data as DankPrice])
+          )
+        )
+        .catch(reject)
+    );
+
+  const [data, rates] = await getAll();
 
   async function processNFTs(rawNFTs: RawNFT[]): Promise<NFT[]> {
     return rawNFTs.map(function (NFT: RawNFT): NFT {
@@ -33,7 +60,7 @@ export default async function () {
       );
 
       const blockExplorerBaseUrl = ((blockchain) => {
-        if (blockchain === "ethereum") return "https://rinkeby.etherscan.io/";
+        if (blockchain === "ethereum") return "https://ropsten.etherscan.io/";
         if (blockchain === "binance") return "https://testnet.bscscan.com/";
       })(blockchain);
 

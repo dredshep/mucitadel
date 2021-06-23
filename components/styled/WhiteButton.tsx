@@ -1,15 +1,19 @@
-import Button from "./Button";
-
-export default function WhiteButton(props) {
+export default function WhiteButton(props: {
+  [key: string]: any;
+  children: any;
+}) {
   return (
-    <Button
+    <button
       {...props}
       className={
-        "bg-white active:bg-white-active hover:bg-white-hover text-mupurple active:text-mupurple-active hover:text-mupurple-hover " +
+        "bg-white hover:bg-white-hover active:bg-white-active text-mupurple font-title " +
+        "select-none rounded-lg shadow-md font-semibold text-base " +
+        "cursor-pointer focus:outline-none px-4 py-2 " +
+        "transition-colors duration-75 " +
         props.className
       }
     >
       {props.children}
-    </Button>
+    </button>
   );
 }
