@@ -60,7 +60,7 @@ export default async function () {
       );
 
       const blockExplorerBaseUrl = ((blockchain) => {
-        if (blockchain === "ethereum") return "https://ropsten.etherscan.io/";
+        if (blockchain === "ethereum") return "https://rinkeby.etherscan.io/";
         if (blockchain === "binance") return "https://testnet.bscscan.com/";
       })(blockchain);
 
@@ -78,6 +78,7 @@ export default async function () {
         name,
         description,
         id,
+        ipfsurl,
         listedUntil: "1985-03-31T00:00:00",
         mintDate: mintdate,
         mints: {

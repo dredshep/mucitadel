@@ -1,5 +1,6 @@
 export type NFT = {
   id: string;
+  ipfsurl:string;
   name: string;
   owner: string;
   tier: string;

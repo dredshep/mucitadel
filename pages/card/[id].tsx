@@ -31,6 +31,7 @@ type NoLinkPair = {
   pairKey: string;
   value: string;
   info?: string;
+  
 };
 
 type LinkPair = {
@@ -225,7 +226,7 @@ function NFTDetails(props: NFT) {
     } as LinkPair,
     {
       pairKey: "NFT ID",
-      value: props.id,
+      value: props.ipfsurl,
     } as NoLinkPair,
     // {
     //   pairKey: "Blockchain",
@@ -329,6 +330,66 @@ function Product2(props: NFT) {
       (pricePair) => pricePair[1] + " " + pricePair[0].toUpperCase()
     );
 
+  const checkTokenOwner = async() =>{
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum
+      );
+      /* Selecting the right Blockchain */
+      let ContractInteraction = "";
+      let MarketPlaceAddress = "";
+      let nftAddress = "";
+
+      if(props.blockchain == "ethereum"){
+        ContractInteraction = tokencontractAdd;
+        MarketPlaceAddress = marketcontractAdd;
+        nftAddress = contractAdd;
+      }else if(props.blockchain == "binance"){
+        ContractInteraction = tokencontractAddB;
+        MarketPlaceAddress = marketcontractAddB;
+        nftAddress = contractAddB;
+      }
+
+      let contract = new ethers.Contract(
+        MarketPlaceAddress,
+        marketcontractAbi,
+        provider.getSigner()
+      );
+
+      let nftcontract = new ethers.Contract(
+        nftAddress,
+        contractAbi,
+        provider.getSigner()
+      );
+
+      let contractToken = new ethers.Contract(
+        ContractInteraction,
+        tokencontractAbi,
+        provider.getSigner()
+      );
+
+      const accounts = (await window.ethereum.request({
+        method: "eth_requestAccounts",
+      })).toString();
+
+      /* Fetch Token ID from Database */
+      // Taking Manual for now
+      const tokenID = 1;
+
+      const ownerOf = (await nftcontract.functions.ownerOf(accounts, tokenID)).toString();
+      
+      /* True if the address is a owner */
+      console.log("Token Owner ?",ownerOf);
+    } else {
+      alert("Connect Metamask");
+    }
+  }
+
+  /* Use this functiont to check The Owner Rights of the Contract */
+  // checkTokenOwner();
+  console.log(currency);
+
+
   const handleBuy = async() => {
     alert(JSON.stringify(props, null, 2));
     console.log("buy")
@@ -355,8 +416,9 @@ function Product2(props: NFT) {
       }
 
       /* Taking Mannual Approach for Test */
-      const currencyAmount = 5560;
-      const currencySymbol = "DANK";
+      const priceSlab = (currency.value).split(" ");
+      const currencyAmount = parseInt(priceSlab[0]);
+      const currencySymbol = (priceSlab[1]);
       // const currencyAmount = 1;
       // const currencySymbol = "ETH";
       console.log(currencyAmount,currencySymbol)
@@ -387,7 +449,7 @@ function Product2(props: NFT) {
 
       /* Fetch Token ID using Token Hash */
 
-      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(props.id));
+      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(props.ipfsurl));
 
 
       const userAsk =  await contract.functions.getAsksByUser((await window.ethereum.request({
@@ -639,7 +701,7 @@ function Product2(props: NFT) {
           </div> */}
           <SellModal
             visible={showSellModal}
-            tokenId={props.id}
+            tokenId={props.ipfsurl}
             properties={props}
             onCloseModal={handleCloseSellModal}
           />
@@ -876,7 +938,7 @@ export default function Home(props) {
   useEffect(() =>
     console.log(
       JSON.stringify(
-        { milliseconds: props.milliseconds, id: props.id },
+        { milliseconds: props.milliseconds, id: props.ipfsurl },
         null,
         2
       )

@@ -202,7 +202,8 @@ const SellModal = ({ visible, tokenId,properties, onCloseModal }) => {
           MarketPlaceAddress
         )
         console.log(parseInt(approval))
-        
+        console.log((BigInt(parseInt(values.Currencies[0].Price)* 10**18).toString()).split(" "))
+
         if(parseInt(approval)< parseInt(values.Currencies[0].Price)*1e18){
           /* If Token is not appoved for selling in contract approval dialog box will appear */
           await contractToken.functions.approve(
@@ -220,7 +221,6 @@ const SellModal = ({ visible, tokenId,properties, onCloseModal }) => {
           alert("Token Sold by user or already on sale");
           return false;
         }
-
         await contract.functions
         .readyToSellToken(
           tokenID,
@@ -277,10 +277,15 @@ const SellModal = ({ visible, tokenId,properties, onCloseModal }) => {
           if(values.Currencies[i].Currency=="DANK"){
             currencyPrice =(parseInt(values.Currencies[i].Price)*1e18).toString().split(" ") ;
             currencySymbol =  values.Currencies[i].Currency.split(" ");
+
           }else{
             ethPrice = (parseInt(values.Currencies[i].Price)*1e18).toString() ;
           }
         }
+
+        console.log((ethPrice).toString()+","+(currencyPrice).toString()+"");
+        console.log(("ETH").toString()+","+(currencySymbol).toString()+"");
+
         await contract.functions
         .readyToSellToken(
           tokenID,
