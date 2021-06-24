@@ -150,6 +150,7 @@ function Container(props: { children: any }) {
   return <div className="px-auto">{props.children}</div>;
 }
 
+<<<<<<< HEAD
 function NFTList(props: {
   configurations?: any;
   searchTerm?: string;
@@ -157,6 +158,28 @@ function NFTList(props: {
 }) {
   const { configurations, searchTerm = "", nftList } = props;
   // const [nftList, setNftList] = useState([]);
+=======
+const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
+  const { configurations, searchTerm = "" } = props;
+  const [nftList, setNftList] = useState([]);
+  useEffect(() => {
+    
+    const getNftList = async () =>
+      setNftList((await axios.get("https://api.mucitadel.io/v1/nft/listnfts")).data.data);
+    getNftList();
+
+  }, []);
+>>>>>>> 811ed92979a7f75a9578a2f2180058900205a353
+
+
+  const list = async () =>{
+    setNftList((await axios.get("https://api.mucitadel.io/v1/nft/listnfts")).data.data);
+  }
+  if (Array.isArray(list) && list.length){
+    console.log(list);
+  }else{
+    console.log("Not List");
+  }
 
   const sortedList = useMemo(() => {
     // let sortedList = nftList.length ? [...nftList] : [];

@@ -16,6 +16,7 @@ import Select from "../../components/UI/Select";
 import capitalizeFirstLetter from "../../functions/capitalizeFirstLetter";
 import getCardsFromAPI from "../../functions/getCardsFromAPI";
 import { NFT } from "../../types/nft";
+<<<<<<< HEAD
 import { contractAdd,contractAddB,tokencontractAdd,tokencontractAddB,marketcontractAdd,marketcontractAddB } from "../../constant/blockchain";
 
 
@@ -26,6 +27,64 @@ import tokencontractAbi from "../../config/abi/token.json";
 import { ethers } from "ethers";
 var window = require("global/window")
 
+=======
+import ethers from "ethers";
+
+
+interface Window {
+  ethereum: any;
+}
+
+/* Smart Contract Initialization */
+const contractAdd = "0x8a86B49E52aeF9C87285d232DB75a0A8899B903B"; 
+const contractAbi = [{}];
+
+
+/* Function for Calling in UI */
+async function buyToken() {
+  /* Token Buying Code */
+  /* Trust Wallet and Metamask Handler */
+  if (((window as unknown) as Window).ethereum && ((window as unknown) as Window).ethereum.isTrust){
+    /* Buying Code Here TrustWallet*/
+    buyNFT();
+
+  }else if (((window as unknown) as Window).ethereum && ((window as unknown) as Window).ethereum.isMetaMask){
+    /* Buying Code Here MetaMask */
+    buyNFT();
+  }else{
+
+  }
+
+}
+
+async function buyNFT() {
+  /* Smart Contract Logic Here */
+    const provider = new ethers.providers.Web3Provider(
+      ((window as unknown) as Window).ethereum
+    );
+    let contract = new ethers.Contract(
+      contractAdd,
+      contractAbi,
+      provider.getSigner()
+    );
+    const accounts = await ((window as unknown) as Window).ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    const account = accounts[0];
+    const weiBalance = await provider.getBalance(account);
+    const ethBalance = parseFloat((((weiBalance as unknown) as number) / 1e18).toString());
+    const price = 0.05;
+    const sufficientFunds = ethBalance > price;
+    if (!sufficientFunds) {
+      return alert("Insufficient funds for fees");
+    }
+    await contract.functions
+      .functionName()
+      .then(async function (result) {
+        console.log(result);
+      });
+}
+>>>>>>> 811ed92979a7f75a9578a2f2180058900205a353
 
 type NoLinkPair = {
   pairKey: string;
@@ -322,6 +381,7 @@ const keyTextClass = "text-secondary font-semibold font-title";
 const valueTextClass = "text-white font-body";
 
 function Product2(props: NFT) {
+
   const [currency, setCurrency] = useState("dank");
   const [showSellModal, setShowSellModal] = useState(false);
 
@@ -858,6 +918,7 @@ function MiniExplorer(props) {
 // {propsSection}
 // </div>
 
+<<<<<<< HEAD
 function Content({ cardArr }) {
   // const [cardArr, setCards] = useState([]);
   // useEffect(() => {
@@ -873,6 +934,16 @@ function Content({ cardArr }) {
   //   // return () => {
   //   // }
   // }, []);
+=======
+function Content() {
+  const [cardArr, setCards] = useState([]);
+  useEffect(() => {
+    const getCards = async () => setCards((await axios.get("https://api.mucitadel.io/v1/nft/listnfts")).data);
+    getCards();
+    // return () => {
+    // }
+  }, []);
+>>>>>>> 811ed92979a7f75a9578a2f2180058900205a353
   if (!cardArr.length) return <div>Loading...</div>;
   const router = useRouter();
   const currentCard = cardArr.find((card) => card.id === router.query.id);
