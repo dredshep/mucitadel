@@ -284,7 +284,7 @@ const MemeCreationForm = ({ role }) => {
                     fd1.append("description", values.Description);
                     fd1.append("amount", "1");
                     fd1.append("blockchain", values.Blockchain);
-                    fd1.append("collection", "test");
+                    fd1.append("collection", "mucitadel");
                     fd1.append("tokenid", nextTokenID);
                     fd1.append("txhash", result.hash);
 

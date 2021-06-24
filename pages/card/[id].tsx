@@ -1,7 +1,7 @@
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
@@ -31,6 +31,7 @@ type NoLinkPair = {
   pairKey: string;
   value: string;
   info?: string;
+  
 };
 
 type LinkPair = {
@@ -213,21 +214,26 @@ function NFTDetails(props: NFT) {
   const entries: (LinkPair | NoLinkPair)[] = [
     {
       pairKey: "Smart Contract",
-      value: "GHOST",
-      link: "https://explorer.phantasma.io/token/GHOST",
+      value: capitalizeFirstLetter(props.blockchain),
+      link: `${props.blockExplorerBaseUrl}address/${props.contractAddress}`,
+      external: true,
+    } as LinkPair,
+    {
+      pairKey: "NFT Owner",
+      value: props.shortOwner,
+      link: `${props.blockExplorerBaseUrl}address/${props.owner}`,
       external: true,
     } as LinkPair,
     {
       pairKey: "NFT ID",
-      value:
-        "104920549433542394393888664408303023894970105957056315840031505911066476125106",
+      value: props.ipfsurl,
     } as NoLinkPair,
-    {
-      pairKey: "Blockchain",
-      value: "Phantasma",
-      link: "https://ghostmarket.io/assets/pha/",
-      external: false,
-    } as LinkPair,
+    // {
+    //   pairKey: "Blockchain",
+    //   value: "Phantasma",
+    //   link: "https://ghostmarket.io/assets/pha/",
+    //   external: false,
+    // } as LinkPair,
   ].map((obj) => makeProp(...(Object.values(obj) as [string, string])));
 
   return (
@@ -280,8 +286,10 @@ function SeriesDetails() {
   );
 }
 
-function RelatedSection(props: { cards: NFT[] }) {
-  const toDisplay = props.cards.slice(0, 2);
+function RelatedSection(props: { cards: NFT[]; currentCard: NFT }) {
+  const toDisplay = props.cards
+    .filter((x) => x.id !== props.currentCard.id)
+    .slice(0, 2);
   const title = (
     <div className="text-3xl font-bold mb-9 mt-10 mx-auto md:mx-0">
       Related Cards
@@ -294,9 +302,9 @@ function RelatedSection(props: { cards: NFT[] }) {
           <div>
             <NFTCard
               {...card}
-              // {...props.cards[1]}
               href={`/card/${card.id}`}
               currency={card.price.USD ? "USD" : Object.keys(card.price)[0]}
+              key={card.id}
             />
           </div>
         ));
@@ -321,6 +329,66 @@ function Product2(props: NFT) {
     Object.entries(priceObj).map(
       (pricePair) => pricePair[1] + " " + pricePair[0].toUpperCase()
     );
+
+  const checkTokenOwner = async() =>{
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum
+      );
+      /* Selecting the right Blockchain */
+      let ContractInteraction = "";
+      let MarketPlaceAddress = "";
+      let nftAddress = "";
+
+      if(props.blockchain == "ethereum"){
+        ContractInteraction = tokencontractAdd;
+        MarketPlaceAddress = marketcontractAdd;
+        nftAddress = contractAdd;
+      }else if(props.blockchain == "binance"){
+        ContractInteraction = tokencontractAddB;
+        MarketPlaceAddress = marketcontractAddB;
+        nftAddress = contractAddB;
+      }
+
+      let contract = new ethers.Contract(
+        MarketPlaceAddress,
+        marketcontractAbi,
+        provider.getSigner()
+      );
+
+      let nftcontract = new ethers.Contract(
+        nftAddress,
+        contractAbi,
+        provider.getSigner()
+      );
+
+      let contractToken = new ethers.Contract(
+        ContractInteraction,
+        tokencontractAbi,
+        provider.getSigner()
+      );
+
+      const accounts = (await window.ethereum.request({
+        method: "eth_requestAccounts",
+      })).toString();
+
+      /* Fetch Token ID from Database */
+      // Taking Manual for now
+      const tokenID = 1;
+
+      const ownerOf = (await nftcontract.functions.ownerOf(accounts, tokenID)).toString();
+      
+      /* True if the address is a owner */
+      console.log("Token Owner ?",ownerOf);
+    } else {
+      alert("Connect Metamask");
+    }
+  }
+
+  /* Use this functiont to check The Owner Rights of the Contract */
+  // checkTokenOwner();
+  console.log(currency);
+
 
   const handleBuy = async() => {
     alert(JSON.stringify(props, null, 2));
@@ -348,8 +416,9 @@ function Product2(props: NFT) {
       }
 
       /* Taking Mannual Approach for Test */
-      const currencyAmount = 5560;
-      const currencySymbol = "DANK";
+      const priceSlab = (currency.value).split(" ");
+      const currencyAmount = parseInt(priceSlab[0]);
+      const currencySymbol = (priceSlab[1]);
       // const currencyAmount = 1;
       // const currencySymbol = "ETH";
       console.log(currencyAmount,currencySymbol)
@@ -380,7 +449,7 @@ function Product2(props: NFT) {
 
       /* Fetch Token ID using Token Hash */
 
-      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(props.id));
+      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(props.ipfsurl));
 
 
       const userAsk =  await contract.functions.getAsksByUser((await window.ethereum.request({
@@ -632,7 +701,7 @@ function Product2(props: NFT) {
           </div> */}
           <SellModal
             visible={showSellModal}
-            tokenId={props.id}
+            tokenId={props.ipfsurl}
             properties={props}
             onCloseModal={handleCloseSellModal}
           />
@@ -855,6 +924,7 @@ function Content({ cardArr }) {
       </div>
       <div className="w-full text-center">
         <RelatedSection
+          currentCard={currentCard}
           cards={cardArr.filter(
             (x: NFT) => x.tier === (currentCard as NFT).tier
           )}
@@ -865,6 +935,15 @@ function Content({ cardArr }) {
 }
 
 export default function Home(props) {
+  useEffect(() =>
+    console.log(
+      JSON.stringify(
+        { milliseconds: props.milliseconds, id: props.ipfsurl },
+        null,
+        2
+      )
+    )
+  );
   return (
     <div className="App text-white bg-mainbg min-h-screen font-body">
       <NavBar {...props} />
@@ -875,7 +954,11 @@ export default function Home(props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const id = context.query.id;
+  const before = new Date().getTime();
   const nftList: NFT[] = await getCardsFromAPI();
-  return { props: { nftList } };
+  const after = new Date().getTime();
+  var milliseconds = Math.abs(before - after);
+  return { props: { nftList, milliseconds, id } };
 };
