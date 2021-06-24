@@ -25,9 +25,7 @@ export default async function () {
     new Promise((resolve, reject) =>
       axios
         .all([
-          axios.get(
-            "https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100"
-          ),
+          axios.get("https://api.mucitadel.io/v1/nft/listnfts"),
           axios.get("https://dankprice.memeunity.com"),
         ])
         .then(
@@ -79,6 +77,7 @@ export default async function () {
         description,
         id,
         ipfsurl,
+        tokenid,
         listedUntil: "1985-03-31T00:00:00",
         mintDate: mintdate,
         mints: {

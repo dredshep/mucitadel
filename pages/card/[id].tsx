@@ -325,7 +325,10 @@ const keyTextClass = "text-secondary font-semibold font-title";
 const valueTextClass = "text-white font-body";
 
 function Product2(props: NFT) {
-  const [currency, setCurrency] = useState("dank");
+  const [currency, setCurrency] = useState({
+    label: "Choose a price",
+    value: "Choose a price",
+  });
   const [showSellModal, setShowSellModal] = useState(false);
 
   const getPriceListFromPriceObj = (priceObj: { [key: string]: number }) =>
