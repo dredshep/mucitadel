@@ -150,43 +150,14 @@ function Container(props: { children: any }) {
   return <div className="px-auto">{props.children}</div>;
 }
 
-<<<<<<< HEAD
 function NFTList(props: {
   configurations?: any;
   searchTerm?: string;
   nftList: NFT[];
 }) {
   const { configurations, searchTerm = "", nftList } = props;
-  // const [nftList, setNftList] = useState([]);
-=======
-const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
-  const { configurations, searchTerm = "" } = props;
-  const [nftList, setNftList] = useState([]);
-  useEffect(() => {
-    
-    const getNftList = async () =>
-      setNftList((await axios.get("https://api.mucitadel.io/v1/nft/listnfts")).data.data);
-    getNftList();
-
-  }, []);
->>>>>>> 811ed92979a7f75a9578a2f2180058900205a353
-
-
-  const list = async () =>{
-    setNftList((await axios.get("https://api.mucitadel.io/v1/nft/listnfts")).data.data);
-  }
-  if (Array.isArray(list) && list.length){
-    console.log(list);
-  }else{
-    console.log("Not List");
-  }
 
   const sortedList = useMemo(() => {
-    // let sortedList = nftList.length ? [...nftList] : [];
-    // alert(JSON.stringify(nftList.length))
-    // let sortedList = nftList.map(x => x)
-    // let sortedList = [...nftList]
-
     let sortedList = [...(nftList || [])];
     console.log(nftList);
     const isValidString = (s: string) => typeof s === "string" && s.length > 0;
@@ -219,39 +190,6 @@ const NFTList = (props: { configurations?: any; searchTerm?: string }) => {
           hasCurrency && fitsSearch && isTier && isAbovePrice && isBelowPrice
         );
       });
-      // console.log("sorted", sorted)
-
-      // sortedList = sortedList.filter(
-      //   (nft) => nft[configurations.currency]
-      // );
-
-      // if (searchTerm) {
-      //   // only including string
-      //   sortedList = sortedList.filter((nft) =>
-      //     nft.name.toLowerCase().includes(searchTerm.toLowerCase())
-      //   );
-      // }
-
-      // if (configurations.tier) {
-      //   // only set tier
-      //   sortedList = sortedList.filter(
-      //     (nft) => nft.tier === configurations.tier
-      //   );
-      // }
-
-      // if (configurations.minPrice) {
-      //   // only above price
-      //   sortedList = sortedList.filter(
-      //     (nft) => nft.price[configurations.currency] >= configurations.minPrice
-      //   );
-      // }
-
-      // if (configurations.maxPrice) {
-      //   // only under price
-      //   sortedList = sortedList.filter(
-      //     (nft) => nft.price[configurations.currency] <= configurations.maxPrice
-      //   );
-      // }
 
       if (configurations.orderType === ORDER_TYPES.ASCENDING) {
         if (configurations.sortType === "price") {

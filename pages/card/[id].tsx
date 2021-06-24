@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
@@ -13,84 +14,27 @@ import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
 import Tabs from "../../components/Tabs";
 import Select from "../../components/UI/Select";
-import capitalizeFirstLetter from "../../functions/capitalizeFirstLetter";
-import getCardsFromAPI from "../../functions/getCardsFromAPI";
-import { NFT } from "../../types/nft";
-<<<<<<< HEAD
-import { contractAdd,contractAddB,tokencontractAdd,tokencontractAddB,marketcontractAdd,marketcontractAddB } from "../../constant/blockchain";
-
-
 import marketcontractAbi from "../../config/abi/marketplace.json";
 import contractAbi from "../../config/abi/meme.json";
 import tokencontractAbi from "../../config/abi/token.json";
+import {
+  contractAdd,
+  contractAddB,
+  marketcontractAdd,
+  marketcontractAddB,
+  tokencontractAdd,
+  tokencontractAddB,
+} from "../../constant/blockchain";
+import capitalizeFirstLetter from "../../functions/capitalizeFirstLetter";
+import getCardsFromAPI from "../../functions/getCardsFromAPI";
+import { NFT } from "../../types/nft";
 
-import { ethers } from "ethers";
-var window = require("global/window")
-
-=======
-import ethers from "ethers";
-
-
-interface Window {
-  ethereum: any;
-}
-
-/* Smart Contract Initialization */
-const contractAdd = "0x8a86B49E52aeF9C87285d232DB75a0A8899B903B"; 
-const contractAbi = [{}];
-
-
-/* Function for Calling in UI */
-async function buyToken() {
-  /* Token Buying Code */
-  /* Trust Wallet and Metamask Handler */
-  if (((window as unknown) as Window).ethereum && ((window as unknown) as Window).ethereum.isTrust){
-    /* Buying Code Here TrustWallet*/
-    buyNFT();
-
-  }else if (((window as unknown) as Window).ethereum && ((window as unknown) as Window).ethereum.isMetaMask){
-    /* Buying Code Here MetaMask */
-    buyNFT();
-  }else{
-
-  }
-
-}
-
-async function buyNFT() {
-  /* Smart Contract Logic Here */
-    const provider = new ethers.providers.Web3Provider(
-      ((window as unknown) as Window).ethereum
-    );
-    let contract = new ethers.Contract(
-      contractAdd,
-      contractAbi,
-      provider.getSigner()
-    );
-    const accounts = await ((window as unknown) as Window).ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    const account = accounts[0];
-    const weiBalance = await provider.getBalance(account);
-    const ethBalance = parseFloat((((weiBalance as unknown) as number) / 1e18).toString());
-    const price = 0.05;
-    const sufficientFunds = ethBalance > price;
-    if (!sufficientFunds) {
-      return alert("Insufficient funds for fees");
-    }
-    await contract.functions
-      .functionName()
-      .then(async function (result) {
-        console.log(result);
-      });
-}
->>>>>>> 811ed92979a7f75a9578a2f2180058900205a353
+var window = require("global/window");
 
 type NoLinkPair = {
   pairKey: string;
   value: string;
   info?: string;
-  
 };
 
 type LinkPair = {
@@ -381,7 +325,6 @@ const keyTextClass = "text-secondary font-semibold font-title";
 const valueTextClass = "text-white font-body";
 
 function Product2(props: NFT) {
-
   const [currency, setCurrency] = useState("dank");
   const [showSellModal, setShowSellModal] = useState(false);
 
@@ -390,21 +333,19 @@ function Product2(props: NFT) {
       (pricePair) => pricePair[1] + " " + pricePair[0].toUpperCase()
     );
 
-  const checkTokenOwner = async() =>{
+  const checkTokenOwner = async () => {
     if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum
-      );
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
       /* Selecting the right Blockchain */
       let ContractInteraction = "";
       let MarketPlaceAddress = "";
       let nftAddress = "";
 
-      if(props.blockchain == "ethereum"){
+      if (props.blockchain == "ethereum") {
         ContractInteraction = tokencontractAdd;
         MarketPlaceAddress = marketcontractAdd;
         nftAddress = contractAdd;
-      }else if(props.blockchain == "binance"){
+      } else if (props.blockchain == "binance") {
         ContractInteraction = tokencontractAddB;
         MarketPlaceAddress = marketcontractAddB;
         nftAddress = contractAddB;
@@ -428,60 +369,59 @@ function Product2(props: NFT) {
         provider.getSigner()
       );
 
-      const accounts = (await window.ethereum.request({
-        method: "eth_requestAccounts",
-      })).toString();
+      const accounts = (
+        await window.ethereum.request({
+          method: "eth_requestAccounts",
+        })
+      ).toString();
 
       /* Fetch Token ID from Database */
       // Taking Manual for now
       const tokenID = 1;
 
-      const ownerOf = (await nftcontract.functions.ownerOf(accounts, tokenID)).toString();
-      
+      const ownerOf = (
+        await nftcontract.functions.ownerOf(accounts, tokenID)
+      ).toString();
+
       /* True if the address is a owner */
-      console.log("Token Owner ?",ownerOf);
+      console.log("Token Owner ?", ownerOf);
     } else {
       alert("Connect Metamask");
     }
-  }
+  };
 
   /* Use this functiont to check The Owner Rights of the Contract */
   // checkTokenOwner();
   console.log(currency);
 
-
-  const handleBuy = async() => {
+  const handleBuy = async () => {
     alert(JSON.stringify(props, null, 2));
-    console.log("buy")
+    console.log("buy");
     if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum
-      );
-      
-      
       /* Selecting the right Blockchain */
       let ContractInteraction = "";
       let MarketPlaceAddress = "";
       let nftAddress = "";
 
-      if(props.blockchain == "ethereum"){
+      if (props.blockchain == "ethereum") {
         ContractInteraction = tokencontractAdd;
         MarketPlaceAddress = marketcontractAdd;
         nftAddress = contractAdd;
-      }else if(props.blockchain == "binance"){
+      } else if (props.blockchain == "binance") {
         ContractInteraction = tokencontractAddB;
         MarketPlaceAddress = marketcontractAddB;
         nftAddress = contractAddB;
       }
 
       /* Taking Mannual Approach for Test */
-      const priceSlab = (currency.value).split(" ");
+      const priceSlab = currency.value.split(" ");
       const currencyAmount = parseInt(priceSlab[0]);
-      const currencySymbol = (priceSlab[1]);
+      const currencySymbol = priceSlab[1];
       // const currencyAmount = 1;
       // const currencySymbol = "ETH";
-      console.log(currencyAmount,currencySymbol)
+      console.log(currencyAmount, currencySymbol);
 
       let contract = new ethers.Contract(
         MarketPlaceAddress,
@@ -500,8 +440,6 @@ function Product2(props: NFT) {
         tokencontractAbi,
         provider.getSigner()
       );
-
-
 
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
@@ -509,85 +447,77 @@ function Product2(props: NFT) {
 
       /* Fetch Token ID using Token Hash */
 
-      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(props.ipfsurl));
+      const tokenID = parseInt(
+        await nftcontract.functions.getTokenIdFromHash(props.ipfsurl)
+      );
 
+      const userAsk = await contract.functions.getAsksByUser(
+        (
+          await window.ethereum.request({
+            method: "eth_requestAccounts",
+          })
+        ).toString()
+      );
 
-      const userAsk =  await contract.functions.getAsksByUser((await window.ethereum.request({
-        method: "eth_requestAccounts",
-      })).toString());
+      const userAskOrder = await contract.functions.getOrdersKeyFromUser(
+        (
+          await window.ethereum.request({
+            method: "eth_requestAccounts",
+          })
+        ).toString()
+      );
 
-      const userAskOrder =  await contract.functions.getOrdersKeyFromUser((await window.ethereum.request({
-        method: "eth_requestAccounts",
-      })).toString());
-      
-      console.log(accounts.toString(),MarketPlaceAddress)
-      if(currencySymbol == "DANK"){
+      console.log(accounts.toString(), MarketPlaceAddress);
+      if (currencySymbol == "DANK") {
         /* Check if Contract is Approved */
         const approval = await contractToken.functions.allowance(
           accounts.toString(),
           MarketPlaceAddress
-        )
-        console.log(parseInt(approval))
-        
-        if(parseInt(approval)<currencyAmount*1e18){
+        );
+        console.log(parseInt(approval));
+
+        if (parseInt(approval) < currencyAmount * 1e18) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
-          await contractToken.functions.approve(
-            MarketPlaceAddress,
-            1e30
-          );
+          await contractToken.functions.approve(MarketPlaceAddress, 1e30);
           return false;
         }
 
-        for (var i=0;i<userAsk[0].length;i++){
-          if(parseInt(userAsk[0][i][3])==tokenID){
-
-            var OrderID = parseInt(userAskOrder[0][i]);            
-
-            /* This Will Buy The Token */
-            await contract.functions
-            .buyToken(
-              OrderID,
-              currencySymbol,
-              parseInt(userAsk[0][i][2])
-            )
-            .then(async function (result) {
-              console.log(result);
-              return false;
-            });
-
-          }else{
-            alert("No Sell Order for the NFT Found");
-            return false;
-          }
-        }  
-      }else if(currencySymbol == "ETH"){
-
-        for (var i=0;i<userAsk[0].length;i++){
-          if(parseInt(userAsk[0][i][3])==tokenID){
-
-            var OrderID = parseInt(userAskOrder[0][i]);            
+        for (var i = 0; i < userAsk[0].length; i++) {
+          if (parseInt(userAsk[0][i][3]) == tokenID) {
+            var OrderID = parseInt(userAskOrder[0][i]);
 
             /* This Will Buy The Token */
             await contract.functions
-            .buyToken(
-              OrderID,
-              currencySymbol,
-              parseInt(userAsk[0][i][2]),
-              {value:(currencyAmount*1e18).toString()}
-            )
-            .then(async function (result) {
-              console.log(result);
-              return false;
-            });
-
-          }else{
+              .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
+              .then(async function (result) {
+                console.log(result);
+                return false;
+              });
+          } else {
             alert("No Sell Order for the NFT Found");
             return false;
           }
-        }  
+        }
+      } else if (currencySymbol == "ETH") {
+        for (var i = 0; i < userAsk[0].length; i++) {
+          if (parseInt(userAsk[0][i][3]) == tokenID) {
+            var OrderID = parseInt(userAskOrder[0][i]);
 
+            /* This Will Buy The Token */
+            await contract.functions
+              .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
+                value: (currencyAmount * 1e18).toString(),
+              })
+              .then(async function (result) {
+                console.log(result);
+                return false;
+              });
+          } else {
+            alert("No Sell Order for the NFT Found");
+            return false;
+          }
+        }
       }
-      
     } else {
       alert("Connect Metamask");
     }
@@ -918,32 +848,7 @@ function MiniExplorer(props) {
 // {propsSection}
 // </div>
 
-<<<<<<< HEAD
 function Content({ cardArr }) {
-  // const [cardArr, setCards] = useState([]);
-  // useEffect(() => {
-  //   const getCards = async () =>
-  //     setCards(
-  //       (
-  //         await axios.get(
-  //           "https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100"
-  //         )
-  //       ).data.data.data
-  //     );
-  //   getCards();
-  //   // return () => {
-  //   // }
-  // }, []);
-=======
-function Content() {
-  const [cardArr, setCards] = useState([]);
-  useEffect(() => {
-    const getCards = async () => setCards((await axios.get("https://api.mucitadel.io/v1/nft/listnfts")).data);
-    getCards();
-    // return () => {
-    // }
-  }, []);
->>>>>>> 811ed92979a7f75a9578a2f2180058900205a353
   if (!cardArr.length) return <div>Loading...</div>;
   const router = useRouter();
   const currentCard = cardArr.find((card) => card.id === router.query.id);
