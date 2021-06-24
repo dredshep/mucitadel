@@ -36,7 +36,7 @@ address the user has associated.
 // const log = (v) => (console.log(v), v);
 
 async function logInWithMetamask(before: () => void, after: () => void) {
-  const ethereum = ((window as unknown) as Window).ethereum;
+  const ethereum = (window as unknown as Window).ethereum;
   try {
     before();
     await ethereum.request({ method: "eth_requestAccounts" });
@@ -75,10 +75,21 @@ function setLogInState(setAuthData) {
         // console.log("logged in successfully");
         cookies.set("authentication_method", "metamask");
       };
+      const adminList = [
+        "0x450e501C21dF2E72B4aE98343746b0654430dC16", // dred
+        "0xAd9b97fa8f28daCa6731d116d6fD2C72A164Ae0b", // jetso
+      ].map((x) => x.toLowerCase());
       return logInWithMetamask(before, after)
-        .then((address) => {
+        .then((addresses: string[]) => {
+          const address = addresses[0]?.toLowerCase();
+          const isAdmin = adminList.includes(address);
+          const role = isAdmin ? "admin" : "user";
           if (address !== null) {
-            setAuthData({ address, authenticationMethod: "metamask" });
+            setAuthData({
+              address,
+              authenticationMethod: "metamask",
+              role,
+            });
             // Later on, we can put more API-retrieved user info here for all essential details.
             // However, I don't know if this renders with every page, which would make us
             // delay each page load by loading user info instead of making it persist.
@@ -106,7 +117,7 @@ export default function AuthenticationProvider(props) {
   const [authData, setAuthData] = useState({ address: undefined });
   const [hasMetamask, setHasMetamask] = useState(false);
   useEffect(() => {
-    if (((window as unknown) as Window).ethereum) setHasMetamask(true);
+    if ((window as unknown as Window).ethereum) setHasMetamask(true);
     else setHasMetamask(false);
   }, []);
   const logIn = setLogInState(setAuthData);

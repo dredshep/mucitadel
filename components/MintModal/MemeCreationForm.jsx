@@ -6,6 +6,7 @@ import html2canvas from "html2canvas";
 import React, { useMemo, useRef, useState } from "react";
 import * as Yup from "yup";
 import contractAbi from "../../config/abi/meme.json";
+import { contractAdd, contractAddB } from "../../constant/blockchain";
 // import ConnectWalletDialog from 'components/ConnectWalletDialog';
 import { FILE_TYPES } from "../../constant/file-types";
 import Modal from "../UI/Modal";
@@ -13,13 +14,11 @@ import Modal from "../UI/Modal";
 import UploadMedia from "../UploadMedia";
 import MemeDetailForm from "./MemeDetailForm";
 import MUStepper from "./Stepper";
-var window = require("global/window")
-
-import { contractAdd,contractAddB,tokencontractAdd,tokencontractAddB,marketcontractAdd,marketcontractAddB } from "../../constant/blockchain";
+var window = require("global/window");
 
 /* SMART CONTRACT STARTS */
 
-let chainID  = "";
+let chainID = "";
 
 /* SMART CONTRACT ENDS */
 
@@ -130,14 +129,14 @@ const MemeCreationForm = ({ role }) => {
           })
       );
 
-      /* Detects Chain Change needs to run all time */
-      // const chainChange = async()=>{
-      //   // await window.ethereum.on('chainChanged', (_chainId) => window.location.reload())
+  /* Detects Chain Change needs to run all time */
+  // const chainChange = async()=>{
+  //   // await window.ethereum.on('chainChanged', (_chainId) => window.location.reload())
 
-      //   chainID = await window.ethereum.request({ method: 'eth_chainId' });
-      //   console.log(chainID);
-      // };
-      // chainChange();
+  //   chainID = await window.ethereum.request({ method: 'eth_chainId' });
+  //   console.log(chainID);
+  // };
+  // chainChange();
 
   const handleMintToken = async (values, ref, setSubmitting) => {
     if (fileBuffer) {
@@ -164,21 +163,20 @@ const MemeCreationForm = ({ role }) => {
         chainID = parseInt(await window.ethereum.chainId);
         console.log(chainID);
 
-        if(values.Blockchain=="ethereum"){
-          if(chainID ==1 || chainID == 3){
+        if (values.Blockchain == "ethereum") {
+          if (chainID == 1 || chainID == 4) {
             /* Do Nothing */
-          }else{
+          } else {
             alert("Wrong Blockchain Connected switch to Ethereum Blockchain");
             return false;
           }
-        }else if(values.Blockchain=="binance"){
-          if(chainID ==56 || chainID == 97){
+        } else if (values.Blockchain == "binance") {
+          if (chainID == 56 || chainID == 97) {
             /* Do Nothing */
-          }else{
+          } else {
             alert("Wrong Blockchain Connected switch to Binance Blockchain");
             return false;
           }
-         
         }
 
         setIsSaving(true);
@@ -202,8 +200,6 @@ const MemeCreationForm = ({ role }) => {
           redirect: "follow",
         };
 
-        
-
         /* Step 2 - Upload to IPFS 25%*/
         fetch("https://api.mucitadel.io/v1/upload/ipfs", requestOptions)
           .then((response) => response.text())
@@ -219,12 +215,11 @@ const MemeCreationForm = ({ role }) => {
                 );
                 let ContractInteraction = "";
 
-                if(values.Blockchain == "ethereum"){
+                if (values.Blockchain == "ethereum") {
                   ContractInteraction = contractAdd;
-                }else if(values.Blockchain == "binance"){
+                } else if (values.Blockchain == "binance") {
                   ContractInteraction = contractAddB;
                 }
-
 
                 let contract = new ethers.Contract(
                   ContractInteraction,
@@ -236,15 +231,13 @@ const MemeCreationForm = ({ role }) => {
                 });
                 const account = accounts[0];
                 const hash = JsonResult.data.path;
-                const s3 =JsonResult.data.s3;
-                let nextTokenID="";
+                const s3 = JsonResult.data.s3;
+                let nextTokenID = "";
 
-                await contract.functions
-                  .nextID()
-                  .then(async function (result) {
-                    nextTokenID = parseInt(result[0]._hex,16);
-                  });
-              
+                await contract.functions.nextID().then(async function (result) {
+                  nextTokenID = parseInt(result[0]._hex, 16);
+                });
+
                 /* Mint Token - 1/1 NFT  */
                 await contract.functions
                   .mint(account, 1, hash, [])
