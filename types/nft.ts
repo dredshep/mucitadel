@@ -5,6 +5,7 @@ export type NFT = {
   tier: string;
   url: string;
   description: string;
+  tokenid: string;
   mints: {
     sold: number;
     totalMints: number;
