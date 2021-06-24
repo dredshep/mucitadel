@@ -556,9 +556,18 @@ function Product2(props: NFT) {
             />
           </div>
           <div>
-            {/* <div className="text-success font-semibold text-lg leading-3 font-body">
-              Market Rank: 137
-            </div> */}
+            <div className="text-success font-semibold text-lg leading-3 font-body">
+              {(() => {
+                switch (props.blockchain) {
+                  case "ethereum":
+                    return "Ethereum blockchain";
+                  case "binance":
+                    return "Binance Smart Chain";
+                  default:
+                    return capitalizeFirstLetter(props.blockchain);
+                }
+              })()}
+            </div>
             <div className="mt-4 text-white font-bold text-2xl xs:text-4xl leading-9 font-title">
               {props.name}
             </div>
@@ -576,10 +585,12 @@ function Product2(props: NFT) {
               <Select
                 placeholder="Select Price"
                 value={currency}
-                options={getPriceListFromPriceObj(props.price).map((price) => ({
-                  label: price,
-                  value: price,
-                }))}
+                options={getPriceListFromPriceObj(props.price)
+                  .filter((price) => !price.endsWith("USD"))
+                  .map((price) => ({
+                    label: price,
+                    value: price,
+                  }))}
                 onChange={setCurrency}
               />
             </div>
