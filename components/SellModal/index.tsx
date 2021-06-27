@@ -25,12 +25,11 @@ import {
   tokencontractAdd,
   tokencontractAddB,
 } from "../../constant/blockchain";
+import { NFT } from "../../types/nft";
 import MuButton from "../UI/Button/MuButton";
 import Modal from "../UI/Modal";
 
 var window = require("global/window");
-
-let chainID = "";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -118,7 +117,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
+const SellModal = ({
+  visible,
+  tokenId,
+  properties,
+  onCloseModal,
+}: {
+  visible: any;
+  tokenId: string;
+  properties: NFT;
+  onCloseModal: () => void;
+}) => {
   const classes = useStyles();
 
   const initialValues = {
@@ -134,10 +143,8 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-
       /* ETH Main - 1,Ropstem - 3, Binance Main :56	, Binance Testnet :97 */
-      chainID = parseInt(await window.ethereum.chainId);
+      const chainID = parseInt(await window.ethereum.chainId);
       console.log(chainID);
 
       if (properties.blockchain == "ethereum") {
@@ -160,8 +167,6 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
       let ContractInteraction = "";
       let MarketPlaceAddress = "";
       let nftAddress = "";
-      console.log(properties);
-
       if (properties.blockchain == "ethereum") {
         ContractInteraction = tokencontractAdd;
         MarketPlaceAddress = marketcontractAdd;
@@ -204,7 +209,9 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
         tokenID
       );
       if (cardOwner.toString() == "false") {
-        alert("Token Sold by user or already on sale");
+        alert(
+          "Token has already been sold, or is already being sold, by the user."
+        );
         return false;
       }
 
@@ -266,7 +273,7 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
 
         /* Card Approval Ends */
         var dbSymbol = String(values.Currencies[0].Currency);
-        var dbTotal = values.Currencies[0].Price;
+        var dbTotal = values.Currencies[0].Price as string;
 
         var cardOwner = await nftcontract.functions.ownerOf(
           accounts.toString(),
@@ -332,7 +339,7 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
           });
       } else {
         var currencySymbol = "";
-        var currencyPrice = "";
+        let currencyPrice = "";
         var ethPrice = "";
 
         var dbSymbol = String(values.Currencies[0].Currency)
@@ -342,7 +349,7 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
           .toString()
           .concat("000000000000000000")
           .concat(",")
-          .concat(parseInt(values.Currencies[1].Price))
+          .concat(String(parseInt(values.Currencies[1].Price)))
           .concat("000000000000000000");
 
         console.log("Symbols: ", dbSymbol);
@@ -359,11 +366,11 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
 
         for (var i = 0; i < values.Currencies.length; i++) {
           if (values.Currencies[i].Currency == "DANK") {
-            currencyPrice = parseInt(values.Currencies[i].Price)
+            currencyPrice = parseInt(values.Currencies[i].Price.split(" ")[0])
               .toString()
-              .concat("000000000000000000")
-              .split(" ");
-            currencySymbol = values.Currencies[i].Currency.split(" ");
+              .concat("000000000000000000");
+            // .split(" ");
+            currencySymbol = values.Currencies[i].Currency.split(" ")[1];
             console.log(currencyPrice);
             console.log(currencySymbol);
           } else {
@@ -387,7 +394,10 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
             var feePayment =
               (parseInt(values.Currencies[j].Price) * fee) / 1000;
 
-            if (parseInt(approval) < parseInt(feePayment) * 1e18) {
+            if (
+              parseInt(approval) <
+              parseInt(feePayment as unknown as string) * 1e18
+            ) {
               /* If Token is not appoved for selling in contract approval dialog box will appear */
               const tokenApproval = await contractToken.functions.approve(
                 MarketPlaceAddress,
@@ -428,13 +438,13 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
               method: "POST",
               body: fd1,
               headers: myHeaders,
-              redirect: "follow",
+              // redirect: "follow",
             };
 
             fetch("https://api.mucitadel.io/v1/nft/sellnft", requestOptions1)
               .then((response) => response.text())
               .then((result) => {
-                setTimeout(() => {}, [500]);
+                // setTimeout(() => {}, 500);
                 /* End Result 100% */
                 console.log(result);
               })
@@ -453,6 +463,7 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
 
   const validateForm = (values) => {
     let errors = {};
+
     for (let i = 0; i < values.Currencies.length; i++) {
       if (!values.Currencies[i].Price) {
         errors = {
@@ -469,7 +480,13 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
       if (!values.SellingAmount) {
         errors = {
           ...errors,
-          [`Currencies[${i}].Currency`]: "Currency is required",
+          [`SellingAmount`]: "Amount of tokens to be sold is required",
+        };
+      }
+      if (values.SellingAmount > (properties as NFT).mints.available) {
+        errors = {
+          ...errors,
+          [`SellingAmount`]: " must be smaller or equal to available amount",
         };
       }
     }
@@ -520,14 +537,14 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
                             Selling amount
                           </Typography>
                           <TextField
-                            name={`Currencies[${index}].Price`}
+                            name={`SellingAmount`}
                             variant="outlined"
                             type="number"
                             className={clsx(
-                              classes.formField,
-                              classes.numberInput
+                              classes.formField
+                              // classes.numberInput
                             )}
-                            value={currency.Price}
+                            value={currency.SellingAmount}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             placeholder="How many tokens you're selling"
@@ -550,7 +567,7 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
                             className={classes.formLabel}
                             style={{ marginTop: "10px" }}
                           >
-                            3
+                            {properties.mints.available}
                           </Typography>
                         </Grid>
                         <Grid container item md={6} lg={6} sm={6} xs={12}>
@@ -562,8 +579,8 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
                             variant="outlined"
                             type="number"
                             className={clsx(
-                              classes.formField,
-                              classes.numberInput
+                              classes.formField
+                              // classes.numberInput
                             )}
                             value={currency.Price}
                             onChange={handleChange}
@@ -636,6 +653,7 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
                 )}
                 <Grid container justify="space-between">
                   <MuButton
+                    className=""
                     disabled={isSubmitting}
                     onClick={handleSubmit}
                     variant="contained"
@@ -645,7 +663,8 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
                   </MuButton>
                   {values.Currencies.length < 2 && (
                     <MuButton
-                      className={classes.addCurrency}
+                      // className={classes.addCurrency}
+                      className=""
                       onClick={() => {
                         setFieldValue("Currencies", [
                           ...values.Currencies,

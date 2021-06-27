@@ -125,6 +125,7 @@ export default async function () {
           forSale: Number(forsale),
           sold: Number(sold),
           totalMints: Number(amount),
+          available: (Number(amount) || 0) - (Number(sold) || 0),
         },
         owner: owneraddress,
         price: mergedPrices,

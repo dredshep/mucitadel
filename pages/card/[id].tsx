@@ -402,7 +402,7 @@ function Product2(props: NFT) {
   console.log(currency);
 
   const handleBuy = async () => {
-    alert(JSON.stringify(props, null, 2));
+    // alert(JSON.stringify(props, null, 2));
     console.log("buy");
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -486,19 +486,21 @@ function Product2(props: NFT) {
         if (parseInt(approval) < currencyAmount * 1e18) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
           const tokenApproval = await contractToken.functions.approve(
-            MarketPlaceAddress, 
+            MarketPlaceAddress,
             String(currencyAmount).concat("000000000000000000")
           );
-          await provider.waitForTransaction(tokenApproval.hash,1);
+          await provider.waitForTransaction(tokenApproval.hash, 1);
         }
-        console.log(parseInt(String(currencyAmount).concat("000000000000000000")));
+        console.log(
+          parseInt(String(currencyAmount).concat("000000000000000000"))
+        );
         console.log(userAsk);
 
         for (var i = 0; i < userAsk[0].length; i++) {
-         
-          if (parseInt(userAsk[0][i][3]) == tokenID 
-          
-          && parseInt(String(currencyAmount).concat("000000000000000000")) == parseInt(userAsk[0][i][5][0][1])
+          if (
+            parseInt(userAsk[0][i][3]) == tokenID &&
+            parseInt(String(currencyAmount).concat("000000000000000000")) ==
+              parseInt(userAsk[0][i][5][0][1])
           ) {
             var OrderID = parseInt(userAskOrder[0][i]);
 
@@ -507,7 +509,7 @@ function Product2(props: NFT) {
               .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
               .then(async function (result) {
                 console.log(result);
-                await provider.waitForTransaction(result.hash,1);
+                await provider.waitForTransaction(result.hash, 1);
                 /* Step 4 - Upload to API 75%*/
                 var myHeaders = new Headers();
                 myHeaders.append(
@@ -516,11 +518,11 @@ function Product2(props: NFT) {
                 );
 
                 var fd1 = new URLSearchParams();
-                fd1.append("id",props.id);
-                fd1.append("owneraddress", accounts.toString()); // Default Mint -1 
+                fd1.append("id", props.id);
+                fd1.append("owneraddress", accounts.toString()); // Default Mint -1
                 fd1.append("amount", String(parseInt(userAsk[0][i][2])));
                 fd1.append("txhash", result.hash);
-                
+
                 console.log("form values & file => ", fd1);
                 const requestOptions = {
                   method: "POST",
@@ -528,22 +530,17 @@ function Product2(props: NFT) {
                   headers: myHeaders,
                 };
 
-                fetch(
-                  "https://api.mucitadel.io/v1/nft/buynft",
-                  requestOptions
-                )
+                fetch("https://api.mucitadel.io/v1/nft/buynft", requestOptions)
                   .then((response) => response.text())
                   .then((result) => {
                     /* End Result 100% */
                     console.log(result);
                   })
                   .catch((error) => {
-                    
                     console.log("error", error);
                   });
               })
               .catch((error) => {
-                
                 console.log("error", error);
               });
           } else {
@@ -553,20 +550,24 @@ function Product2(props: NFT) {
         }
       } else if (currencySymbol == "ETH") {
         for (var i = 0; i < userAsk[0].length; i++) {
-          if (parseInt(userAsk[0][i][3]) == tokenID
-          && parseInt(String(currencyAmount).concat("000000000000000000")) == parseInt(userAsk[0][i][4])
+          if (
+            parseInt(userAsk[0][i][3]) == tokenID &&
+            parseInt(String(currencyAmount).concat("000000000000000000")) ==
+              parseInt(userAsk[0][i][4])
           ) {
             var OrderID = parseInt(userAskOrder[0][i]);
 
             /* This Will Buy The Token */
             await contract.functions
               .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
-                value: String(parseInt(userAsk[0][i][4])/1e18).concat("000000000000000000"),
+                value: String(parseInt(userAsk[0][i][4]) / 1e18).concat(
+                  "000000000000000000"
+                ),
               })
               .then(async function (result) {
                 console.log(result);
-                await provider.waitForTransaction(result.hash,1);
-              /* Step 4 - Upload to API 75%*/
+                await provider.waitForTransaction(result.hash, 1);
+                /* Step 4 - Upload to API 75%*/
                 var myHeaders = new Headers();
                 myHeaders.append(
                   "Content-Type",
@@ -574,11 +575,11 @@ function Product2(props: NFT) {
                 );
 
                 var fd1 = new URLSearchParams();
-                fd1.append("id",props.id);
-                fd1.append("owneraddress", accounts.toString()); // Default Mint -1 
+                fd1.append("id", props.id);
+                fd1.append("owneraddress", accounts.toString()); // Default Mint -1
                 fd1.append("amount", String(parseInt(userAsk[0][i][2])));
                 fd1.append("txhash", result.hash);
-                
+
                 console.log("form values & file => ", fd1);
                 const requestOptions = {
                   method: "POST",
@@ -586,27 +587,20 @@ function Product2(props: NFT) {
                   headers: myHeaders,
                 };
 
-                fetch(
-                  "https://api.mucitadel.io/v1/nft/buynft",
-                  requestOptions
-                )
+                fetch("https://api.mucitadel.io/v1/nft/buynft", requestOptions)
                   .then((response) => response.text())
                   .then((result) => {
                     /* End Result 100% */
                     console.log(result);
                   })
                   .catch((error) => {
-                    
                     console.log("error", error);
                   });
               })
               .catch((error) => {
-                
                 console.log("error", error);
               });
-
           } else {
-            
           }
         }
       }
@@ -616,7 +610,7 @@ function Product2(props: NFT) {
   };
 
   const handleSell = () => {
-    alert(JSON.stringify(props, null, 2));
+    // alert(JSON.stringify(props, null, 2));
     const data = JSON.stringify(props, null, 2);
     console.log(data);
     setShowSellModal(true);
@@ -674,7 +668,10 @@ function Product2(props: NFT) {
               <Select
                 placeholder="Select Price"
                 value={currency}
-                options={getPriceListFromPriceObj(props.price)
+                options={(props.price
+                  ? getPriceListFromPriceObj(props.price)
+                  : []
+                )
                   .filter((price) => !price.endsWith("USD"))
                   .map((price) => ({
                     label: price,
@@ -685,10 +682,10 @@ function Product2(props: NFT) {
             </div>
           </div>
           <div className="flex flex-col w-5/12 xs:w-1/3 md:w-44 ">
-            <div className={keyTextClass + " mb-2"}>Mint Edition</div>
-            <div className={valueTextClass}>{`${
-              props.mints.totalMints - props.mints.sold
-            } out of ${props.mints.totalMints}`}</div>
+            <div className={keyTextClass + " mb-2"}>Mints for sale</div>
+            <div
+              className={valueTextClass}
+            >{`${props.mints.forSale} out of ${props.mints.available}`}</div>
           </div>
         </div>
         <div className="flex flex-col-reverse md:flex-col h-56">
