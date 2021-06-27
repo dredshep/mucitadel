@@ -20,9 +20,6 @@ export default function MintModal(props: {
   address: string;
   closeMintModal: () => void;
 }) {
-  console.log("LE ROLE ROLE LE", props.role);
-  console.log("LE ADDRESS ADDRESS LE", props.address);
-  console.log(props.address);
   const classes = useStyles();
   return (
     <div

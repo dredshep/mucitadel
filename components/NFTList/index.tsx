@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useRef } from "react";
 import { ORDER_TYPES } from "../../constant";
+import capitalizeFirstLetter from "../../functions/capitalizeFirstLetter";
 import { NFT } from "../../types/nft";
 
 function useOutsideAlerter(
@@ -84,9 +85,11 @@ export function NFTCard(props: NFT & { href: string; currency: string }) {
             <div className="text-base w-40 tiny:w-44 xlish:w-56 px-2 xlish:px-4 flex flex-col justify-between py-4 xlish:py-6">
               <div className="flex flex-row justify-between items-center">
                 <div className="font-title text-secondary text-xs md:text-sm font-semibold">
-                  Trending Rating
+                  Blockchain
                 </div>
-                <div className="font-base font-body">{props.trending}</div>
+                <div className="font-base font-body">
+                  {capitalizeFirstLetter(props.blockchain)}
+                </div>
               </div>
               <div className="flex flex-row justify-between items-center">
                 <div className="font-title text-secondary text-xs md:text-sm font-semibold">
@@ -109,7 +112,7 @@ export function NFTCard(props: NFT & { href: string; currency: string }) {
                   Price
                 </div>
                 <div className="font-base font-body">
-                  {props.price[props.currency]}{" "}
+                  {props.price?.[props.currency] || "Not for sale"}{" "}
                   <span className="text-phantasmablue uppercase">
                     {props.currency}
                   </span>
@@ -168,7 +171,7 @@ function NFTList(props: {
       sortedList = sortedList.filter((nft) => {
         const ifNotFirstTrueOtherwiseSecond = (condition1, condition2) =>
           condition1 ? true : condition2;
-        const hasCurrency = nft.price[configurations.currency];
+        const hasCurrency = nft.price?.[configurations.currency];
         const fitsSearch = ifNotFirstTrueOtherwiseSecond(
           !isValidString(searchTerm),
           nft.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -179,11 +182,11 @@ function NFTList(props: {
         );
         const isAbovePrice = ifNotFirstTrueOtherwiseSecond(
           !isValidNumber(configurations.minPrice),
-          nft.price[configurations.currency] >= configurations.minPrice
+          nft.price?.[configurations.currency] >= configurations.minPrice
         );
         const isBelowPrice = ifNotFirstTrueOtherwiseSecond(
           !isValidNumber(configurations.maxPrice),
-          nft.price[configurations.currency] <= configurations.maxPrice
+          nft.price?.[configurations.currency] <= configurations.maxPrice
         );
         // console.log({hasCurrency, fitsSearch, isTier, isAbovePrice, isBelowPrice})
         return (

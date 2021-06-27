@@ -306,7 +306,11 @@ function RelatedSection(props: { cards: NFT[]; currentCard: NFT }) {
             <NFTCard
               {...card}
               href={`/card/${card.id}`}
-              currency={card.price.USD ? "USD" : Object.keys(card.price)[0]}
+              currency={(() => {
+                if (card.price) {
+                  return card.price?.USD ? "USD" : Object.keys(card.price)[0];
+                } else return null;
+              })()}
               key={card.id}
             />
           </div>
