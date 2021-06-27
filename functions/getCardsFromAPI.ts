@@ -125,6 +125,8 @@ export default async function getCardsFromAPI() {
           forSale: Number(forsale),
           sold: Number(sold),
           totalMints: Number(amount),
+          notForSale:
+            (Number(amount) || 0) - (Number(sold) || 0) - Number(forsale),
           available: (Number(amount) || 0) - (Number(sold) || 0),
         },
         owner: owneraddress,

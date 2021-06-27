@@ -1,11 +1,6 @@
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import {
-  faCopy,
-  faEllipsisH,
-  faGlobe,
-  faShareAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import copy from "copy-to-clipboard";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Footer from "../components/Footer";
@@ -16,15 +11,13 @@ import {
   LogIn,
   LogOut,
 } from "../components/types/AuthenticationProvider";
-import getCardsFromAPI from "../functions/getCardsFromAPI";
+import cards from "../functions/cards";
+import getCardsFromAPI, { shortenAddress } from "../functions/getCardsFromAPI";
 import { NFT } from "../types/nft";
 
 const Post = () => {};
 
-function Content(props: ContentProps) {
-  const router = useRouter();
-  const { user } = router.query;
-
+function Content(props: ContentProps & { userAddress: string }) {
   return (
     <div className="flex flex-col pb-16">
       <div className="w-full h-64">
@@ -44,14 +37,23 @@ function Content(props: ContentProps) {
         </div>
       </div>
       <div className="flex flex-col items-center">
-        <h1 className="mt-5 text-2xl font-bold font-title">Mia Dmitry</h1>
-        <p className="mt-3 text-mupurple">
-          0x21a9d0f5c0b9c...cbe7{" "}
+        <h1 className="mt-5 text-2xl font-bold font-title">
+          Anonymous Address
+        </h1>
+        <p
+          className="mt-3 text-mupurple cursor-pointer hover:text-mupurple-hover"
+          onClick={() =>
+            copy(props.userAddress)
+              ? alert("Successfully copied address")
+              : alert("Failed to copy address")
+          }
+        >
+          {shortenAddress(props.userAddress)}{" "}
           <FontAwesomeIcon icon={faCopy} className="ml-1" />
         </p>
-        <p className="mx-5 lg:mx-10 mt-5 max-w-lg text-center text-secondary">
-          When the sea comes to send the sparrows with thistles and berries,
-          send them back to the pyre.
+        {/* <p className="mx-5 lg:mx-10 mt-5 max-w-md text-center text-secondary">
+          When the sea sends the sparrows with thistles and berries, send them
+          back to the pyre.
         </p>
         <div className="mt-5 flex items-center text-mupurple font-semibold text-sm">
           <FontAwesomeIcon icon={faTwitter} className="mr-2 text-twitter" />
@@ -72,14 +74,12 @@ function Content(props: ContentProps) {
           <div className="ml-2 rounded-full bg-asidebg h-12 w-12 flex justify-center items-center text-xl">
             <FontAwesomeIcon icon={faEllipsisH} />
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="mx-5 lg:mx-10 w-11/12">
         <div className="mt-10 flex w-full text-secondary font-semibold space-x-4 overflow-x-auto no-scrollbar">
-          <div className="border-b-2 text-white border-white h-8">
-            On&nbsp;sale
-          </div>
-          <div>Collectibles</div>
+          <div className="border-b-2 text-white border-white h-8">Owned</div>
+          <div>On&nbsp;sale</div>
           <div>Created</div>
           <div>Liked</div>
           <div>Activity</div>
@@ -91,7 +91,11 @@ function Content(props: ContentProps) {
           </div>
         </div>
       </div>
-      <NFTList nftList={props.nftList} />
+      <NFTList
+        nftList={props.nftList.filter((nft) =>
+          cards.isOwner(nft, props.userAddress)
+        )}
+      />
     </div>
   );
 }
@@ -105,10 +109,12 @@ type ContentProps = {
 };
 
 export default function User(props: ContentProps) {
+  const router = useRouter();
+  const userAddress = router.query.user as string;
   return (
     <div className="App text-white bg-mainbg min-h-screen font-body">
       <NavBar {...props} />
-      <Content {...props} />
+      <Content {...{ ...props, userAddress }} />
       <Footer />
     </div>
   );

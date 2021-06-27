@@ -35,6 +35,26 @@ function useOutsideAlerter(
   }, [ref]);
 }
 
+function Link(props: {
+  icon: IconDefinition;
+  href?: string;
+  children: string;
+  onClick?: any;
+}) {
+  return (
+    <a
+      className="flex flex-column text-base hover:bg-mainbg cursor-pointer"
+      onClick={props.onClick}
+      href={props.href}
+    >
+      <div className="flex items-center py-3 px-5">
+        <FontAwesomeIcon icon={props.icon} className="mr-5" />
+        <div>{props.children}</div>
+      </div>
+    </a>
+  );
+}
+
 export default function PopDown(props: {
   isLoggedIn: string | undefined;
   logOut: LogOut;
@@ -50,24 +70,6 @@ export default function PopDown(props: {
   }
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, showPopdown);
-  function Link(props: {
-    icon: IconDefinition;
-    href?: string;
-    children: string;
-    onClick?: any;
-  }) {
-    return (
-      <a
-        className="flex flex-column text-base hover:bg-mainbg cursor-pointer"
-        onClick={props.onClick}
-      >
-        <div className="flex items-center py-3 px-5">
-          <FontAwesomeIcon icon={props.icon} className="mr-5" />
-          <div>{props.children}</div>
-        </div>
-      </a>
-    );
-  }
   return (
     <div
       ref={wrapperRef}
@@ -83,7 +85,7 @@ export default function PopDown(props: {
           " origin-top-right top-14 right-4 bg-asidebg shadow-2xl text-lg rounded-lg flex flex-col font-semibold z-10"
         }
       >
-        <Link icon={faUser}>
+        <Link icon={faUser} href={"/" + props.authData?.address}>
           {(props.authData?.address &&
             shortenAddress(props.authData?.address)) ||
             "pls login"}
