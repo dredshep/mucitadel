@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import moment from "moment";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
@@ -644,7 +645,7 @@ function Product2(props: NFT & { userAddress: string }) {
               {props.name}
             </div>
             <div className="mt-3 text-secondary font-semibold text-lg leading-3 font-body">
-              {props.tier.charAt(0).toUpperCase() + props.tier.slice(1)}
+              {props.tier?.charAt(0).toUpperCase() + props.tier?.slice(1)}
             </div>
           </div>
         </div>
@@ -740,6 +741,17 @@ function Product2(props: NFT & { userAddress: string }) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function CardNotFound() {
+  return (
+    <div className="w-full flex flex-col items-center mt-10 mb-20">
+      <h1 className="mx-auto mt-20 text-4xl font-bold">404 - Card not found</h1>
+      <a href="/" className="mt-10 mb-20">
+        <Button href="/">Click here to go back home</Button>
+      </a>
     </div>
   );
 }
@@ -916,20 +928,26 @@ function Content({
   }
   return (
     <div className="px-0 xl:px-32 flex flex-col pb-16">
-      <Product2 {...{ ...currentCard, userAddress }} />
-      <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
-        <div className="mb-0 lg:mb-10 max-w-full">
-          <NFTDetails {...currentCard} />
-        </div>
-      </div>
-      <div className="w-full text-center">
-        <RelatedSection
-          currentCard={currentCard}
-          cards={cardArr.filter(
-            (x: NFT) => x.tier === (currentCard as NFT).tier
-          )}
-        />
-      </div>
+      {currentCard?.mints ? (
+        <>
+          <Product2 {...{ ...currentCard, userAddress }} />
+          <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
+            <div className="mb-0 lg:mb-10 max-w-full">
+              <NFTDetails {...currentCard} />
+            </div>
+          </div>
+          <div className="w-full text-center">
+            <RelatedSection
+              currentCard={currentCard}
+              cards={cardArr.filter(
+                (x: NFT) => x.tier === (currentCard as NFT)?.tier
+              )}
+            />
+          </div>
+        </>
+      ) : (
+        <CardNotFound />
+      )}
     </div>
   );
 }
@@ -937,23 +955,36 @@ function Content({
 export default function Home(
   props: AuthProps & { nftList: NFT[]; milliseconds: number }
 ) {
-  const nft = props.nftList.filter((nft) => nft.id)[0];
+  const router = useRouter();
+  const nft = props.nftList.find((nft) => nft.id === router.query.id);
   useEffect(() =>
     console.log(
       JSON.stringify(
-        { milliseconds: props.milliseconds, id: nft.ipfsurl },
+        { milliseconds: props.milliseconds, id: nft?.ipfsurl },
         null,
         2
       )
     )
   );
   return (
-    <div className="App text-white bg-mainbg min-h-screen font-body">
-      <NavBar {...props} />
-      <Content cardArr={props.nftList} userAddress={props.authData.address} />
+    <>
+      <Head>
+        <title>{nft?.name || "404 Card Not Found" + " — MU Citadel"}</title>
+      </Head>
+      <div className="App text-white bg-mainbg min-h-screen font-body">
+        <NavBar {...props} />
+        {nft ? (
+          <Content
+            cardArr={props.nftList}
+            userAddress={props.authData.address}
+          />
+        ) : (
+          <CardNotFound />
+        )}
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 }
 
