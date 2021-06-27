@@ -10,4 +10,12 @@ const filterByOnlyForSale = (nfts: NFT[]) => nfts.filter(isForSale);
 const filterBySoldByAddress = (nfts: NFT[], owner: string) =>
   nfts.filter((nft) => isForSale(nft) && isOwner(nft, owner));
 
-export default {};
+export default {
+  isOwner,
+  isForSale,
+  isCreatorEdition,
+  filterByCreator,
+  filterByOnlyCreatorNFTs,
+  filterByOnlyForSale,
+  filterBySoldByAddress,
+};

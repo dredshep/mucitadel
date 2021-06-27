@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
+import { AuthProps } from "../types/AuthenticationProvider";
 
 interface Window {
   ethereum: any;
@@ -53,7 +54,11 @@ async function logInWithMetamask(before: () => void, after: () => void) {
 
 function setLogOutState(setAuthData) {
   const logOut = () => {
-    setAuthData({ address: undefined, authenticationMethod: "none" });
+    setAuthData({
+      address: undefined,
+      authenticationMethod: "none",
+      role: "guest",
+    });
     const cookies = new Cookies();
     cookies.set("authentication_method", "none");
   };
@@ -134,14 +139,12 @@ export default function AuthenticationProvider(props) {
     }
   }
 
-  return (
-    <>
-      {React.cloneElement(props.children, {
-        authData,
-        logIn,
-        logOut,
-        hasMetamask,
-      })}
-    </>
-  );
+  const authProps: AuthProps = {
+    authData,
+    logIn,
+    logOut,
+    hasMetamask,
+  };
+
+  return <>{React.cloneElement(props.children, authProps)}</>;
 }

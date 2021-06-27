@@ -11,6 +11,7 @@ export type NFT = {
     sold: number;
     totalMints: number;
     forSale: number;
+    notForSale: number;
     available: number;
   };
   price: null | {

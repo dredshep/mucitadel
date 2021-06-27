@@ -1,12 +1,11 @@
 import {
-  faClone,
-  faPlusSquare,
   faUserCircle,
   IconDefinition,
 } from "@fortawesome/free-regular-svg-icons";
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef } from "react";
+import { shortenAddress } from "../../../functions/getCardsFromAPI";
 import Explained from "../../Explainer/Explained";
 import { AuthData, LogOut } from "../../types/AuthenticationProvider";
 
@@ -84,11 +83,13 @@ export default function PopDown(props: {
           " origin-top-right top-14 right-4 bg-asidebg shadow-2xl text-lg rounded-lg flex flex-col font-semibold z-10"
         }
       >
-        <Link icon={faPlusSquare}>
-          {props.authData?.address || "pls login"}
+        <Link icon={faUser}>
+          {(props.authData?.address &&
+            shortenAddress(props.authData?.address)) ||
+            "pls login"}
         </Link>
-        <Link icon={faPlusSquare}>Create NFT</Link>
-        <Link icon={faClone}>My NFTs</Link>
+        {/* <Link icon={faPlusSquare}>Create NFT</Link>
+        <Link icon={faClone}>My NFTs</Link> */}
         {/* <Link icon={faWallet}>Wallet</Link>
         <Link icon={faHeartbeat}>Activity</Link> */}
         <Link icon={faSignOutAlt} onClick={props.logOut}>

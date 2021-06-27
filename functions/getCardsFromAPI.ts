@@ -3,7 +3,7 @@ import { NFT, RawNFT } from "../types/nft";
 
 type Prices = { [key: string]: number };
 
-function shortenAddress(address) {
+export function shortenAddress(address: string) {
   const firstPart = address.slice(0, 15);
   const secondPart = address.slice(address.length - 4, address.length);
   return [firstPart, secondPart].join("...");
@@ -39,7 +39,7 @@ const mergePrices = (
     return Object.assign(prices, { [premergeSymbols[i]]: actualPrice });
   }, {});
 
-export default async function () {
+export default async function getCardsFromAPI() {
   // const getData = (): Promise<RawNFT[]> =>
   //   axios
   //     .get("https://api.mucitadel.io/v1/nft/listnfts?page=1&per_page=100")

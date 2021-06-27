@@ -13,6 +13,7 @@ import Button from "../../components/styled/Button";
 import Link from "../../components/styled/Link";
 import WhiteButton from "../../components/styled/WhiteButton";
 import Tabs from "../../components/Tabs";
+import { AuthProps } from "../../components/types/AuthenticationProvider";
 import Select from "../../components/UI/Select";
 import marketcontractAbi from "../../config/abi/marketplace.json";
 import contractAbi from "../../config/abi/meme.json";
@@ -26,6 +27,7 @@ import {
   tokencontractAddB,
 } from "../../constant/blockchain";
 import capitalizeFirstLetter from "../../functions/capitalizeFirstLetter";
+import cards from "../../functions/cards";
 import getCardsFromAPI from "../../functions/getCardsFromAPI";
 import { NFT } from "../../types/nft";
 
@@ -45,71 +47,11 @@ type LinkPair = {
   info?: string;
 };
 
-// function Link(props: { href: string; text: string }) {
-//   return (
-//     <a className="text-mupurple" href={props.href}>
-//       {props.text}
-//     </a>
-//   );
-// }
-
-// const CurrencySelector = styled(Select)``;
-
 function ExternalMarker(props: { href: string }) {
   return (
     <a href={props.href} className="text-mupurple">
       <i className="fas fa-external-link-alt"></i>
     </a>
-  );
-}
-
-function BuySection() {
-  return (
-    <>
-      {/* CURRENCY SECTION */}
-      <div className="flex flex-row justify-between w-full mb-8">
-        <div className="font-semibold font-title tracking-wide text-secondary">
-          Currency
-        </div>
-        <div className="max-w-sm flex flex-row flex-wrap">
-          {"SOUL DANK ETH USD".split(" ").map((currency, i) => (
-            <div
-              key={currency}
-              className={
-                "flex flex-col justify-around mb-px rounded-full items-center py-1 px-3 font-bold " +
-                (i === 0 ? "bg-mupurple" : "bg-white text-mupurple") +
-                " ml-2"
-              }
-            >
-              <div>{currency}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* PRICE SECTION */}
-      <div className="flex flex-row justify-between w-full mb-8">
-        <div className="font-semibold font-title tracking-wide text-secondary">
-          Price
-        </div>
-        <div className="max-w-sm flex flex-col flex-wrap font-bold">
-          <div>
-            120&nbsp;<span className="text-phantasmablue">SOUL</span>
-          </div>
-          <div>
-            100&nbsp;<span className="text-kcalred">kcal</span>
-          </div>
-        </div>
-      </div>
-      {/* BUY BUTTONS SECTION */}
-      <div className="mx-auto flex flex-row justify-around font-semibold text-xl">
-        <div className="py-2 px-4 rounded-full bg-white text-mupurple flex justify-around items-center">
-          <div className="mb-1">Add to cart</div>
-        </div>
-        <div className="py-2 px-4 rounded-full bg-mupurple text-white flex justify-around items-center ml-6">
-          <div className="mb-px">Buy</div>
-        </div>
-      </div>
-    </>
   );
 }
 
@@ -328,7 +270,54 @@ function RelatedSection(props: { cards: NFT[]; currentCard: NFT }) {
 const keyTextClass = "text-secondary font-semibold font-title";
 const valueTextClass = "text-white font-body";
 
-function Product2(props: NFT) {
+function BuySell(props: {
+  handleSell: () => void;
+  handleBuy: () => void;
+  nft: NFT;
+  userAddress: string;
+}) {
+  const { handleBuy, handleSell, nft, userAddress } = props;
+  const isOwner = cards.isOwner(nft, userAddress);
+  const isForSale = cards.isForSale(nft);
+  const someNotForSale = nft.mints.notForSale > 0;
+  const showBuy = !isOwner && isForSale;
+  const showSell = isOwner && someNotForSale;
+  const amountOfButtons = [showBuy, showSell].filter((x) => x);
+
+  console.log({ showBuy, showSell });
+
+  const wFull = amountOfButtons.length === 1;
+  const wHalf = amountOfButtons.length === 2;
+
+  return (
+    <>
+      {showBuy && (
+        <WhiteButton
+          className={
+            (wFull ? "w-full" : "") + (wHalf ? "w-1/2" : "") + " text-lg mr-3"
+          }
+          onClick={handleBuy}
+        >
+          Buy
+        </WhiteButton>
+      )}
+      {showSell && (
+        <Button
+          className={
+            (wFull ? "w-full" : "") +
+            (wHalf ? "w-1/2" : "") +
+            "w-1/2 text-lg mr-6"
+          }
+          onClick={handleSell}
+        >
+          Sell
+        </Button>
+      )}
+    </>
+  );
+}
+
+function Product2(props: NFT & { userAddress: string }) {
   const [currency, setCurrency] = useState({
     label: "Choose a price",
     value: "Choose a price",
@@ -725,76 +714,30 @@ function Product2(props: NFT) {
               </div>
             </div>
           </Tabs>
-          {/* <div>
-            <div className="flex h-12 text-base font-body mt-2 text-secondary">
-              <div className="border-b-2 border-inputbg w-40 h-full flex items-center box-content">
-                Description
-              </div>
-              <div className="border-b-2 border-mupurple h-full flex items-center w-full box-content pl-5">
-                Details
-              </div>
-            </div>
-            <div className="flex flex-col space-y-3 mt-5 pr-5">
-              <div className="flex flex-row justify-between font-body">
-                <div className={keyTextClass}>Owner</div>
-                <div className="text-white">
-                  <Link className="text-mupurple">{props.owner}</Link>
-                </div>
-              </div>
-              <div className="flex flex-row justify-between font-body">
-                <div className={keyTextClass}>Mint date</div>
-                <div className="text-white">
-                  {moment.utc(props.mintDate).format("MMM DD, YYYY")}
-                </div>
-              </div>
-              <div className="flex flex-row justify-between font-body">
-                <div className={keyTextClass}>Listed until</div>
-                <div className="text-white">
-                  {moment.utc(props.listedUntil).format("MMM DD, YYYY")}
-                </div>
-              </div>
-            </div>
-          </div> */}
-          {/* BUY BUTTONS SECTION */}
-          {/* <div className="flex flex-row font-semibold text-xl justify-start md:justify-center space-x-5 mt-4 w-full">
-          <div className="w-1/2 md:w-auto px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Buy</div></div>
-          <div className="w-1/2 md:w-auto px-6 rounded-full bg-mupurple text-white flex justify-around items-center"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Add to wishlist</div></div>
-        </div> mt-6 md:mt-4 */}
           <div className="flex row w-full h-full items-end justify-center">
-            <WhiteButton className="w-1/2 text-lg mr-3" onClick={handleBuy}>
-              Buy
-            </WhiteButton>
+            {/* {!cards.isOwner && (
+              <WhiteButton className="w-1/2 text-lg mr-3" onClick={handleBuy}>
+                Buy
+              </WhiteButton>
+            )}
             <Button className="w-1/2 text-lg mr-6" onClick={handleSell}>
               Sell
-            </Button>
-            {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
-              Add to wishlist
             </Button> */}
+            <BuySell
+              {...{
+                handleSell,
+                handleBuy,
+                nft: props,
+                userAddress: props.userAddress,
+              }}
+            />
+            <SellModal
+              visible={showSellModal}
+              tokenId={props.ipfsurl}
+              properties={props}
+              onCloseModal={handleCloseSellModal}
+            />
           </div>
-          {/* <div className="flex row w-full h-full items-end justify-center"> */}
-          {/* <WhiteButton className="w-1/2 text-lg mr-6">Buy</WhiteButton> */}
-          {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
-              Add to wishlist
-            </Button> */}
-          {/* </div> */}
-          {/* <div className="flex flex-row font-semibold text-sm xs:text-xl justify-start md:justify-center space-x-2 xs:space-x-5  my-4 w-full">
-            <div className="w-1/2 md:w-auto px-3 tiny:px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6">
-              <div className="pt-1 pb-1 md:pt-1 md:pb-1 leading-loose align-middle">
-                Buy
-              </div>
-            </div>
-            <div className="w-1/2 md:w-auto px-3 tiny:px-6 rounded-full bg-mupurple text-white flex justify-around items-center">
-              <div className="pt-1 pb-1 md:pt-1 md:pb-1 leading-loose align-middle">
-                Add to wishlist
-              </div>
-            </div>
-          </div> */}
-          <SellModal
-            visible={showSellModal}
-            tokenId={props.ipfsurl}
-            properties={props}
-            onCloseModal={handleCloseSellModal}
-          />
         </div>
       </div>
     </div>
@@ -937,18 +880,13 @@ function MiniExplorer(props) {
   );
 }
 
-//
-// <div className="flex flex-row h-full mt-10 p-8 bg-asidebg rounded-xl">
-// {/* <div className="w-96"><img className="w-full" src="/images/pete-card.jpg" /></div> */}
-// {/* <div className="text-lg font-bold">Voiceover Pete</div> */}
-// <div className="flex flex-col items-center">
-//   <div className="text-3xl font-bold">Voiceover Pete</div>
-//   {Card}
-// </div>
-// {propsSection}
-// </div>
-
-function Content({ cardArr }) {
+function Content({
+  cardArr,
+  userAddress,
+}: {
+  cardArr: NFT[];
+  userAddress: string;
+}) {
   if (!cardArr.length) return <div>Loading...</div>;
   const router = useRouter();
   const currentCard = cardArr.find((card) => card.id === router.query.id);
@@ -976,27 +914,13 @@ function Content({ cardArr }) {
   if (currentCard) {
     mainProps.push(makeProp("Description", currentCard.description));
   }
-  const propsSection = (
-    <div className="flex flex-col items-start w-full ml-10">
-      {mainProps.map((props) => (
-        <KeyValue {...props} />
-      ))}
-      <BuySection />
-    </div>
-  );
   return (
     <div className="px-0 xl:px-32 flex flex-col pb-16">
-      <Product2 {...currentCard} />
+      <Product2 {...{ ...currentCard, userAddress }} />
       <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
         <div className="mb-0 lg:mb-10 max-w-full">
           <NFTDetails {...currentCard} />
         </div>
-        {/* <div className="mb-0 lg:mb-10 max-w-full">
-          <SeriesDetails />
-        </div> */}
-        {/* <div className="mb-0 lg:mb-10 max-w-full">
-          <MiniExplorer />
-        </div> */}
       </div>
       <div className="w-full text-center">
         <RelatedSection
@@ -1010,11 +934,14 @@ function Content({ cardArr }) {
   );
 }
 
-export default function Home(props) {
+export default function Home(
+  props: AuthProps & { nftList: NFT[]; milliseconds: number }
+) {
+  const nft = props.nftList.filter((nft) => nft.id)[0];
   useEffect(() =>
     console.log(
       JSON.stringify(
-        { milliseconds: props.milliseconds, id: props.ipfsurl },
+        { milliseconds: props.milliseconds, id: nft.ipfsurl },
         null,
         2
       )
@@ -1023,7 +950,7 @@ export default function Home(props) {
   return (
     <div className="App text-white bg-mainbg min-h-screen font-body">
       <NavBar {...props} />
-      <Content cardArr={props.nftList} />
+      <Content cardArr={props.nftList} userAddress={props.authData.address} />
 
       <Footer />
     </div>
