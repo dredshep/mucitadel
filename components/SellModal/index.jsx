@@ -134,6 +134,28 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      /* ETH Main - 1,Ropstem - 3, Binance Main :56	, Binance Testnet :97 */
+      chainID = parseInt(await window.ethereum.chainId);
+      console.log(chainID);
+
+      if (properties.blockchain == "ethereum") {
+        if (chainID == 1 || chainID == 4) {
+          /* Do Nothing */
+        } else {
+          alert("Wrong Blockchain Connected switch to Ethereum Blockchain");
+          return false;
+        }
+      } else if (properties.blockchain == "binance") {
+        if (chainID == 56 || chainID == 97) {
+          /* Do Nothing */
+        } else {
+          alert("Wrong Blockchain Connected switch to Binance Blockchain");
+          return false;
+        }
+      }
+
       /* Selecting the right Blockchain */
       let ContractInteraction = "";
       let MarketPlaceAddress = "";
@@ -171,6 +193,21 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
+      /* Fetch Token ID using Token Hash */
+      const tokenID = parseInt(
+        await nftcontract.functions.getTokenIdFromHash(properties.ipfsurl)
+      );
+      console.log("TokenID", tokenID);
+      // const tokenID = 3;
+      var cardOwner = await nftcontract.functions.ownerOf(
+        accounts.toString(),
+        tokenID
+      );
+      if (cardOwner.toString() == "false") {
+        alert("Token Sold by user or already on sale");
+        return false;
+      }
+
       /* Check if Contract is Approved */
       const approval = await nftcontract.functions.isApprovedForAll(
         accounts.toString(),
@@ -180,14 +217,12 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
 
       if (approval.toString() == "false") {
         /* If Token is not appoved for selling in contract approval dialog box will appear */
-        await nftcontract.functions.setApprovalForAll(marketplace, 1);
-        return false;
+        const approveAll = await nftcontract.functions.setApprovalForAll(
+          MarketPlaceAddress,
+          1
+        );
+        await provider.waitForTransaction(approveAll.hash, 1);
       }
-      /* Fetch Token ID using Token Hash */
-      const tokenID = parseInt(
-        await nftcontract.functions.getTokenIdFromHash(properties.id)
-      );
-      // const tokenID = 3;
 
       /* Sell Section */
       if (
@@ -199,18 +234,39 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
           accounts.toString(),
           MarketPlaceAddress
         );
-        console.log(parseInt(approval));
-        console.log(
-          BigInt(parseInt(values.Currencies[0].Price) * 10 ** 18)
-            .toString()
-            .split(" ")
+        var cardOwner = await nftcontract.functions.ownerOf(
+          accounts.toString(),
+          tokenID
         );
+        if (cardOwner.toString() == "false") {
+          alert("Token Sold by user or already on sale");
+          return false;
+        }
+
+        var dbSymbol = String(values.Currencies[0].Currency);
+        var dbTotal = parseInt(values.Currencies[0].Price)
+          .toString()
+          .concat("000000000000000000");
+
+        console.log(parseInt(approval));
+
+        var fee = parseInt(await contract.functions.makerFee());
+        console.log(fee);
+        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000;
 
         if (parseInt(approval) < parseInt(values.Currencies[0].Price) * 1e18) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
-          await contractToken.functions.approve(MarketPlaceAddress, 1e30);
-          return false;
+          const tokenApproval = await contractToken.functions.approve(
+            MarketPlaceAddress,
+            feePayment.toString().concat("000000000000000000")
+          );
+          /* Waits for Transaction to complete */
+          await provider.waitForTransaction(tokenApproval.hash, 1);
         }
+
+        /* Card Approval Ends */
+        var dbSymbol = String(values.Currencies[0].Currency);
+        var dbTotal = values.Currencies[0].Price;
 
         var cardOwner = await nftcontract.functions.ownerOf(
           accounts.toString(),
@@ -226,23 +282,33 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
             1,
             0,
             values.Currencies[0].Currency.split(" "),
-            (parseInt(values.Currencies[0].Price) * 1e18).toString().split(" ")
+            parseInt(values.Currencies[0].Price)
+              .toString()
+              .concat("000000000000000000")
+              .split(" ")
           )
           .then(async function (result) {
-            return false;
+            /* Waits for Transaction to complete */
+            await provider.waitForTransaction(result.hash, 1);
+            return true;
           });
       } else if (
         values.Currencies.length == 1 &&
         values.Currencies[0].Currency == "ETH"
       ) {
-        // var cardOwner =  await nftcontract.functions.ownerOf(
-        //   accounts.toString(),
-        //   tokenID
-        // );
-        // if(cardOwner.toString() == "false"){
-        //   alert("Token Sold by user or already on sale");
-        //   return false;
-        // }
+        var cardOwner = await nftcontract.functions.ownerOf(
+          accounts.toString(),
+          tokenID
+        );
+        var dbSymbol = String(values.Currencies[0].Currency);
+        var dbTotal = parseInt(values.Currencies[0].Price)
+          .toString()
+          .concat("000000000000000000");
+
+        if (cardOwner.toString() == "false") {
+          alert("Token Sold by user or already on sale");
+          return false;
+        }
 
         var fee = parseInt(await contract.functions.makerFee());
         console.log(fee);
@@ -252,18 +318,35 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
           .readyToSellToken(
             tokenID,
             1,
-            (parseInt(values.Currencies[0].Price) * 1e18).toString(),
+            parseInt(values.Currencies[0].Price)
+              .toString()
+              .concat("000000000000000000"),
             [],
             [],
-            { value: (feePayment * 1e18).toString() }
+            { value: feePayment.toString().concat("000000000000000000") }
           )
           .then(async function (result) {
-            return false;
+            /* Waits for Transaction to complete */
+            await provider.waitForTransaction(result.hash, 1);
+            return true;
           });
       } else {
         var currencySymbol = "";
         var currencyPrice = "";
         var ethPrice = "";
+
+        var dbSymbol = String(values.Currencies[0].Currency)
+          .concat(",")
+          .concat(values.Currencies[1].Currency);
+        var dbTotal = parseInt(values.Currencies[0].Price)
+          .toString()
+          .concat("000000000000000000")
+          .concat(",")
+          .concat(parseInt(values.Currencies[1].Price))
+          .concat("000000000000000000");
+
+        console.log("Symbols: ", dbSymbol);
+        console.log("Currency: ", dbTotal);
 
         var cardOwner = await nftcontract.functions.ownerOf(
           accounts.toString(),
@@ -276,12 +359,45 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
 
         for (var i = 0; i < values.Currencies.length; i++) {
           if (values.Currencies[i].Currency == "DANK") {
-            currencyPrice = (parseInt(values.Currencies[i].Price) * 1e18)
+            currencyPrice = parseInt(values.Currencies[i].Price)
               .toString()
+              .concat("000000000000000000")
               .split(" ");
             currencySymbol = values.Currencies[i].Currency.split(" ");
+            console.log(currencyPrice);
+            console.log(currencySymbol);
           } else {
-            ethPrice = (parseInt(values.Currencies[i].Price) * 1e18).toString();
+            ethPrice = parseInt(values.Currencies[i].Price)
+              .toString()
+              .concat("000000000000000000");
+          }
+        }
+
+        for (var j = 0; j < values.Currencies.length; j++) {
+          if (values.Currencies[j].Currency == "DANK") {
+            /* Approve Token */
+            const approval = await contractToken.functions.allowance(
+              accounts.toString(),
+              MarketPlaceAddress
+            );
+            console.log("Approved Amount", parseInt(approval));
+
+            var fee = parseInt(await contract.functions.makerFee());
+            console.log(fee);
+            var feePayment =
+              (parseInt(values.Currencies[j].Price) * fee) / 1000;
+
+            if (parseInt(approval) < parseInt(feePayment) * 1e18) {
+              /* If Token is not appoved for selling in contract approval dialog box will appear */
+              const tokenApproval = await contractToken.functions.approve(
+                MarketPlaceAddress,
+                feePayment.toString().concat("000000000000000000")
+              );
+              /* Waits for Transaction to complete */
+              await provider.waitForTransaction(tokenApproval.hash, 1);
+            }
+
+            /* Card Approval Ends */
           }
         }
 
@@ -291,7 +407,43 @@ const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
         await contract.functions
           .readyToSellToken(tokenID, 1, ethPrice, currencySymbol, currencyPrice)
           .then(async function (result) {
-            return false;
+            /* Waits for Transaction to complete */
+            await provider.waitForTransaction(result.hash, 1);
+
+            /* Step 4 - Upload to API 75%*/
+            var myHeaders = new Headers();
+            myHeaders.append(
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            );
+
+            var fd1 = new URLSearchParams();
+            fd1.append("id", properties.id);
+            fd1.append("amount", "1"); // Default Mint -1
+            fd1.append("price", dbTotal);
+            fd1.append("symbol", dbSymbol);
+
+            console.log("form values & file => ", fd1);
+            var requestOptions1 = {
+              method: "POST",
+              body: fd1,
+              headers: myHeaders,
+              redirect: "follow",
+            };
+
+            fetch("https://api.mucitadel.io/v1/nft/sellnft", requestOptions1)
+              .then((response) => response.text())
+              .then((result) => {
+                setTimeout(() => {}, [500]);
+                /* End Result 100% */
+                console.log(result);
+              })
+              .catch((error) => {
+                console.log("error", error);
+              });
+          })
+          .catch((error) => {
+            console.log("error", error);
           });
       }
     } else {

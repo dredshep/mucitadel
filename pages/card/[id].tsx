@@ -485,12 +485,21 @@ function Product2(props: NFT) {
 
         if (parseInt(approval) < currencyAmount * 1e18) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
-          await contractToken.functions.approve(MarketPlaceAddress, 1e30);
-          return false;
+          const tokenApproval = await contractToken.functions.approve(
+            MarketPlaceAddress, 
+            String(currencyAmount).concat("000000000000000000")
+          );
+          await provider.waitForTransaction(tokenApproval.hash,1);
         }
+        console.log(parseInt(String(currencyAmount).concat("000000000000000000")));
+        console.log(userAsk);
 
         for (var i = 0; i < userAsk[0].length; i++) {
-          if (parseInt(userAsk[0][i][3]) == tokenID) {
+         
+          if (parseInt(userAsk[0][i][3]) == tokenID 
+          
+          && parseInt(String(currencyAmount).concat("000000000000000000")) == parseInt(userAsk[0][i][5][0][1])
+          ) {
             var OrderID = parseInt(userAskOrder[0][i]);
 
             /* This Will Buy The Token */
@@ -498,30 +507,106 @@ function Product2(props: NFT) {
               .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
               .then(async function (result) {
                 console.log(result);
-                return false;
+                await provider.waitForTransaction(result.hash,1);
+                /* Step 4 - Upload to API 75%*/
+                var myHeaders = new Headers();
+                myHeaders.append(
+                  "Content-Type",
+                  "application/x-www-form-urlencoded"
+                );
+
+                var fd1 = new URLSearchParams();
+                fd1.append("id",props.id);
+                fd1.append("owneraddress", accounts.toString()); // Default Mint -1 
+                fd1.append("amount", String(parseInt(userAsk[0][i][2])));
+                fd1.append("txhash", result.hash);
+                
+                console.log("form values & file => ", fd1);
+                const requestOptions = {
+                  method: "POST",
+                  body: fd1,
+                  headers: myHeaders,
+                };
+
+                fetch(
+                  "https://api.mucitadel.io/v1/nft/buynft",
+                  requestOptions
+                )
+                  .then((response) => response.text())
+                  .then((result) => {
+                    /* End Result 100% */
+                    console.log(result);
+                  })
+                  .catch((error) => {
+                    
+                    console.log("error", error);
+                  });
+              })
+              .catch((error) => {
+                
+                console.log("error", error);
               });
           } else {
-            alert("No Sell Order for the NFT Found");
-            return false;
+            // alert("No Sell Order for the NFT Found");
+            // return false;
           }
         }
       } else if (currencySymbol == "ETH") {
         for (var i = 0; i < userAsk[0].length; i++) {
-          if (parseInt(userAsk[0][i][3]) == tokenID) {
+          if (parseInt(userAsk[0][i][3]) == tokenID
+          && parseInt(String(currencyAmount).concat("000000000000000000")) == parseInt(userAsk[0][i][4])
+          ) {
             var OrderID = parseInt(userAskOrder[0][i]);
 
             /* This Will Buy The Token */
             await contract.functions
               .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
-                value: (currencyAmount * 1e18).toString(),
+                value: String(parseInt(userAsk[0][i][4])/1e18).concat("000000000000000000"),
               })
               .then(async function (result) {
                 console.log(result);
-                return false;
+                await provider.waitForTransaction(result.hash,1);
+              /* Step 4 - Upload to API 75%*/
+                var myHeaders = new Headers();
+                myHeaders.append(
+                  "Content-Type",
+                  "application/x-www-form-urlencoded"
+                );
+
+                var fd1 = new URLSearchParams();
+                fd1.append("id",props.id);
+                fd1.append("owneraddress", accounts.toString()); // Default Mint -1 
+                fd1.append("amount", String(parseInt(userAsk[0][i][2])));
+                fd1.append("txhash", result.hash);
+                
+                console.log("form values & file => ", fd1);
+                const requestOptions = {
+                  method: "POST",
+                  body: fd1,
+                  headers: myHeaders,
+                };
+
+                fetch(
+                  "https://api.mucitadel.io/v1/nft/buynft",
+                  requestOptions
+                )
+                  .then((response) => response.text())
+                  .then((result) => {
+                    /* End Result 100% */
+                    console.log(result);
+                  })
+                  .catch((error) => {
+                    
+                    console.log("error", error);
+                  });
+              })
+              .catch((error) => {
+                
+                console.log("error", error);
               });
+
           } else {
-            alert("No Sell Order for the NFT Found");
-            return false;
+            
           }
         }
       }

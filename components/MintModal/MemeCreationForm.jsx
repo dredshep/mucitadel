@@ -243,6 +243,8 @@ const MemeCreationForm = ({ role }) => {
                   .mint(account, 1, hash, [])
                   .then(async function (result) {
                     console.log(result);
+                    /* Waits for Transaction to complete */
+                    await provider.waitForTransaction(result.hash,1);
                     setActiveStep(2);
 
                     /* Step 4 - Upload to API 75%*/
