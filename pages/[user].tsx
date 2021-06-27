@@ -15,7 +15,7 @@ import cards from "../functions/cards";
 import getCardsFromAPI, { shortenAddress } from "../functions/getCardsFromAPI";
 import { NFT } from "../types/nft";
 
-const Post = () => {};
+// const;
 
 function Content(props: ContentProps & { userAddress: string }) {
   return (
@@ -92,8 +92,9 @@ function Content(props: ContentProps & { userAddress: string }) {
         </div>
       </div>
       <NFTList
-        nftList={props.nftList.filter((nft) =>
-          cards.isOwner(nft, props.userAddress)
+        nftList={props.nftList.filter(
+          (nft) =>
+            cards.isOwner(nft, props.userAddress) && nft.mints.available > 0
         )}
       />
     </div>

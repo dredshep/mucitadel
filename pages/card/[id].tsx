@@ -307,7 +307,7 @@ function BuySell(props: {
           className={
             (wFull ? "w-full" : "") +
             (wHalf ? "w-1/2" : "") +
-            "w-1/2 text-lg mr-6"
+            " w-1/2 text-lg mr-6"
           }
           onClick={handleSell}
         >
@@ -638,7 +638,7 @@ function Product2(props: NFT & { userAddress: string }) {
             />
           </div>
           <div>
-            <div className="text-success font-semibold text-lg leading-3 font-body">
+            <div className="text-success font-semibold text-lg leading-3 font-body mt-3">
               {(() => {
                 switch (props.blockchain) {
                   case "ethereum":
@@ -664,20 +664,24 @@ function Product2(props: NFT & { userAddress: string }) {
             <div className={valueTextClass + " font-semibold text-lg"}>
               {/* {props.soul} */}
               {/* {currencyButton} */}
-              <Select
-                placeholder="Select Price"
-                value={currency}
-                options={(props.price
-                  ? getPriceListFromPriceObj(props.price)
-                  : []
-                )
-                  .filter((price) => !price.endsWith("USD"))
-                  .map((price) => ({
-                    label: price,
-                    value: price,
-                  }))}
-                onChange={setCurrency}
-              />
+              {props.mints.forSale > 0 ? (
+                <Select
+                  placeholder="Select Price"
+                  value={currency}
+                  options={(props.price
+                    ? getPriceListFromPriceObj(props.price)
+                    : []
+                  )
+                    .filter((price) => !price.endsWith("USD"))
+                    .map((price) => ({
+                      label: price,
+                      value: price,
+                    }))}
+                  onChange={setCurrency}
+                />
+              ) : (
+                <p>Not for sale </p>
+              )}
             </div>
           </div>
           <div className="flex flex-col w-5/12 xs:w-1/3 md:w-44 ">
@@ -699,7 +703,8 @@ function Product2(props: NFT & { userAddress: string }) {
                 <div className="text-white">
                   <Link
                     className="text-mupurple"
-                    href={`${props.blockExplorerBaseUrl}address/${props.owner}`}
+                    href={`/${props.owner}`}
+                    // href={`${props.blockExplorerBaseUrl}address/${props.owner}`}
                   >
                     {props.shortOwner}
                   </Link>

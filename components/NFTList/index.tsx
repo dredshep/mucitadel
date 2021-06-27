@@ -59,10 +59,18 @@ export function NFTCard(props: NFT & { href: string; currency: string }) {
     e.preventDefault();
     router.push(props.href);
   };
-
+  const mouseDownHandler = (e: any) => {
+    e.preventDefault();
+    if (e.button === 1) {
+      // open in new tab
+    }
+    if (e.button === 0) {
+      // open in this tab
+    }
+  };
   return (
     <div key={props.name} className={props.className + " h-full relative"}>
-      <div onClick={handleClick}>
+      <div onClick={handleClick} onMouseDown={mouseDownHandler}>
         <div className="rounded-3xl font-title glow-on-hover">
           {/* Title */}
           <div className="bg-mupurple flex row items-center relative h-9 lg:h-10 rounded-t-3xl z-0">
@@ -101,11 +109,11 @@ export function NFTCard(props: NFT & { href: string; currency: string }) {
               </div>
               <div className="flex flex-row justify-between items-center">
                 <div className="font-title text-secondary text-xs md:text-sm font-semibold">
-                  Mints
+                  Mints for sale
                 </div>
                 <div className="font-base font-body">{`${
                   props.mints.totalMints - props.mints.sold
-                } of ${props.mints.totalMints}`}</div>
+                } of ${props.mints.available}`}</div>
               </div>
               <div className="flex flex-row justify-between items-center">
                 <div className="font-title text-secondary text-xs md:text-sm font-semibold">
@@ -113,9 +121,11 @@ export function NFTCard(props: NFT & { href: string; currency: string }) {
                 </div>
                 <div className="font-base font-body">
                   {props.price?.[props.currency] || "Not for sale"}{" "}
-                  <span className="text-phantasmablue uppercase">
-                    {props.currency}
-                  </span>
+                  {props.price?.[props.currency] ? (
+                    <span className="text-phantasmablue uppercase">
+                      {props.currency}
+                    </span>
+                  ) : undefined}
                 </div>
               </div>
             </div>
