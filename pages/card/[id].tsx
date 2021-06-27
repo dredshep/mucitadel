@@ -420,11 +420,11 @@ function Product2(props: NFT) {
 
       /* Taking Mannual Approach for Test */
       const priceSlab = currency.value.split(" ");
-      const currencyAmount = parseInt(priceSlab[0]);
+      const currencyAmount = parseInt((parseFloat(priceSlab[0])*1e5).toString());
       const currencySymbol = priceSlab[1];
       // const currencyAmount = 1;
       // const currencySymbol = "ETH";
-      console.log(currencyAmount, currencySymbol);
+      console.log(String(currencyAmount).concat("0000000000000"), currencySymbol);
 
       let contract = new ethers.Contract(
         MarketPlaceAddress,
@@ -455,48 +455,48 @@ function Product2(props: NFT) {
       );
 
       const userAsk = await contract.functions.getAsksByUser(
-        (
-          await window.ethereum.request({
-            method: "eth_requestAccounts",
-          })
-        ).toString()
+        props.owner
       );
 
       const userAskOrder = await contract.functions.getOrdersKeyFromUser(
-        (
-          await window.ethereum.request({
-            method: "eth_requestAccounts",
-          })
-        ).toString()
+        props.owner
       );
 
       console.log(accounts.toString(), MarketPlaceAddress);
       if (currencySymbol == "DANK") {
         /* Check if Contract is Approved */
+        /* 1st Step (Approving Dank)- ProgressBar to be added Below this comment */
+
         const approval = await contractToken.functions.allowance(
           accounts.toString(),
           MarketPlaceAddress
         );
         console.log(parseInt(approval));
 
-        if (parseInt(approval) < currencyAmount * 1e18) {
-          /* If Token is not appoved for selling in contract approval dialog box will appear */
-          const tokenApproval = await contractToken.functions.approve(
-            MarketPlaceAddress, 
-            String(currencyAmount).concat("000000000000000000")
-          );
-          await provider.waitForTransaction(tokenApproval.hash,1);
-        }
-        console.log(parseInt(String(currencyAmount).concat("000000000000000000")));
+        
+        console.log((String(currencyAmount).concat("0000000000000")));
         console.log(userAsk);
 
         for (var i = 0; i < userAsk[0].length; i++) {
          
           if (parseInt(userAsk[0][i][3]) == tokenID 
           
-          && parseInt(String(currencyAmount).concat("000000000000000000")) == parseInt(userAsk[0][i][5][0][1])
+          && parseInt(String(currencyAmount).concat("0000000000000")) == parseInt(userAsk[0][i][5][0][1])
           ) {
             var OrderID = parseInt(userAskOrder[0][i]);
+            console.log(OrderID);
+            console.log(String(parseInt(userAsk[0][i][5][0][1])/1e18).concat("000000000000000000"));
+
+            if (parseInt(approval) < parseInt(userAsk[0][i][2])) {
+              /* If Token is not appoved for selling in contract approval dialog box will appear */
+              const tokenApproval = await contractToken.functions.approve(
+                MarketPlaceAddress, 
+                String(parseInt(userAsk[0][i][5][0][1])/1e18).concat("000000000000000000")
+              );
+              
+              await provider.waitForTransaction(tokenApproval.hash,1);
+            }
+            /* 2nd Step (Buying NFT) - ProgressBar to be added Below this comment */
 
             /* This Will Buy The Token */
             await contract.functions
@@ -504,7 +504,8 @@ function Product2(props: NFT) {
               .then(async function (result) {
                 console.log(result);
                 await provider.waitForTransaction(result.hash,1);
-                /* Step 4 - Upload to API 75%*/
+
+                /* 3rd Step (Recording Database) - ProgressBar to be added Below this comment */
                 var myHeaders = new Headers();
                 myHeaders.append(
                   "Content-Type",
@@ -531,6 +532,7 @@ function Product2(props: NFT) {
                   .then((response) => response.text())
                   .then((result) => {
                     /* End Result 100% */
+                    /* 4th Step (Completing Purchase) - ProgressBar to be added Below this comment */
                     console.log(result);
                   })
                   .catch((error) => {
@@ -548,21 +550,23 @@ function Product2(props: NFT) {
           }
         }
       } else if (currencySymbol == "ETH") {
+        /* 1st Step (Buying NFT) - ProgressBar to be added Below this comment */
         for (var i = 0; i < userAsk[0].length; i++) {
           if (parseInt(userAsk[0][i][3]) == tokenID
-          && parseInt(String(currencyAmount).concat("000000000000000000")) == parseInt(userAsk[0][i][4])
+          && parseInt(String(currencyAmount).concat("0000000000000")) == parseInt(userAsk[0][i][4])
           ) {
             var OrderID = parseInt(userAskOrder[0][i]);
+            console.log(OrderID)
 
             /* This Will Buy The Token */
             await contract.functions
               .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
-                value: String(parseInt(userAsk[0][i][4])/1e18).concat("000000000000000000"),
+                value: (parseInt(userAsk[0][i][4])).toString(),
               })
               .then(async function (result) {
                 console.log(result);
                 await provider.waitForTransaction(result.hash,1);
-              /* Step 4 - Upload to API 75%*/
+                /* 2nd Step (Recording NFT) - ProgressBar to be added Below this comment */
                 var myHeaders = new Headers();
                 myHeaders.append(
                   "Content-Type",
@@ -589,6 +593,7 @@ function Product2(props: NFT) {
                   .then((response) => response.text())
                   .then((result) => {
                     /* End Result 100% */
+                    /* 3rd Step (Completing Purchase) - ProgressBar to be added Below this comment */
                     console.log(result);
                   })
                   .catch((error) => {
