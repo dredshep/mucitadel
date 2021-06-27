@@ -221,6 +221,7 @@ const SellModal = ({
         MarketPlaceAddress
       );
       console.log(approval.toString());
+      /* 1st Step (Approving Token For Sell) - ProgressBar to be added Below this comment */
 
       if (approval.toString() == "false") {
         /* If Token is not appoved for selling in contract approval dialog box will appear */
@@ -261,6 +262,7 @@ const SellModal = ({
         console.log(fee);
         var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000;
 
+        /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
         if (parseInt(approval) < parseInt(values.Currencies[0].Price) * 1e18) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
           const tokenApproval = await contractToken.functions.approve(
@@ -283,6 +285,7 @@ const SellModal = ({
           alert("Token Sold by user or already on sale");
           return false;
         }
+        /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
         await contract.functions
           .readyToSellToken(
             tokenID,
@@ -297,130 +300,8 @@ const SellModal = ({
           .then(async function (result) {
             /* Waits for Transaction to complete */
             await provider.waitForTransaction(result.hash, 1);
-            return true;
-          });
-      } else if (
-        values.Currencies.length == 1 &&
-        values.Currencies[0].Currency == "ETH"
-      ) {
-        var cardOwner = await nftcontract.functions.ownerOf(
-          accounts.toString(),
-          tokenID
-        );
-        var dbSymbol = String(values.Currencies[0].Currency);
-        var dbTotal = parseInt(values.Currencies[0].Price)
-          .toString()
-          .concat("000000000000000000");
+            /* 4th Step (Recording NFT) - ProgressBar to be added Below this comment */
 
-        if (cardOwner.toString() == "false") {
-          alert("Token Sold by user or already on sale");
-          return false;
-        }
-
-        var fee = parseInt(await contract.functions.makerFee());
-        console.log(fee);
-        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000;
-
-        await contract.functions
-          .readyToSellToken(
-            tokenID,
-            1,
-            parseInt(values.Currencies[0].Price)
-              .toString()
-              .concat("000000000000000000"),
-            [],
-            [],
-            { value: feePayment.toString().concat("000000000000000000") }
-          )
-          .then(async function (result) {
-            /* Waits for Transaction to complete */
-            await provider.waitForTransaction(result.hash, 1);
-            return true;
-          });
-      } else {
-        var currencySymbol = "";
-        let currencyPrice = "";
-        var ethPrice = "";
-
-        var dbSymbol = String(values.Currencies[0].Currency)
-          .concat(",")
-          .concat(values.Currencies[1].Currency);
-        var dbTotal = parseInt(values.Currencies[0].Price)
-          .toString()
-          .concat("000000000000000000")
-          .concat(",")
-          .concat(String(parseInt(values.Currencies[1].Price)))
-          .concat("000000000000000000");
-
-        console.log("Symbols: ", dbSymbol);
-        console.log("Currency: ", dbTotal);
-
-        var cardOwner = await nftcontract.functions.ownerOf(
-          accounts.toString(),
-          tokenID
-        );
-        if (cardOwner.toString() == "false") {
-          alert("Token Sold by user or already on sale");
-          return false;
-        }
-
-        for (var i = 0; i < values.Currencies.length; i++) {
-          if (values.Currencies[i].Currency == "DANK") {
-            currencyPrice = parseInt(values.Currencies[i].Price.split(" ")[0])
-              .toString()
-              .concat("000000000000000000");
-            // .split(" ");
-            currencySymbol = values.Currencies[i].Currency.split(" ")[1];
-            console.log(currencyPrice);
-            console.log(currencySymbol);
-          } else {
-            ethPrice = parseInt(values.Currencies[i].Price)
-              .toString()
-              .concat("000000000000000000");
-          }
-        }
-
-        for (var j = 0; j < values.Currencies.length; j++) {
-          if (values.Currencies[j].Currency == "DANK") {
-            /* Approve Token */
-            const approval = await contractToken.functions.allowance(
-              accounts.toString(),
-              MarketPlaceAddress
-            );
-            console.log("Approved Amount", parseInt(approval));
-
-            var fee = parseInt(await contract.functions.makerFee());
-            console.log(fee);
-            var feePayment =
-              (parseInt(values.Currencies[j].Price) * fee) / 1000;
-
-            if (
-              parseInt(approval) <
-              parseInt(feePayment as unknown as string) * 1e18
-            ) {
-              /* If Token is not appoved for selling in contract approval dialog box will appear */
-              const tokenApproval = await contractToken.functions.approve(
-                MarketPlaceAddress,
-                feePayment.toString().concat("000000000000000000")
-              );
-              /* Waits for Transaction to complete */
-              await provider.waitForTransaction(tokenApproval.hash, 1);
-            }
-
-            /* Card Approval Ends */
-          }
-        }
-
-        console.log(ethPrice.toString() + "," + currencyPrice.toString() + "");
-        console.log("ETH".toString() + "," + currencySymbol.toString() + "");
-
-        await contract.functions
-          .readyToSellToken(tokenID, 1, ethPrice, currencySymbol, currencyPrice)
-          .then(async function (result) {
-            /* Waits for Transaction to complete */
-            await provider.waitForTransaction(result.hash, 1);
-
-            /* Step 4 - Upload to API 75%*/
             var myHeaders = new Headers();
             myHeaders.append(
               "Content-Type",
@@ -438,14 +319,200 @@ const SellModal = ({
               method: "POST",
               body: fd1,
               headers: myHeaders,
-              // redirect: "follow",
+              redirect: "follow",
             };
 
             fetch("https://api.mucitadel.io/v1/nft/sellnft", requestOptions1)
               .then((response) => response.text())
               .then((result) => {
-                // setTimeout(() => {}, 500);
+                setTimeout(() => {}, [500]);
                 /* End Result 100% */
+                /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
+                console.log(result);
+              })
+              .catch((error) => {
+                console.log("error", error);
+              });
+          })
+          .catch((error) => {
+            console.log("error", error);
+          });
+      } else if (
+        values.Currencies.length == 1 &&
+        values.Currencies[0].Currency == "ETH"
+      ) {
+        var cardOwner = await nftcontract.functions.ownerOf(
+          accounts.toString(),
+          tokenID
+        );
+        var dbSymbol = String(values.Currencies[0].Currency);
+        var dbTotal = parseInt(values.Currencies[0].Price * 1e5)
+          .toString()
+          .concat("0000000000000");
+
+        if (cardOwner.toString() == "false") {
+          alert("Token Sold by user or already on sale");
+          return false;
+        }
+
+        var fee = parseInt(await contract.functions.makerFee());
+        console.log(fee);
+        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000;
+        /* 2nd Step (Selling NFT) - ProgressBar to be added Below this comment */
+        await contract.functions
+          .readyToSellToken(
+            tokenID,
+            1,
+            parseInt(values.Currencies[0].Price)
+              .toString()
+              .concat("000000000000000000"),
+            [],
+            [],
+            { value: (feePayment * 1e5).toString().concat("0000000000000") }
+          )
+          .then(async function (result) {
+            /* Waits for Transaction to complete */
+            await provider.waitForTransaction(result.hash, 1);
+            /* 3rd Step (Recording NFT) - ProgressBar to be added Below this comment */
+            var myHeaders = new Headers();
+            myHeaders.append(
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            );
+
+            var fd1 = new URLSearchParams();
+            fd1.append("id", properties.id);
+            fd1.append("amount", "1"); // Default Mint -1
+            fd1.append("price", dbTotal);
+            fd1.append("symbol", dbSymbol);
+
+            console.log("form values & file => ", fd1);
+            var requestOptions1 = {
+              method: "POST",
+              body: fd1,
+              headers: myHeaders,
+              redirect: "follow" as "follow",
+            };
+
+            fetch("https://api.mucitadel.io/v1/nft/sellnft", requestOptions1)
+              .then((response) => response.text())
+              .then((result) => {
+                /* End Result 100% */
+                /* 4th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
+                console.log(result);
+              })
+              .catch((error) => {
+                console.log("error", error);
+              });
+          })
+          .catch((error) => {
+            console.log("error", error);
+          });
+      } else {
+        var currencySymbol = "";
+        let currencyPrice = "";
+        var ethPrice = "";
+
+        var dbSymbol = String(values.Currencies[0].Currency)
+          .concat(",")
+          .concat(values.Currencies[1].Currency);
+        var dbTotal = parseInt(values.Currencies[0].Price * 1e5)
+          .toString()
+          .concat("0000000000000")
+          .concat(",")
+          .concat(parseInt(values.Currencies[1].Price * 1e5))
+          .concat("0000000000000");
+
+        console.log("Symbols: ", dbSymbol);
+        console.log("Currency: ", dbTotal);
+
+        var cardOwner = await nftcontract.functions.ownerOf(
+          accounts.toString(),
+          tokenID
+        );
+        if (cardOwner.toString() == "false") {
+          alert("Token Sold by user or already on sale");
+          return false;
+        }
+
+        for (var i = 0; i < values.Currencies.length; i++) {
+          if (values.Currencies[i].Currency == "DANK") {
+            currencyPrice = parseInt(values.Currencies[i].Price * 1e5)
+              .toString()
+              .concat("0000000000000")
+              .split(" ");
+            currencySymbol = values.Currencies[i].Currency.split(" ");
+            console.log(currencyPrice);
+            console.log(currencySymbol);
+          } else {
+            ethPrice = parseInt(values.Currencies[i].Price * 1e5)
+              .toString()
+              .concat("0000000000000");
+          }
+        }
+
+        for (var j = 0; j < values.Currencies.length; j++) {
+          if (values.Currencies[j].Currency == "DANK") {
+            /* Approve Token */
+            const approval = await contractToken.functions.allowance(
+              accounts.toString(),
+              MarketPlaceAddress
+            );
+            console.log("Approved Amount", parseInt(approval));
+
+            var fee = parseInt(await contract.functions.makerFee());
+            console.log(fee);
+            var feePayment =
+              (parseInt(values.Currencies[j].Price) * fee) / 1000;
+            /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
+            if (parseInt(approval) < parseInt(feePayment) * 1e18) {
+              /* If Token is not appoved for selling in contract approval dialog box will appear */
+              const tokenApproval = await contractToken.functions.approve(
+                MarketPlaceAddress,
+                feePayment.toString().concat("000000000000000000")
+              );
+              /* Waits for Transaction to complete */
+              await provider.waitForTransaction(tokenApproval.hash, 1);
+            }
+
+            /* Card Approval Ends */
+          }
+        }
+
+        console.log(ethPrice.toString() + "," + currencyPrice.toString() + "");
+        console.log("ETH".toString() + "," + currencySymbol.toString() + "");
+        /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
+        await contract.functions
+          .readyToSellToken(tokenID, 1, ethPrice, currencySymbol, currencyPrice)
+          .then(async function (result) {
+            /* Waits for Transaction to complete */
+            await provider.waitForTransaction(result.hash, 1);
+            /* 4th Step (Recording NFT) - ProgressBar to be added Below this comment */
+            var myHeaders = new Headers();
+            myHeaders.append(
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            );
+
+            var fd1 = new URLSearchParams();
+            fd1.append("id", properties.id);
+            fd1.append("amount", "1"); // Default Mint -1
+            fd1.append("price", dbTotal);
+            fd1.append("symbol", dbSymbol);
+
+            console.log("form values & file => ", fd1);
+            var requestOptions1 = {
+              method: "POST",
+              body: fd1,
+              headers: myHeaders,
+              redirect: "follow",
+            };
+
+            fetch("https://api.mucitadel.io/v1/nft/sellnft", requestOptions1)
+              .then((response) => response.text())
+              .then((result) => {
+                /* End Result 100% */
+                /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
                 console.log(result);
               })
               .catch((error) => {
