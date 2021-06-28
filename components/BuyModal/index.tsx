@@ -14,14 +14,26 @@ import {
   tokencontractAdd,
   tokencontractAddB,
 } from '../../constant/blockchain'
+import { NFT } from '../../types/nft'
 import Modal from '../UI/Modal'
+import Selector from '../UI/Selector'
 
 var window = require('global/window')
 
 let chainID = ''
 
-const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
-  const handleBuy = async (values) => {
+const BuyModal = ({
+  visible,
+  tokenId,
+  nft,
+  onCloseModal,
+}: {
+  visible: boolean
+  tokenId: string
+  nft: NFT
+  onCloseModal: () => void
+}) => {
+  const handleBuy = async (values: { formData: { price: number; currency: string; amount: number }; nft: NFT }) => {
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
 
@@ -155,10 +167,16 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={(values: { price: number; currency: string; amount: number }, { setSubmitting }) => {
           // handleBuy(values)
           // setSubmitting(false)
-          console.log('submit', JSON.stringify(values, null, 2))
+          const returnValue = {
+            formData: { price: selectedPrice, currency: values.currency, amount: values.amount },
+            nft,
+          }
+          handleBuy(returnValue)
+
+          console.log('submit', JSON.stringify(returnValue, null, 2))
         }}
       >
         {(props) => {
@@ -183,13 +201,13 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
                   <p className="text-secondary text-sm mt-2">
                     Mints for Sale:
                     <span className="text-white ml-2">
-                      {nft.mints.sold} out of {nft.mints.totalMints}
+                      {nft.mints.forSale} out of {nft.mints.available}
                     </span>
                   </p>
 
                   <div className="mt-4">
                     <p className="text-secondary text-sm mt-2">Price</p>
-                    {/* <Selector
+                    <Selector
                       options={priceOptions}
                       value={selectedPrice}
                       onChange={(selectedPrice) => {
@@ -197,9 +215,8 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
                         setFieldValue('price', selectedPrice.value)
                       }}
                       placeholder="Choose a price"
-                      className="text-sm"
-                    /> */}
-                    "price selector is bugged rn"
+                      // className="text-sm"
+                    />
                     <ErrorMessage name="price">{(msg) => <span className="text-xs text-red">{msg}</span>}</ErrorMessage>
                   </div>
 
