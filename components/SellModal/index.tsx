@@ -7,16 +7,16 @@ import {
   Select,
   TextField,
   Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import CloseIcon from "@material-ui/icons/Close";
-import clsx from "clsx";
-import { ethers } from "ethers";
-import { Formik } from "formik";
-import React from "react";
-import marketcontractAbi from "../../config/abi/marketplace.json";
-import contractAbi from "../../config/abi/meme.json";
-import tokencontractAbi from "../../config/abi/token.json";
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import CloseIcon from '@material-ui/icons/Close'
+import clsx from 'clsx'
+import { ethers } from 'ethers'
+import { Formik } from 'formik'
+import React from 'react'
+import marketcontractAbi from '../../config/abi/marketplace.json'
+import contractAbi from '../../config/abi/meme.json'
+import tokencontractAbi from '../../config/abi/token.json'
 import {
   contractAdd,
   contractAddB,
@@ -24,83 +24,83 @@ import {
   marketcontractAddB,
   tokencontractAdd,
   tokencontractAddB,
-} from "../../constant/blockchain";
-import { NFT } from "../../types/nft";
-import MuButton from "../UI/Button/MuButton";
-import Modal from "../UI/Modal";
+} from '../../constant/blockchain'
+import { NFT } from '../../types/nft'
+import MuButton from '../UI/Button/MuButton'
+import Modal from '../UI/Modal'
 
-var window = require("global/window");
+var window = require('global/window')
 
 const useStyles = makeStyles((theme) => ({
   form: {
     width: theme.spacing(60),
-    [theme.breakpoints.down("xs")]: {
-      width: "100%",
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
     },
   },
   formField: {
     margin: 0,
-    width: "100%",
+    width: '100%',
     marginBottom: theme.spacing(5),
-    "& .MuiInputBase-root": {
+    '& .MuiInputBase-root': {
       borderBottom: `1px solid ${theme.palette.primary.secondary}`,
       borderRadius: 0,
       padding: 0,
-      "& input, textarea": {
+      '& input, textarea': {
         padding: theme.spacing(1.5, 0),
       },
     },
-    "& .MuiFormHelperText-root": {
+    '& .MuiFormHelperText-root': {
       marginLeft: 0,
       color: theme.palette.primary.main,
     },
-    "& fieldset": {
-      border: "none",
+    '& fieldset': {
+      border: 'none',
     },
-    "&:focus": {
-      outline: "none",
+    '&:focus': {
+      outline: 'none',
     },
   },
   helperText: {
     color: theme.palette.primary.main,
   },
   formLabel: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   select: {
-    "&.MuiInputBase-root": {
+    '&.MuiInputBase-root': {
       borderBottom: `1px solid ${theme.palette.primary.secondary}`,
-      width: "100%",
+      width: '100%',
 
-      "& svg": {
+      '& svg': {
         color: theme.palette.text.primary,
       },
 
-      "&::before": {
-        borderBottom: "none !important",
+      '&::before': {
+        borderBottom: 'none !important',
       },
-      "&::after": {
-        borderBottom: "none !important",
+      '&::after': {
+        borderBottom: 'none !important',
       },
     },
 
-    "&.MuiSelect-root": {
+    '&.MuiSelect-root': {
       padding: theme.spacing(1.5, 3, 1.5, 0),
       borderBottom: `1px solid ${theme.palette.primary.secondary}`,
     },
   },
   selectContainer: {
-    width: "100%",
+    width: '100%',
     marginBottom: theme.spacing(5),
-    position: "relative",
-    "& .MuiFormLabel-root": {
-      position: "absolute",
+    position: 'relative',
+    '& .MuiFormLabel-root': {
+      position: 'absolute',
       left: 0,
       top: theme.spacing(1.5),
-      color: "darkgrey",
+      color: 'darkgrey',
       opacity: 0.7,
     },
-    "& .MuiInputBase-root": {
+    '& .MuiInputBase-root': {
       height: theme.spacing(5.5),
     },
   },
@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
     marginLeft: theme.spacing(2),
   },
-}));
+}))
 
 const SellModal = ({
   visible,
@@ -123,167 +123,128 @@ const SellModal = ({
   properties,
   onCloseModal,
 }: {
-  visible: any;
-  tokenId: string;
-  properties: NFT;
-  onCloseModal: () => void;
+  visible: any
+  tokenId: string
+  properties: NFT
+  onCloseModal: () => void
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   const initialValues = {
-    Currencies: [{ Price: "", Currency: "" }],
-  };
+    Currencies: [{ Price: '', Currency: '' }],
+  }
 
   const handleSave = (values, setSubmitting) => {
-    setSubmitting(false);
-    handleSell(values);
-  };
+    setSubmitting(false)
+    handleSell(values)
+  }
 
   const handleSell = async (values) => {
     if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
 
       /* ETH Main - 1,Ropstem - 3, Binance Main :56	, Binance Testnet :97 */
-      const chainID = parseInt(await window.ethereum.chainId);
-      console.log(chainID);
+      const chainID = parseInt(await window.ethereum.chainId)
+      console.log(chainID)
 
-      if (properties.blockchain == "ethereum") {
+      if (properties.blockchain == 'ethereum') {
         if (chainID == 1 || chainID == 4) {
           /* Do Nothing */
         } else {
-          alert("Wrong Blockchain Connected switch to Ethereum Blockchain");
-          return false;
+          alert('Wrong Blockchain Connected switch to Ethereum Blockchain')
+          return false
         }
-      } else if (properties.blockchain == "binance") {
+      } else if (properties.blockchain == 'binance') {
         if (chainID == 56 || chainID == 97) {
           /* Do Nothing */
         } else {
-          alert("Wrong Blockchain Connected switch to Binance Blockchain");
-          return false;
+          alert('Wrong Blockchain Connected switch to Binance Blockchain')
+          return false
         }
       }
 
       /* Selecting the right Blockchain */
-      let ContractInteraction = "";
-      let MarketPlaceAddress = "";
-      let nftAddress = "";
-      if (properties.blockchain == "ethereum") {
-        ContractInteraction = tokencontractAdd;
-        MarketPlaceAddress = marketcontractAdd;
-        nftAddress = contractAdd;
-      } else if (properties.blockchain == "binance") {
-        ContractInteraction = tokencontractAddB;
-        MarketPlaceAddress = marketcontractAddB;
-        nftAddress = contractAddB;
+      let ContractInteraction = ''
+      let MarketPlaceAddress = ''
+      let nftAddress = ''
+      if (properties.blockchain == 'ethereum') {
+        ContractInteraction = tokencontractAdd
+        MarketPlaceAddress = marketcontractAdd
+        nftAddress = contractAdd
+      } else if (properties.blockchain == 'binance') {
+        ContractInteraction = tokencontractAddB
+        MarketPlaceAddress = marketcontractAddB
+        nftAddress = contractAddB
       }
 
-      let contract = new ethers.Contract(
-        MarketPlaceAddress,
-        marketcontractAbi,
-        provider.getSigner()
-      );
+      let contract = new ethers.Contract(MarketPlaceAddress, marketcontractAbi, provider.getSigner())
 
-      let nftcontract = new ethers.Contract(
-        nftAddress,
-        contractAbi,
-        provider.getSigner()
-      );
+      let nftcontract = new ethers.Contract(nftAddress, contractAbi, provider.getSigner())
 
-      let contractToken = new ethers.Contract(
-        ContractInteraction,
-        tokencontractAbi,
-        provider.getSigner()
-      );
+      let contractToken = new ethers.Contract(ContractInteraction, tokencontractAbi, provider.getSigner())
 
       const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
+        method: 'eth_requestAccounts',
+      })
       /* Fetch Token ID using Token Hash */
-      const tokenID = parseInt(
-        await nftcontract.functions.getTokenIdFromHash(properties.ipfsurl)
-      );
-      console.log("TokenID", tokenID);
+      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(properties.ipfsurl))
+      console.log('TokenID', tokenID)
       // const tokenID = 3;
-      var cardOwner = await nftcontract.functions.ownerOf(
-        accounts.toString(),
-        tokenID
-      );
-      if (cardOwner.toString() == "false") {
-        alert(
-          "Token has already been sold, or is already being sold, by the user."
-        );
-        return false;
+      var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
+      if (cardOwner.toString() == 'false') {
+        alert('Token has already been sold, or is already being sold, by the user.')
+        return false
       }
 
       /* Check if Contract is Approved */
-      const approval = await nftcontract.functions.isApprovedForAll(
-        accounts.toString(),
-        MarketPlaceAddress
-      );
-      console.log(approval.toString());
+      const approval = await nftcontract.functions.isApprovedForAll(accounts.toString(), MarketPlaceAddress)
+      console.log(approval.toString())
       /* 1st Step (Approving Token For Sell) - ProgressBar to be added Below this comment */
 
-      if (approval.toString() == "false") {
+      if (approval.toString() == 'false') {
         /* If Token is not appoved for selling in contract approval dialog box will appear */
-        const approveAll = await nftcontract.functions.setApprovalForAll(
-          MarketPlaceAddress,
-          1
-        );
-        await provider.waitForTransaction(approveAll.hash, 1);
+        const approveAll = await nftcontract.functions.setApprovalForAll(MarketPlaceAddress, 1)
+        await provider.waitForTransaction(approveAll.hash, 1)
       }
 
       /* Sell Section */
-      if (
-        values.Currencies.length == 1 &&
-        values.Currencies[0].Currency == "DANK"
-      ) {
+      if (values.Currencies.length == 1 && values.Currencies[0].Currency == 'DANK') {
         /* Approve Token */
-        const approval = await contractToken.functions.allowance(
-          accounts.toString(),
-          MarketPlaceAddress
-        );
-        var cardOwner = await nftcontract.functions.ownerOf(
-          accounts.toString(),
-          tokenID
-        );
-        if (cardOwner.toString() == "false") {
-          alert("Token Sold by user or already on sale");
-          return false;
+        const approval = await contractToken.functions.allowance(accounts.toString(), MarketPlaceAddress)
+        var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
+        if (cardOwner.toString() == 'false') {
+          alert('Token Sold by user or already on sale')
+          return false
         }
 
-        var dbSymbol = String(values.Currencies[0].Currency);
-        var dbTotal = parseInt(values.Currencies[0].Price)
-          .toString()
-          .concat("000000000000000000");
+        var dbSymbol = String(values.Currencies[0].Currency)
+        var dbTotal = parseInt(values.Currencies[0].Price).toString().concat('000000000000000000')
 
-        console.log(parseInt(approval));
+        console.log(parseInt(approval))
 
-        var fee = parseInt(await contract.functions.makerFee());
-        console.log(fee);
-        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000;
+        var fee = parseInt(await contract.functions.makerFee())
+        console.log(fee)
+        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000
 
         /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
         if (parseInt(approval) < parseInt(values.Currencies[0].Price) * 1e18) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
           const tokenApproval = await contractToken.functions.approve(
             MarketPlaceAddress,
-            feePayment.toString().concat("000000000000000000")
-          );
+            feePayment.toString().concat('000000000000000000'),
+          )
           /* Waits for Transaction to complete */
-          await provider.waitForTransaction(tokenApproval.hash, 1);
+          await provider.waitForTransaction(tokenApproval.hash, 1)
         }
 
         /* Card Approval Ends */
-        var dbSymbol = String(values.Currencies[0].Currency);
-        var dbTotal = values.Currencies[0].Price as string;
+        var dbSymbol = String(values.Currencies[0].Currency)
+        var dbTotal = values.Currencies[0].Price as string
 
-        var cardOwner = await nftcontract.functions.ownerOf(
-          accounts.toString(),
-          tokenID
-        );
-        if (cardOwner.toString() == "false") {
-          alert("Token Sold by user or already on sale");
-          return false;
+        var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
+        if (cardOwner.toString() == 'false') {
+          alert('Token Sold by user or already on sale')
+          return false
         }
         /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
         await contract.functions
@@ -291,296 +252,258 @@ const SellModal = ({
             tokenID,
             1,
             0,
-            values.Currencies[0].Currency.split(" "),
-            parseInt(values.Currencies[0].Price)
-              .toString()
-              .concat("000000000000000000")
-              .split(" ")
+            values.Currencies[0].Currency.split(' '),
+            parseInt(values.Currencies[0].Price).toString().concat('000000000000000000').split(' '),
           )
           .then(async function (result) {
             /* Waits for Transaction to complete */
-            await provider.waitForTransaction(result.hash, 1);
+            await provider.waitForTransaction(result.hash, 1)
             /* 4th Step (Recording NFT) - ProgressBar to be added Below this comment */
 
-            var myHeaders = new Headers();
-            myHeaders.append(
-              "Content-Type",
-              "application/x-www-form-urlencoded"
-            );
+            var myHeaders = new Headers()
+            myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
-            var fd1 = new URLSearchParams();
-            fd1.append("id", properties.id);
-            fd1.append("amount", "1"); // Default Mint -1
-            fd1.append("price", dbTotal);
-            fd1.append("symbol", dbSymbol);
+            var fd1 = new URLSearchParams()
+            fd1.append('id', properties.id)
+            fd1.append('amount', '1') // Default Mint -1
+            fd1.append('price', dbTotal)
+            fd1.append('symbol', dbSymbol)
 
-            console.log("form values & file => ", fd1);
+            console.log('form values & file => ', fd1)
             var requestOptions1 = {
-              method: "POST",
+              method: 'POST',
               body: fd1,
               headers: myHeaders,
-              redirect: "follow",
-            };
+              redirect: 'follow' as 'follow',
+            }
 
-            fetch("https://api.mucitadel.io/v1/nft/sellnft", requestOptions1)
+            fetch('https://api.mucitadel.io/v1/nft/sellnft', requestOptions1)
               .then((response) => response.text())
               .then((result) => {
-                setTimeout(() => {}, [500]);
+                setTimeout(() => {}, [500])
                 /* End Result 100% */
                 /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                console.log(result);
+                console.log(result)
               })
               .catch((error) => {
-                console.log("error", error);
-              });
+                console.log('error', error)
+              })
           })
           .catch((error) => {
-            console.log("error", error);
-          });
-      } else if (
-        values.Currencies.length == 1 &&
-        values.Currencies[0].Currency == "ETH"
-      ) {
-        var cardOwner = await nftcontract.functions.ownerOf(
-          accounts.toString(),
-          tokenID
-        );
-        var dbSymbol = String(values.Currencies[0].Currency);
+            console.log('error', error)
+          })
+      } else if (values.Currencies.length == 1 && values.Currencies[0].Currency == 'ETH') {
+        var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
+        var dbSymbol = String(values.Currencies[0].Currency)
         var dbTotal = parseInt(values.Currencies[0].Price * 1e5)
           .toString()
-          .concat("0000000000000");
+          .concat('0000000000000')
 
-        if (cardOwner.toString() == "false") {
-          alert("Token Sold by user or already on sale");
-          return false;
+        if (cardOwner.toString() == 'false') {
+          alert('Token Sold by user or already on sale')
+          return false
         }
 
-        var fee = parseInt(await contract.functions.makerFee());
-        console.log(fee);
-        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000;
+        var fee = parseInt(await contract.functions.makerFee())
+        console.log(fee)
+        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000
         /* 2nd Step (Selling NFT) - ProgressBar to be added Below this comment */
         await contract.functions
           .readyToSellToken(
             tokenID,
             1,
-            parseInt(values.Currencies[0].Price)
-              .toString()
-              .concat("000000000000000000"),
+            parseInt(values.Currencies[0].Price).toString().concat('000000000000000000'),
             [],
             [],
-            { value: (feePayment * 1e5).toString().concat("0000000000000") }
+            { value: (feePayment * 1e5).toString().concat('0000000000000') },
           )
           .then(async function (result) {
             /* Waits for Transaction to complete */
-            await provider.waitForTransaction(result.hash, 1);
+            await provider.waitForTransaction(result.hash, 1)
             /* 3rd Step (Recording NFT) - ProgressBar to be added Below this comment */
-            var myHeaders = new Headers();
-            myHeaders.append(
-              "Content-Type",
-              "application/x-www-form-urlencoded"
-            );
+            var myHeaders = new Headers()
+            myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
-            var fd1 = new URLSearchParams();
-            fd1.append("id", properties.id);
-            fd1.append("amount", "1"); // Default Mint -1
-            fd1.append("price", dbTotal);
-            fd1.append("symbol", dbSymbol);
+            var fd1 = new URLSearchParams()
+            fd1.append('id', properties.id)
+            fd1.append('amount', '1') // Default Mint -1
+            fd1.append('price', dbTotal)
+            fd1.append('symbol', dbSymbol)
 
-            console.log("form values & file => ", fd1);
+            console.log('form values & file => ', fd1)
             var requestOptions1 = {
-              method: "POST",
+              method: 'POST',
               body: fd1,
               headers: myHeaders,
-              redirect: "follow" as "follow",
-            };
+              redirect: 'follow' as 'follow',
+            }
 
-            fetch("https://api.mucitadel.io/v1/nft/sellnft", requestOptions1)
+            fetch('https://api.mucitadel.io/v1/nft/sellnft', requestOptions1)
               .then((response) => response.text())
               .then((result) => {
                 /* End Result 100% */
                 /* 4th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                console.log(result);
+                console.log(result)
               })
               .catch((error) => {
-                console.log("error", error);
-              });
+                console.log('error', error)
+              })
           })
           .catch((error) => {
-            console.log("error", error);
-          });
+            console.log('error', error)
+          })
       } else {
-        var currencySymbol = "";
-        let currencyPrice = "";
-        var ethPrice = "";
+        var currencySymbol = ''
+        let currencyPrice = ''
+        var ethPrice = ''
 
-        var dbSymbol = String(values.Currencies[0].Currency)
-          .concat(",")
-          .concat(values.Currencies[1].Currency);
+        var dbSymbol = String(values.Currencies[0].Currency).concat(',').concat(values.Currencies[1].Currency)
         var dbTotal = parseInt(values.Currencies[0].Price * 1e5)
           .toString()
-          .concat("0000000000000")
-          .concat(",")
+          .concat('0000000000000')
+          .concat(',')
           .concat(parseInt(values.Currencies[1].Price * 1e5))
-          .concat("0000000000000");
+          .concat('0000000000000')
 
-        console.log("Symbols: ", dbSymbol);
-        console.log("Currency: ", dbTotal);
+        console.log('Symbols: ', dbSymbol)
+        console.log('Currency: ', dbTotal)
 
-        var cardOwner = await nftcontract.functions.ownerOf(
-          accounts.toString(),
-          tokenID
-        );
-        if (cardOwner.toString() == "false") {
-          alert("Token Sold by user or already on sale");
-          return false;
+        var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
+        if (cardOwner.toString() == 'false') {
+          alert('Token Sold by user or already on sale')
+          return false
         }
 
         for (var i = 0; i < values.Currencies.length; i++) {
-          if (values.Currencies[i].Currency == "DANK") {
+          if (values.Currencies[i].Currency == 'DANK') {
             currencyPrice = parseInt(values.Currencies[i].Price * 1e5)
               .toString()
-              .concat("0000000000000")
-              .split(" ");
-            currencySymbol = values.Currencies[i].Currency.split(" ");
-            console.log(currencyPrice);
-            console.log(currencySymbol);
+              .concat('0000000000000')
+              .split(' ')
+            currencySymbol = values.Currencies[i].Currency.split(' ')
+            console.log(currencyPrice)
+            console.log(currencySymbol)
           } else {
             ethPrice = parseInt(values.Currencies[i].Price * 1e5)
               .toString()
-              .concat("0000000000000");
+              .concat('0000000000000')
           }
         }
 
         for (var j = 0; j < values.Currencies.length; j++) {
-          if (values.Currencies[j].Currency == "DANK") {
+          if (values.Currencies[j].Currency == 'DANK') {
             /* Approve Token */
-            const approval = await contractToken.functions.allowance(
-              accounts.toString(),
-              MarketPlaceAddress
-            );
-            console.log("Approved Amount", parseInt(approval));
+            const approval = await contractToken.functions.allowance(accounts.toString(), MarketPlaceAddress)
+            console.log('Approved Amount', parseInt(approval))
 
-            var fee = parseInt(await contract.functions.makerFee());
-            console.log(fee);
-            var feePayment =
-              (parseInt(values.Currencies[j].Price) * fee) / 1000;
+            var fee = parseInt(await contract.functions.makerFee())
+            console.log(fee)
+            var feePayment = (parseInt(values.Currencies[j].Price) * fee) / 1000
             /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
             if (parseInt(approval) < parseInt(feePayment) * 1e18) {
               /* If Token is not appoved for selling in contract approval dialog box will appear */
               const tokenApproval = await contractToken.functions.approve(
                 MarketPlaceAddress,
-                feePayment.toString().concat("000000000000000000")
-              );
+                feePayment.toString().concat('000000000000000000'),
+              )
               /* Waits for Transaction to complete */
-              await provider.waitForTransaction(tokenApproval.hash, 1);
+              await provider.waitForTransaction(tokenApproval.hash, 1)
             }
 
             /* Card Approval Ends */
           }
         }
 
-        console.log(ethPrice.toString() + "," + currencyPrice.toString() + "");
-        console.log("ETH".toString() + "," + currencySymbol.toString() + "");
+        console.log(ethPrice.toString() + ',' + currencyPrice.toString() + '')
+        console.log('ETH'.toString() + ',' + currencySymbol.toString() + '')
         /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
         await contract.functions
           .readyToSellToken(tokenID, 1, ethPrice, currencySymbol, currencyPrice)
           .then(async function (result) {
             /* Waits for Transaction to complete */
-            await provider.waitForTransaction(result.hash, 1);
+            await provider.waitForTransaction(result.hash, 1)
             /* 4th Step (Recording NFT) - ProgressBar to be added Below this comment */
-            var myHeaders = new Headers();
-            myHeaders.append(
-              "Content-Type",
-              "application/x-www-form-urlencoded"
-            );
+            var myHeaders = new Headers()
+            myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
-            var fd1 = new URLSearchParams();
-            fd1.append("id", properties.id);
-            fd1.append("amount", "1"); // Default Mint -1
-            fd1.append("price", dbTotal);
-            fd1.append("symbol", dbSymbol);
+            var fd1 = new URLSearchParams()
+            fd1.append('id', properties.id)
+            fd1.append('amount', '1') // Default Mint -1
+            fd1.append('price', dbTotal)
+            fd1.append('symbol', dbSymbol)
 
-            console.log("form values & file => ", fd1);
+            console.log('form values & file => ', fd1)
             var requestOptions1 = {
-              method: "POST",
+              method: 'POST',
               body: fd1,
               headers: myHeaders,
-              redirect: "follow",
-            };
+              redirect: 'follow' as 'follow',
+            }
 
-            fetch("https://api.mucitadel.io/v1/nft/sellnft", requestOptions1)
+            fetch('https://api.mucitadel.io/v1/nft/sellnft', requestOptions1)
               .then((response) => response.text())
               .then((result) => {
                 /* End Result 100% */
                 /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                console.log(result);
+                console.log(result)
               })
               .catch((error) => {
-                console.log("error", error);
-              });
+                console.log('error', error)
+              })
           })
           .catch((error) => {
-            console.log("error", error);
-          });
+            console.log('error', error)
+          })
       }
     } else {
-      alert("Connect Metamask");
+      alert('Connect Metamask')
     }
-  };
+  }
 
   const validateForm = (values) => {
-    let errors = {};
+    let errors = {}
 
     for (let i = 0; i < values.Currencies.length; i++) {
       if (!values.Currencies[i].Price) {
         errors = {
           ...errors,
-          [`Currencies[${i}].Price`]: "Price is required",
-        };
+          [`Currencies[${i}].Price`]: 'Price is required',
+        }
       }
       if (!values.Currencies[i].Currency) {
         errors = {
           ...errors,
-          [`Currencies[${i}].Currency`]: "Currency is required",
-        };
+          [`Currencies[${i}].Currency`]: 'Currency is required',
+        }
       }
       if (!values.SellingAmount) {
         errors = {
           ...errors,
-          [`SellingAmount`]: "Amount of tokens to be sold is required",
-        };
+          [`SellingAmount`]: 'Amount of tokens to be sold is required',
+        }
       }
       if (values.SellingAmount > (properties as NFT).mints.available) {
         errors = {
           ...errors,
-          [`SellingAmount`]: " must be smaller or equal to available amount",
-        };
+          [`SellingAmount`]: ' must be smaller or equal to available amount',
+        }
       }
     }
-    console.log("ant : errors => ", errors);
-    return errors;
-  };
+    console.log('ant : errors => ', errors)
+    return errors
+  }
 
   return (
-    <Modal visible={visible} title={"Selling"} closeModal={onCloseModal}>
+    <Modal visible={visible} title={'Selling'} closeModal={onCloseModal}>
       <Formik
         initialValues={initialValues}
         validate={validateForm}
         onSubmit={(values, { setSubmitting }) => {
-          handleSave(values, setSubmitting);
+          handleSave(values, setSubmitting)
         }}
       >
         {(props) => {
-          const {
-            handleSubmit,
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            setFieldValue,
-            isSubmitting,
-          } = props;
+          const { handleSubmit, values, errors, touched, handleChange, handleBlur, setFieldValue, isSubmitting } = props
           return (
             <form onSubmit={handleSubmit}>
               <div className={classes.form}>
@@ -592,23 +515,16 @@ const SellModal = ({
                 </Grid>
                 {values.Currencies.map((currency, index) => {
                   return (
-                    <Grid
-                      className={classes.form}
-                      key={`currency-${index}`}
-                      container
-                      wrap="nowrap"
-                    >
+                    <Grid className={classes.form} key={`currency-${index}`} container wrap="nowrap">
                       <Grid container spacing={2}>
                         <Grid container item md={6} lg={6} sm={6} xs={12}>
-                          <Typography className={classes.formLabel}>
-                            Selling amount
-                          </Typography>
+                          <Typography className={classes.formLabel}>Selling amount</Typography>
                           <TextField
                             name={`SellingAmount`}
                             variant="outlined"
                             type="number"
                             className={clsx(
-                              classes.formField
+                              classes.formField,
                               // classes.numberInput
                             )}
                             value={currency.SellingAmount}
@@ -618,35 +534,20 @@ const SellModal = ({
                             margin="normal"
                           />
                         </Grid>
-                        <Grid
-                          container
-                          item
-                          md={6}
-                          lg={6}
-                          sm={6}
-                          xs={12}
-                          direction="column"
-                        >
-                          <Typography className={classes.formLabel}>
-                            Available amount
-                          </Typography>
-                          <Typography
-                            className={classes.formLabel}
-                            style={{ marginTop: "10px" }}
-                          >
+                        <Grid container item md={6} lg={6} sm={6} xs={12} direction="column">
+                          <Typography className={classes.formLabel}>Available amount</Typography>
+                          <Typography className={classes.formLabel} style={{ marginTop: '10px' }}>
                             {properties.mints.available}
                           </Typography>
                         </Grid>
                         <Grid container item md={6} lg={6} sm={6} xs={12}>
-                          <Typography className={classes.formLabel}>
-                            Price
-                          </Typography>
+                          <Typography className={classes.formLabel}>Price</Typography>
                           <TextField
                             name={`Currencies[${index}].Price`}
                             variant="outlined"
                             type="number"
                             className={clsx(
-                              classes.formField
+                              classes.formField,
                               // classes.numberInput
                             )}
                             value={currency.Price}
@@ -657,14 +558,10 @@ const SellModal = ({
                           />
                         </Grid>
                         <Grid container item md={6} lg={6} sm={6} xs={12}>
-                          <Typography className={classes.formLabel}>
-                            Currency
-                          </Typography>
+                          <Typography className={classes.formLabel}>Currency</Typography>
                           <Grid className={classes.selectContainer}>
                             {!currency.Currency && (
-                              <InputLabel htmlFor="name-multiple">
-                                Please select currency
-                              </InputLabel>
+                              <InputLabel htmlFor="name-multiple">Please select currency</InputLabel>
                             )}
                             <Select
                               className={classes.select}
@@ -677,12 +574,12 @@ const SellModal = ({
                                   paper: classes.selectPaper,
                                 },
                                 anchorOrigin: {
-                                  vertical: "bottom",
-                                  horizontal: "left",
+                                  vertical: 'bottom',
+                                  horizontal: 'left',
                                 },
                                 transformOrigin: {
-                                  vertical: "top",
-                                  horizontal: "left",
+                                  vertical: 'top',
+                                  horizontal: 'left',
                                 },
                                 getContentAnchorEl: null,
                               }}
@@ -700,22 +597,20 @@ const SellModal = ({
                         <IconButton
                           className={classes.deleteIcon}
                           onClick={() => {
-                            let newCurrencies = [...values.Currencies];
-                            newCurrencies.splice(index, 1);
-                            setFieldValue("Currencies", newCurrencies);
+                            let newCurrencies = [...values.Currencies]
+                            newCurrencies.splice(index, 1)
+                            setFieldValue('Currencies', newCurrencies)
                           }}
                         >
                           <CloseIcon />
                         </IconButton>
                       )}
                     </Grid>
-                  );
+                  )
                 })}
                 {Object.keys(errors).length > 0 && (
                   <Grid className="mb-4" container justify="flex-start">
-                    <FormHelperText className={classes.helperText}>
-                      Please input price and currency!
-                    </FormHelperText>
+                    <FormHelperText className={classes.helperText}>Please input price and currency!</FormHelperText>
                   </Grid>
                 )}
                 <Grid container justify="space-between">
@@ -726,17 +621,14 @@ const SellModal = ({
                     variant="contained"
                     color="primary"
                   >
-                    {"Sell"}
+                    {'Sell'}
                   </MuButton>
                   {values.Currencies.length < 2 && (
                     <MuButton
                       // className={classes.addCurrency}
                       className=""
                       onClick={() => {
-                        setFieldValue("Currencies", [
-                          ...values.Currencies,
-                          { Price: "", Currency: "" },
-                        ]);
+                        setFieldValue('Currencies', [...values.Currencies, { Price: '', Currency: '' }])
                       }}
                       variant="contained"
                       color="primary"
@@ -747,11 +639,11 @@ const SellModal = ({
                 </Grid>
               </div>
             </form>
-          );
+          )
         }}
       </Formik>
     </Modal>
-  );
-};
+  )
+}
 
-export default SellModal;
+export default SellModal
