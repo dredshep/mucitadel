@@ -172,7 +172,11 @@ function NFTDetails(props: NFT) {
     } as LinkPair,
     {
       pairKey: "NFT ID",
-      value: props.ipfsurl,
+      value: props.id,
+    } as NoLinkPair,
+    {
+      pairKey: "Minted amount",
+      value: props.mints.totalMints.toString(),
     } as NoLinkPair,
     // {
     //   pairKey: "Blockchain",

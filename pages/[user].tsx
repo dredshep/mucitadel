@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import copy from "copy-to-clipboard";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import NFTList from "../components/NFTList";
@@ -11,13 +12,86 @@ import {
   LogIn,
   LogOut,
 } from "../components/types/AuthenticationProvider";
-import cards from "../functions/cards";
 import getCardsFromAPI, { shortenAddress } from "../functions/getCardsFromAPI";
 import { NFT } from "../types/nft";
 
-// const;
+type HandleTabChange = (filter: (nft: NFT) => boolean) => NFT[];
+
+type ProfileTab = {
+  label: string;
+  // active: boolean,
+  filterFn: (nft: NFT & { userAddress: string }) => boolean;
+};
+
+const profileTabs: ProfileTab[] = [
+  {
+    label: "Owned",
+    filterFn: (nft: NFT & { userAddress: string }) =>
+      nft.owner === nft.userAddress && nft.mints.available > 0,
+  },
+  {
+    label: "On sale",
+    filterFn: (nft: NFT & { userAddress: string }) =>
+      nft.owner === nft.userAddress && nft.mints.forSale > 0,
+  },
+  {
+    label: "Created",
+    filterFn: (nft: NFT & { userAddress: string }) =>
+      nft.creator && nft.owner === nft.userAddress,
+  },
+];
+
+function UserTab(props: {
+  tab: ProfileTab;
+  handleTabChange: () => void;
+  active: boolean;
+}) {
+  const onClick = () => props.handleTabChange();
+  return (
+    <>
+      {props.active ? (
+        <div
+          className="border-b-2 text-white border-white h-8 select-none"
+          // onClick={onClick}
+        >
+          {props.tab.label}
+        </div>
+      ) : (
+        <div onClick={onClick} className="cursor-pointer select-none">
+          {props.tab.label}
+        </div>
+      )}
+    </>
+  );
+}
 
 function Content(props: ContentProps & { userAddress: string }) {
+  // const [ currentTabFilter, setCurrentTabFilter ] = useState(props.nftList.filter(profileTabs[0].filterFn))
+  const getCurrentNFTList = (id: number) =>
+    // console.log({ currentProfileTab }),
+    props.nftList.filter((nft) =>
+      profileTabs[id].filterFn(
+        Object.assign(nft, { userAddress: props.userAddress })
+      )
+    );
+  const tabFromNumber = (n: number) => ({
+    tab: profileTabs[n],
+    nftList: getCurrentNFTList(n),
+    i: n,
+  });
+  const [currentTab, setCurrentTab] = useState(tabFromNumber(0));
+  // const [currentProfileTab, setCurrentProfileTab] = useState(0);
+  // const [currentNftList, setCurrentNftList] = useState(getCurrentNFTList());
+
+  // const handleTabChange: HandleTabChange = (filterFn) => props.nftList.filter(filterFn)
+  const allTabs = profileTabs.map((tab, i) => (
+    <UserTab
+      tab={tab}
+      handleTabChange={() => setCurrentTab(tabFromNumber(i))}
+      active={currentTab.i === i}
+    />
+  ));
+
   return (
     <div className="flex flex-col pb-16">
       <div className="w-full h-64">
@@ -78,7 +152,7 @@ function Content(props: ContentProps & { userAddress: string }) {
       </div>
       <div className="mx-5 lg:mx-10 w-11/12">
         <div className="mt-10 flex w-full text-secondary font-semibold space-x-4 overflow-x-auto no-scrollbar">
-          <div className="border-b-2 text-white border-white h-8">Owned</div>
+          {/* <div className="border-b-2 text-white border-white h-8">Owned</div>
           <div>On&nbsp;sale</div>
           <div>Created</div>
           <div>Liked</div>
@@ -87,16 +161,12 @@ function Content(props: ContentProps & { userAddress: string }) {
             Following<span className="ml-1 text-sm mb-2">0</span>
           </div>
           <div>
-            Followers<span className="ml-1 text-sm mb-2">1348</span>
-          </div>
+            Followers<span className="ml-1 text-sm mb-2">1348</span> 
+          </div>*/}
+          {allTabs}
         </div>
       </div>
-      <NFTList
-        nftList={props.nftList.filter(
-          (nft) =>
-            cards.isOwner(nft, props.userAddress) && nft.mints.available > 0
-        )}
-      />
+      <NFTList nftList={currentTab.nftList} />
     </div>
   );
 }
