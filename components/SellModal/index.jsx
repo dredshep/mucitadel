@@ -11,23 +11,26 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import clsx from "clsx";
+import { ethers } from "ethers";
 import { Formik } from "formik";
 import React from "react";
-import MuButton from "../UI/Button/MuButton";
-import Modal from "../UI/Modal";
-
 import marketcontractAbi from "../../config/abi/marketplace.json";
 import contractAbi from "../../config/abi/meme.json";
 import tokencontractAbi from "../../config/abi/token.json";
-import { contractAdd,contractAddB,tokencontractAdd,tokencontractAddB,marketcontractAdd,marketcontractAddB } from "../../constant/blockchain";
+import {
+  contractAdd,
+  contractAddB,
+  marketcontractAdd,
+  marketcontractAddB,
+  tokencontractAdd,
+  tokencontractAddB,
+} from "../../constant/blockchain";
+import MuButton from "../UI/Button/MuButton";
+import Modal from "../UI/Modal";
 
-import { ethers } from "ethers";
-var window = require("global/window")
+var window = require("global/window");
 
-
-
-let chainID  = "";
-
+let chainID = "";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -115,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SellModal = ({ visible, tokenId,properties, onCloseModal }) => {
+const SellModal = ({ visible, tokenId, properties, onCloseModal }) => {
   const classes = useStyles();
 
   const initialValues = {
@@ -127,30 +130,25 @@ const SellModal = ({ visible, tokenId,properties, onCloseModal }) => {
     handleSell(values);
   };
 
-  const handleSell = async(values)=>{
+  const handleSell = async (values) => {
     if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum
-      );
-      
-      
       /* Selecting the right Blockchain */
       let ContractInteraction = "";
       let MarketPlaceAddress = "";
       let nftAddress = "";
       console.log(properties);
 
-      if(properties.blockchain == "ethereum"){
+      if (properties.blockchain == "ethereum") {
         ContractInteraction = tokencontractAdd;
         MarketPlaceAddress = marketcontractAdd;
         nftAddress = contractAdd;
-      }else if(properties.blockchain == "binance"){
+      } else if (properties.blockchain == "binance") {
         ContractInteraction = tokencontractAddB;
         MarketPlaceAddress = marketcontractAddB;
         nftAddress = contractAddB;
       }
-
 
       let contract = new ethers.Contract(
         MarketPlaceAddress,
@@ -170,8 +168,6 @@ const SellModal = ({ visible, tokenId,properties, onCloseModal }) => {
         provider.getSigner()
       );
 
-
-
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
@@ -179,60 +175,62 @@ const SellModal = ({ visible, tokenId,properties, onCloseModal }) => {
       const approval = await nftcontract.functions.isApprovedForAll(
         accounts.toString(),
         MarketPlaceAddress
-      )
-      console.log(approval.toString())
-      
-      if(approval.toString()=="false"){
+      );
+      console.log(approval.toString());
+
+      if (approval.toString() == "false") {
         /* If Token is not appoved for selling in contract approval dialog box will appear */
-        await nftcontract.functions.setApprovalForAll(
-          marketplace,
-          1
-        );
+        await nftcontract.functions.setApprovalForAll(marketplace, 1);
         return false;
       }
       /* Fetch Token ID using Token Hash */
-      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(properties.id));
+      const tokenID = parseInt(
+        await nftcontract.functions.getTokenIdFromHash(properties.id)
+      );
       // const tokenID = 3;
 
       /* Sell Section */
-      if(values.Currencies.length == 1 && values.Currencies[0].Currency == "DANK"){
+      if (
+        values.Currencies.length == 1 &&
+        values.Currencies[0].Currency == "DANK"
+      ) {
         /* Approve Token */
         const approval = await contractToken.functions.allowance(
           accounts.toString(),
           MarketPlaceAddress
-        )
-        console.log(parseInt(approval))
-        
-        if(parseInt(approval)< parseInt(values.Currencies[0].Price)*1e18){
+        );
+        console.log(parseInt(approval));
+
+        if (parseInt(approval) < parseInt(values.Currencies[0].Price) * 1e18) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
-          await contractToken.functions.approve(
-            MarketPlaceAddress,
-            1e30
-          );
+          await contractToken.functions.approve(MarketPlaceAddress, 1e30);
           return false;
         }
 
-        var cardOwner =  await nftcontract.functions.ownerOf(
+        var cardOwner = await nftcontract.functions.ownerOf(
           accounts.toString(),
           tokenID
         );
-        if(cardOwner.toString() == "false"){
+        if (cardOwner.toString() == "false") {
           alert("Token Sold by user or already on sale");
           return false;
         }
 
         await contract.functions
-        .readyToSellToken(
-          tokenID,
-          1,
-          0,
-          (values.Currencies[0].Currency).split(" "),
-          ((parseInt(values.Currencies[0].Price)*1e18).toString()).split(" ") 
-        )
-        .then(async function (result) {
-          return false;
-        });
-      }else if(values.Currencies.length == 1 && values.Currencies[0].Currency == "ETH"){
+          .readyToSellToken(
+            tokenID,
+            1,
+            0,
+            values.Currencies[0].Currency.split(" "),
+            (parseInt(values.Currencies[0].Price) * 1e18).toString().split(" ")
+          )
+          .then(async function (result) {
+            return false;
+          });
+      } else if (
+        values.Currencies.length == 1 &&
+        values.Currencies[0].Currency == "ETH"
+      ) {
         // var cardOwner =  await nftcontract.functions.ownerOf(
         //   accounts.toString(),
         //   tokenID
@@ -242,65 +240,56 @@ const SellModal = ({ visible, tokenId,properties, onCloseModal }) => {
         //   return false;
         // }
 
-        var fee =  parseInt(await contract.functions.makerFee());
+        var fee = parseInt(await contract.functions.makerFee());
         console.log(fee);
-        var feePayment = ((parseInt(values.Currencies[0].Price))*fee)/1000;
+        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000;
 
         await contract.functions
-        .readyToSellToken(
-          tokenID,
-          1,
-          (parseInt(values.Currencies[0].Price)*1e18).toString(),
-          [],
-          [],
-          {value: (feePayment*1e18).toString()}
-        )
-        .then(async function (result) {
-          return false;
-        });
-      }else{
-
+          .readyToSellToken(
+            tokenID,
+            1,
+            (parseInt(values.Currencies[0].Price) * 1e18).toString(),
+            [],
+            [],
+            { value: (feePayment * 1e18).toString() }
+          )
+          .then(async function (result) {
+            return false;
+          });
+      } else {
         var currencySymbol = "";
         var currencyPrice = "";
         var ethPrice = "";
 
-        var cardOwner =  await nftcontract.functions.ownerOf(
+        var cardOwner = await nftcontract.functions.ownerOf(
           accounts.toString(),
           tokenID
         );
-        if(cardOwner.toString() == "false"){
+        if (cardOwner.toString() == "false") {
           alert("Token Sold by user or already on sale");
           return false;
         }
 
-        for(var i=0;i<values.Currencies.length;i++){
-          if(values.Currencies[i].Currency=="DANK"){
-            currencyPrice =(parseInt(values.Currencies[i].Price)*1e18).toString().split(" ") ;
-            currencySymbol =  values.Currencies[i].Currency.split(" ");
-          }else{
-            ethPrice = (parseInt(values.Currencies[i].Price)*1e18).toString() ;
+        for (var i = 0; i < values.Currencies.length; i++) {
+          if (values.Currencies[i].Currency == "DANK") {
+            currencyPrice = (parseInt(values.Currencies[i].Price) * 1e18)
+              .toString()
+              .split(" ");
+            currencySymbol = values.Currencies[i].Currency.split(" ");
+          } else {
+            ethPrice = (parseInt(values.Currencies[i].Price) * 1e18).toString();
           }
         }
         await contract.functions
-        .readyToSellToken(
-          tokenID,
-          1,
-          ethPrice,
-          currencySymbol,
-          currencyPrice 
-        )
-        .then(async function (result) {
-          return false;
-        });
-
+          .readyToSellToken(tokenID, 1, ethPrice, currencySymbol, currencyPrice)
+          .then(async function (result) {
+            return false;
+          });
       }
-     
-      
     } else {
       alert("Connect Metamask");
     }
-    
-  }
+  };
 
   const validateForm = (values) => {
     let errors = {};
