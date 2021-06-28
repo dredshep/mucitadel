@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginBottom: theme.spacing(5),
     '& .MuiInputBase-root': {
-      borderBottom: `1px solid ${theme.palette.primary.secondary}`,
+      borderBottom: `1px solid ${theme.palette.secondary}`,
       borderRadius: 0,
       padding: 0,
       '& input, textarea': {
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
   select: {
     '&.MuiInputBase-root': {
-      borderBottom: `1px solid ${theme.palette.primary.secondary}`,
+      borderBottom: `1px solid ${theme.palette.secondary}`,
       width: '100%',
 
       '& svg': {
@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
 
     '&.MuiSelect-root': {
       padding: theme.spacing(1.5, 3, 1.5, 0),
-      borderBottom: `1px solid ${theme.palette.primary.secondary}`,
+      borderBottom: `1px solid ${theme.palette.secondary}`,
     },
   },
   selectContainer: {
@@ -218,16 +218,16 @@ const SellModal = ({
         }
 
         var dbSymbol = String(values.Currencies[0].Currency)
-        var dbTotal = parseInt(values.Currencies[0].Price).toString().concat('000000000000000000')
+        // var dbTotal = parseInt(String(values.Currencies[0].Price).toString().concat('000000000000000000'))
 
         console.log(parseInt(approval))
 
         var fee = parseInt(await contract.functions.makerFee())
         console.log(fee)
-        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000
+        var feePayment = parseInt(String((values.Currencies[0].Price * fee) / 1000))
 
         /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
-        if (parseInt(approval) < parseInt(values.Currencies[0].Price) * 1e18) {
+        if (parseInt(approval) < parseInt(String(values.Currencies[0].Price * 1e18))) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
           const tokenApproval = await contractToken.functions.approve(
             MarketPlaceAddress,
@@ -253,7 +253,7 @@ const SellModal = ({
             1,
             0,
             values.Currencies[0].Currency.split(' '),
-            parseInt(values.Currencies[0].Price).toString().concat('000000000000000000').split(' '),
+            parseInt(String(values.Currencies[0].Price).toString().concat('000000000000000000')),
           )
           .then(async function (result) {
             /* Waits for Transaction to complete */
@@ -266,7 +266,7 @@ const SellModal = ({
             var fd1 = new URLSearchParams()
             fd1.append('id', properties.id)
             fd1.append('amount', '1') // Default Mint -1
-            fd1.append('price', dbTotal)
+            fd1.append('price', String(dbTotal))
             fd1.append('symbol', dbSymbol)
 
             console.log('form values & file => ', fd1)
@@ -280,7 +280,6 @@ const SellModal = ({
             fetch('https://api.mucitadel.io/v1/nft/sellnft', requestOptions1)
               .then((response) => response.text())
               .then((result) => {
-                setTimeout(() => {}, [500])
                 /* End Result 100% */
                 /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
                 console.log(result)
@@ -295,7 +294,7 @@ const SellModal = ({
       } else if (values.Currencies.length == 1 && values.Currencies[0].Currency == 'ETH') {
         var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
         var dbSymbol = String(values.Currencies[0].Currency)
-        var dbTotal = parseInt(values.Currencies[0].Price * 1e5)
+        var dbTotal = parseInt(String(values.Currencies[0].Price * 1e5))
           .toString()
           .concat('0000000000000')
 
@@ -306,13 +305,13 @@ const SellModal = ({
 
         var fee = parseInt(await contract.functions.makerFee())
         console.log(fee)
-        var feePayment = (parseInt(values.Currencies[0].Price) * fee) / 1000
+        var feePayment = parseInt(String((Number(values.Currencies[0].Price) * fee) / 1000))
         /* 2nd Step (Selling NFT) - ProgressBar to be added Below this comment */
         await contract.functions
           .readyToSellToken(
             tokenID,
             1,
-            parseInt(values.Currencies[0].Price).toString().concat('000000000000000000'),
+            parseInt(String(values.Currencies[0].Price).toString().concat('000000000000000000')),
             [],
             [],
             { value: (feePayment * 1e5).toString().concat('0000000000000') },
@@ -327,7 +326,7 @@ const SellModal = ({
             var fd1 = new URLSearchParams()
             fd1.append('id', properties.id)
             fd1.append('amount', '1') // Default Mint -1
-            fd1.append('price', dbTotal)
+            fd1.append('price', String(dbTotal))
             fd1.append('symbol', dbSymbol)
 
             console.log('form values & file => ', fd1)
@@ -354,19 +353,19 @@ const SellModal = ({
           })
       } else {
         var currencySymbol = ''
-        let currencyPrice = ''
+        let currencyPrice = '' as unknown as string | string[]
         var ethPrice = ''
 
         var dbSymbol = String(values.Currencies[0].Currency).concat(',').concat(values.Currencies[1].Currency)
-        var dbTotal = parseInt(values.Currencies[0].Price * 1e5)
+        var dbTotal = parseInt(String(values.Currencies[0].Price * 1e5))
           .toString()
           .concat('0000000000000')
           .concat(',')
-          .concat(parseInt(values.Currencies[1].Price * 1e5))
+          .concat(String(parseInt(String(values.Currencies[1].Price * 1e5))))
           .concat('0000000000000')
 
         console.log('Symbols: ', dbSymbol)
-        console.log('Currency: ', dbTotal)
+        console.log('Currency: ', String(dbTotal))
 
         var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
         if (cardOwner.toString() == 'false') {
@@ -376,7 +375,7 @@ const SellModal = ({
 
         for (var i = 0; i < values.Currencies.length; i++) {
           if (values.Currencies[i].Currency == 'DANK') {
-            currencyPrice = parseInt(values.Currencies[i].Price * 1e5)
+            currencyPrice = parseInt(String(values.Currencies[i].Price * 1e5))
               .toString()
               .concat('0000000000000')
               .split(' ')
@@ -384,7 +383,7 @@ const SellModal = ({
             console.log(currencyPrice)
             console.log(currencySymbol)
           } else {
-            ethPrice = parseInt(values.Currencies[i].Price * 1e5)
+            ethPrice = parseInt(String(values.Currencies[i].Price * 1e5))
               .toString()
               .concat('0000000000000')
           }
@@ -398,9 +397,9 @@ const SellModal = ({
 
             var fee = parseInt(await contract.functions.makerFee())
             console.log(fee)
-            var feePayment = (parseInt(values.Currencies[j].Price) * fee) / 1000
+            var feePayment = parseInt(String((values.Currencies[j].Price * fee) / 1000))
             /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
-            if (parseInt(approval) < parseInt(feePayment) * 1e18) {
+            if (parseInt(approval) < parseInt(String(feePayment)) * 1e18) {
               /* If Token is not appoved for selling in contract approval dialog box will appear */
               const tokenApproval = await contractToken.functions.approve(
                 MarketPlaceAddress,
@@ -429,7 +428,7 @@ const SellModal = ({
             var fd1 = new URLSearchParams()
             fd1.append('id', properties.id)
             fd1.append('amount', '1') // Default Mint -1
-            fd1.append('price', dbTotal)
+            fd1.append('price', String(dbTotal))
             fd1.append('symbol', dbSymbol)
 
             console.log('form values & file => ', fd1)
