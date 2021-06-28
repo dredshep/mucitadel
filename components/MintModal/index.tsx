@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MintModal(props: {
   visible: boolean;
   role: string;
+  address: string;
   closeMintModal: () => void;
 }) {
   const classes = useStyles();

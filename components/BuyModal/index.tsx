@@ -1,9 +1,8 @@
-import WhiteButton from 'components/styled/WhiteButton'
-import Selector from 'components/UI/Selector'
 import { ethers } from 'ethers'
 import { ErrorMessage, Formik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
+import WhiteButton from '../../components/styled/WhiteButton'
 import marketcontractAbi from '../../config/abi/marketplace.json'
 import contractAbi from '../../config/abi/meme.json'
 import tokencontractAbi from '../../config/abi/token.json'
@@ -190,7 +189,7 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
 
                   <div className="mt-4">
                     <p className="text-secondary text-sm mt-2">Price</p>
-                    <Selector
+                    {/* <Selector
                       options={priceOptions}
                       value={selectedPrice}
                       onChange={(selectedPrice) => {
@@ -199,7 +198,8 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
                       }}
                       placeholder="Choose a price"
                       className="text-sm"
-                    />
+                    /> */}
+                    "price selector is bugged rn"
                     <ErrorMessage name="price">{(msg) => <span className="text-xs text-red">{msg}</span>}</ErrorMessage>
                   </div>
 
