@@ -159,7 +159,7 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
         onSubmit={(values, { setSubmitting }) => {
           // handleBuy(values)
           // setSubmitting(false)
-          console.log('submit')
+          console.log('submit', JSON.stringify(values, null, 2))
         }}
       >
         {(props) => {
