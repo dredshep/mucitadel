@@ -1,129 +1,46 @@
 import WhiteButton from 'components/styled/WhiteButton'
 import Selector from 'components/UI/Selector'
-import { ethers } from 'ethers'
 import { ErrorMessage, Formik } from 'formik'
 import React, { useState } from 'react'
+import { NFT } from 'types/nft'
 import * as Yup from 'yup'
-import marketcontractAbi from '../../config/abi/marketplace.json'
-import contractAbi from '../../config/abi/meme.json'
-import tokencontractAbi from '../../config/abi/token.json'
-import {
-  contractAdd,
-  contractAddB,
-  marketcontractAdd,
-  marketcontractAddB,
-  tokencontractAdd,
-  tokencontractAddB,
-} from '../../constant/blockchain'
 import Modal from '../UI/Modal'
+import smartContractBuy from './smartContractBuy'
 
 var window = require('global/window')
 
-let chainID = ''
-
-const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
-  const handleBuy = async (values) => {
+const BuyModal = ({
+  visible,
+  nft,
+  onCloseModal,
+}: {
+  visible: boolean
+  tokenId: string
+  nft: NFT
+  onCloseModal: () => void
+}) => {
+  const handleBuy = async (values: {
+    formData: { price: { value: number; currency: string; label: string }; currency: string; amount: number }
+    nft: NFT
+  }) => {
     if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      /* ETH Main - 1,Ropstem - 3, Binance Main :56	, Binance Testnet :97 */
+      const chainID = parseInt(await window.ethereum.chainId)
+      console.log(chainID)
 
-      /* Selecting the right Blockchain */
-      let ContractInteraction = ''
-      let MarketPlaceAddress = ''
-      let nftAddress = ''
-
-      if (nft.blockchain == 'ethereum') {
-        ContractInteraction = tokencontractAdd
-        MarketPlaceAddress = marketcontractAdd
-        nftAddress = contractAdd
-      } else if (nft.blockchain == 'binance') {
-        ContractInteraction = tokencontractAddB
-        MarketPlaceAddress = marketcontractAddB
-        nftAddress = contractAddB
-      }
-
-      /* Taking Mannual Approach for Test */
-      // const currencyAmount = 5560
-      // const currencySymbol = 'DANK'
-      // const currencyAmount = 1;
-      // const currencySymbol = "ETH";
-      const currencyAmount = selectedPrice.value
-      const currencySymbol = selectedPrice.symbol
-
-      let contract = new ethers.Contract(MarketPlaceAddress, marketcontractAbi, provider.getSigner())
-
-      let nftcontract = new ethers.Contract(nftAddress, contractAbi, provider.getSigner())
-
-      let contractToken = new ethers.Contract(ContractInteraction, tokencontractAbi, provider.getSigner())
-
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      })
-
-      /* Fetch Token ID using Token Hash */
-
-      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(nft.id))
-
-      const userAsk = await contract.functions.getAsksByUser(
-        (
-          await window.ethereum.request({
-            method: 'eth_requestAccounts',
-          })
-        ).toString(),
-      )
-
-      const userAskOrder = await contract.functions.getOrdersKeyFromUser(
-        (
-          await window.ethereum.request({
-            method: 'eth_requestAccounts',
-          })
-        ).toString(),
-      )
-
-      if (currencySymbol == 'DANK') {
-        /* Check if Contract is Approved */
-        const approval = await contractToken.functions.allowance(accounts.toString(), MarketPlaceAddress)
-        console.log(parseInt(approval))
-
-        if (parseInt(approval) < currencyAmount * 1e18) {
-          /* If Token is not appoved for selling in contract approval dialog box will appear */
-          await contractToken.functions.approve(MarketPlaceAddress, 1e30)
+      if (values.nft.blockchain == 'ethereum') {
+        if (chainID == 1 || chainID == 4) {
+          smartContractBuy(values)
+        } else {
+          alert('Wrong Blockchain Connected switch to Ethereum Blockchain')
           return false
         }
-
-        for (var i = 0; i < userAsk[0].length; i++) {
-          if (parseInt(userAsk[0][i][3]) == tokenID) {
-            var OrderID = parseInt(userAskOrder[0][i])
-
-            /* This Will Buy The Token */
-            await contract.functions
-              .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
-              .then(async function (result) {
-                console.log(result)
-                return false
-              })
-          } else {
-            alert('No Sell Order for the NFT Found')
-            return false
-          }
-        }
-      } else if (currencySymbol == 'ETH') {
-        for (var i = 0; i < userAsk[0].length; i++) {
-          if (parseInt(userAsk[0][i][3]) == tokenID) {
-            var OrderID = parseInt(userAskOrder[0][i])
-
-            /* This Will Buy The Token */
-            await contract.functions
-              .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
-                value: (currencyAmount * 1e18).toString(),
-              })
-              .then(async function (result) {
-                console.log(result)
-                return false
-              })
-          } else {
-            alert('No Sell Order for the NFT Found')
-            return false
-          }
+      } else if (values.nft.blockchain == 'binance') {
+        if (chainID == 56 || chainID == 97) {
+          smartContractBuy(values)
+        } else {
+          alert('Wrong Blockchain Connected switch to Binance Blockchain')
+          return false
         }
       }
     } else {
@@ -139,19 +56,21 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
     amount: amount,
   }
 
-  const priceOptions = Object.keys(nft.price)
-    .filter((e) => e != 'USD')
-    .map((e) => {
-      return {
-        key: nft.id,
-        label: nft.price[e] + ' ' + e,
-        value: nft.price[e],
-        symbol: e,
-      }
-    })
+  const priceOptions = nft.price
+    ? Object.keys(nft.price)
+        .filter((e) => e != 'USD')
+        .map((e) => {
+          return {
+            key: nft.id,
+            label: nft.price[e] + ' ' + e,
+            value: nft.price[e] + ' ' + e,
+            symbol: e,
+          }
+        })
+    : null
 
   const validationSchema = Yup.object().shape({
-    price: Yup.number().required('Price is required'),
+    price: Yup.string().required('Price is required'),
     amount: Yup.number()
       .min(1, 'Amount should be greater than 0')
       .max(nft.mints.totalMints - nft.mints.sold, `Amount should not be over ${nft.mints.totalMints - nft.mints.sold}`)
@@ -166,7 +85,17 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
           setSubmitting(true)
-          handleBuy(values)
+          const [price, symbol]: [string, string] = values.price.split(' ')
+          const returnValue = {
+            formData: {
+              price: { value: Number(price), currency: symbol, label: `${price} ${symbol}` },
+              amount: values.amount as number,
+              currency: symbol,
+            },
+            nft,
+          }
+          console.log(returnValue)
+          handleBuy(returnValue)
           setSubmitting(false)
         }}
       >
