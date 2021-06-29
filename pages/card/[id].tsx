@@ -211,7 +211,7 @@ function RelatedSection(props: { cards: NFT[]; currentNFT: NFT }) {
     <div className="flex flex-col md:flex-row mx-auto justify-center w-max md:w-full box-border">
       {(() => {
         return toDisplay.map((card) => (
-          <div>
+          <div key={card.name}>
             <NFTCard
               {...card}
               href={`/card/${card.id}`}
@@ -237,14 +237,18 @@ function RelatedSection(props: { cards: NFT[]; currentNFT: NFT }) {
 const keyTextClass = 'text-secondary font-semibold font-title'
 const valueTextClass = 'text-white font-body'
 
-function BuySell(props: { handleSell: () => void; handleBuy: () => void; nft: NFT; userAddress: string }) {
-  const { handleBuy, handleSell, nft, userAddress } = props
-  const isOwner = cards.isOwner(nft, userAddress)
-  const isForSale = cards.isForSale(nft)
-  const someNotForSale = nft.mints.notForSale > 0
-  const showBuy = !isOwner && isForSale
-  const showSell = isOwner && someNotForSale
+function BuySell(props: {
+  handleSell: () => void
+  handleBuy: () => void
+  nft: NFT
+  userAddress: string
+  showBuy: boolean
+  showSell: boolean
+}) {
+  const { showBuy, showSell } = props
   const amountOfButtons = [showBuy, showSell].filter((x) => x)
+
+  const { handleBuy, handleSell } = props
 
   console.log({ showBuy, showSell })
 
@@ -269,8 +273,17 @@ function BuySell(props: { handleSell: () => void; handleBuy: () => void; nft: NF
     </div>
   )
 }
-function Product2(props) {
-  const { nft, setShowBuyModal, setShowSellModal, showBuyModal, showSellModal } = props
+function Product2(props: {
+  nft: NFT
+  setShowBuyModal: any
+  setShowSellModal: any
+  showBuyModal: boolean
+  showSellModal: boolean
+  showBuy: boolean
+  showSell: boolean
+  userAddress: string
+}) {
+  const { nft, setShowBuyModal, setShowSellModal, showBuyModal, showSellModal, showBuy, showSell } = props
 
   const [currency, setCurrency] = useState({
     label: '',
@@ -393,6 +406,8 @@ function Product2(props) {
               handleBuy: () => setShowBuyModal(true),
               nft,
               userAddress: props.userAddress,
+              showBuy,
+              showSell,
             }}
           />
           <SellModal visible={showSellModal} tokenId={nft.id} nft={nft} onCloseModal={handleCloseSellModal} />
@@ -573,6 +588,13 @@ export default function Home(
     mainProps.push(makeProp('Description', currentNFT.description))
   }
 
+  const { userAddress } = props
+  const isOwner = cards.isOwner(currentNFT, userAddress)
+  const isForSale = cards.isForSale(currentNFT)
+  const someNotForSale = currentNFT.mints.notForSale > 0
+  const showBuy = !isOwner && isForSale
+  const showSell = isOwner && someNotForSale
+
   return (
     <>
       <Head>
@@ -590,6 +612,8 @@ export default function Home(
                 showBuyModal={showBuyModal}
                 showSellModal={showSellModal}
                 userAddress={props.authData.address}
+                showBuy={showBuy}
+                showSell={showSell}
               />
               <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
                 <div className="mb-0 lg:mb-10 max-w-full">
@@ -610,18 +634,22 @@ export default function Home(
           <CardNotFound />
         )}
 
-        <BuyModal
-          visible={showBuyModal}
-          tokenId={currentNFT.id}
-          nft={currentNFT}
-          onCloseModal={() => setShowBuyModal(false)}
-        />
-        <SellModal
-          visible={showSellModal}
-          tokenId={currentNFT.id}
-          nft={currentNFT}
-          onCloseModal={() => setShowSellModal(false)}
-        />
+        {showBuy && (
+          <BuyModal
+            visible={showBuyModal}
+            tokenId={currentNFT.id}
+            nft={currentNFT}
+            onCloseModal={() => setShowBuyModal(false)}
+          />
+        )}
+        {showSell && (
+          <SellModal
+            visible={showSellModal}
+            tokenId={currentNFT.id}
+            nft={currentNFT}
+            onCloseModal={() => setShowSellModal(false)}
+          />
+        )}
       </div>
     </>
   )
