@@ -30,11 +30,17 @@ const BuyModal = ({
     }
   }
 
-  const priceOptions = [
-    { label: '25690 DANK', value: 25690, currency: 'DANK' },
-    { label: '0.8 ETH', value: 0.8, currency: 'ETH' },
-    { label: '456.18 USD', value: 456.18, currency: 'USD' },
-  ]
+  // const priceOptions = [
+  //   { label: '25690 DANK', value: 25690, currency: 'DANK' },
+  //   { label: '0.8 ETH', value: 0.8, currency: 'ETH' },
+  //   { label: '456.18 USD', value: 456.18, currency: 'USD' },
+  // ]
+  const priceOptions = Object.entries(nft.price).map((pricePair: [string, number]) => ({
+    label: pricePair[1] + ' ' + pricePair[0],
+    value: pricePair[1],
+    currency: pricePair[0],
+  }))
+
   const [selectedPrice, setSelectedPrice] = useState(null)
   const [amount, setAmount] = useState(null)
 
