@@ -678,7 +678,7 @@ export default function Home(props) {
       <SellModal
         visible={showSellModal}
         tokenId={currentNFT.id}
-        properties={currentNFT}
+        nft={currentNFT}
         onCloseModal={() => setShowSellModal(false)}
       />
     </div>

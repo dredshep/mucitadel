@@ -42,10 +42,12 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
       }
 
       /* Taking Mannual Approach for Test */
-      const currencyAmount = 5560
-      const currencySymbol = 'DANK'
+      // const currencyAmount = 5560
+      // const currencySymbol = 'DANK'
       // const currencyAmount = 1;
       // const currencySymbol = "ETH";
+      const currencyAmount = selectedPrice.value
+      const currencySymbol = selectedPrice.symbol
 
       let contract = new ethers.Contract(MarketPlaceAddress, marketcontractAbi, provider.getSigner())
 
@@ -129,11 +131,6 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
     }
   }
 
-  const priceOptions = [
-    { label: '25690 DANK', value: 25690, currency: 'DANK' },
-    { label: '0.8 ETH', value: 0.8, currency: 'ETH' },
-    { label: '456.18 USD', value: 456.18, currency: 'USD' },
-  ]
   const [selectedPrice, setSelectedPrice] = useState(null)
   const [amount, setAmount] = useState(null)
 
@@ -141,6 +138,17 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
     price: selectedPrice?.value,
     amount: amount,
   }
+
+  const priceOptions = Object.keys(nft.price)
+    .filter((e) => e != 'USD')
+    .map((e) => {
+      return {
+        key: nft.id,
+        label: nft.price[e] + ' ' + e,
+        value: nft.price[e],
+        symbol: e,
+      }
+    })
 
   const validationSchema = Yup.object().shape({
     price: Yup.number().required('Price is required'),
@@ -157,9 +165,9 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
-          // handleBuy(values)
-          // setSubmitting(false)
-          console.log('submit')
+          setSubmitting(true)
+          handleBuy(values)
+          setSubmitting(false)
         }}
       >
         {(props) => {
@@ -189,7 +197,7 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
                   </p>
 
                   <div className="mt-4">
-                    <p className="text-secondary text-sm mt-2">Price</p>
+                    <p className="text-secondary text-sm my-1">Price</p>
                     <Selector
                       options={priceOptions}
                       value={selectedPrice}
@@ -204,9 +212,9 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
                   </div>
 
                   <div className="mt-4">
-                    <p className="text-secondary text-sm mt-2">Buy amount</p>
+                    <p className="text-secondary text-sm my-1">Buy amount</p>
                     <input
-                      className="shadow w-full h-10 text-sm rounded-md mb-2 bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover transition-colors duration-75 text-center focus:outline-none"
+                      className="shadow w-full h-10 text-sm rounded-md bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover transition-colors duration-75 text-center focus:outline-none"
                       type="number"
                       placeholder="Please enter amount to buy"
                       value={amount ?? ''}
@@ -220,7 +228,11 @@ const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
                     </ErrorMessage>
                   </div>
 
-                  <WhiteButton type="submit" className="text-lg mt-2">
+                  <WhiteButton
+                    type="submit"
+                    className={`text-lg mt-2 ${isSubmitting && 'cursor-not-allowed'}`}
+                    disabled={isSubmitting}
+                  >
                     Buy
                   </WhiteButton>
                 </div>
