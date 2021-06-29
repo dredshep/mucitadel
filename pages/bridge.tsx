@@ -118,6 +118,7 @@ export default function DankBridge() {
             </div>
             <div className="px-5">
               <Selector
+                className=""
                 placeholder="Select Bridge Direction"
                 options={[
                   { label: 'Ethereum -> BSC', value: 'BSC' },
