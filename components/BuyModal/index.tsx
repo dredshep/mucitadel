@@ -1,22 +1,11 @@
-import { ethers } from 'ethers'
 import { ErrorMessage, Formik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import WhiteButton from '../../components/styled/WhiteButton'
-import marketcontractAbi from '../../config/abi/marketplace.json'
-import contractAbi from '../../config/abi/meme.json'
-import tokencontractAbi from '../../config/abi/token.json'
-import {
-  contractAdd,
-  contractAddB,
-  marketcontractAdd,
-  marketcontractAddB,
-  tokencontractAdd,
-  tokencontractAddB,
-} from '../../constant/blockchain'
 import { NFT } from '../../types/nft'
 import Modal from '../UI/Modal'
 import Selector from '../UI/Selector'
+import smartContractBuy from './smartContractBuy'
 
 var window = require('global/window')
 
@@ -35,106 +24,7 @@ const BuyModal = ({
 }) => {
   const handleBuy = async (values: { formData: { price: number; currency: string; amount: number }; nft: NFT }) => {
     if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-      /* Selecting the right Blockchain */
-      let ContractInteraction = ''
-      let MarketPlaceAddress = ''
-      let nftAddress = ''
-
-      if (nft.blockchain == 'ethereum') {
-        ContractInteraction = tokencontractAdd
-        MarketPlaceAddress = marketcontractAdd
-        nftAddress = contractAdd
-      } else if (nft.blockchain == 'binance') {
-        ContractInteraction = tokencontractAddB
-        MarketPlaceAddress = marketcontractAddB
-        nftAddress = contractAddB
-      }
-
-      /* Taking Mannual Approach for Test */
-      const currencyAmount = 5560
-      const currencySymbol = 'DANK'
-      // const currencyAmount = 1;
-      // const currencySymbol = "ETH";
-
-      let contract = new ethers.Contract(MarketPlaceAddress, marketcontractAbi, provider.getSigner())
-
-      let nftcontract = new ethers.Contract(nftAddress, contractAbi, provider.getSigner())
-
-      let contractToken = new ethers.Contract(ContractInteraction, tokencontractAbi, provider.getSigner())
-
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      })
-
-      /* Fetch Token ID using Token Hash */
-
-      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(nft.id))
-
-      const userAsk = await contract.functions.getAsksByUser(
-        (
-          await window.ethereum.request({
-            method: 'eth_requestAccounts',
-          })
-        ).toString(),
-      )
-
-      const userAskOrder = await contract.functions.getOrdersKeyFromUser(
-        (
-          await window.ethereum.request({
-            method: 'eth_requestAccounts',
-          })
-        ).toString(),
-      )
-
-      if (currencySymbol == 'DANK') {
-        /* Check if Contract is Approved */
-        const approval = await contractToken.functions.allowance(accounts.toString(), MarketPlaceAddress)
-        console.log(parseInt(approval))
-
-        if (parseInt(approval) < currencyAmount * 1e18) {
-          /* If Token is not appoved for selling in contract approval dialog box will appear */
-          await contractToken.functions.approve(MarketPlaceAddress, 1e30)
-          return false
-        }
-
-        for (var i = 0; i < userAsk[0].length; i++) {
-          if (parseInt(userAsk[0][i][3]) == tokenID) {
-            var OrderID = parseInt(userAskOrder[0][i])
-
-            /* This Will Buy The Token */
-            await contract.functions
-              .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
-              .then(async function (result) {
-                console.log(result)
-                return false
-              })
-          } else {
-            alert('No Sell Order for the NFT Found')
-            return false
-          }
-        }
-      } else if (currencySymbol == 'ETH') {
-        for (var i = 0; i < userAsk[0].length; i++) {
-          if (parseInt(userAsk[0][i][3]) == tokenID) {
-            var OrderID = parseInt(userAskOrder[0][i])
-
-            /* This Will Buy The Token */
-            await contract.functions
-              .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
-                value: (currencyAmount * 1e18).toString(),
-              })
-              .then(async function (result) {
-                console.log(result)
-                return false
-              })
-          } else {
-            alert('No Sell Order for the NFT Found')
-            return false
-          }
-        }
-      }
+      smartContractBuy(values)
     } else {
       alert('Connect Metamask')
     }
