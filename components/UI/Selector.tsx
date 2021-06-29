@@ -5,7 +5,13 @@ interface Option {
   label: string
 }
 
-function Selector(props: { options: Option[]; value: any; onChange: any; placeholder: string }): JSX.Element {
+function Selector(props: {
+  options: Option[]
+  value: any
+  onChange: any
+  placeholder: string
+  className: string
+}): JSX.Element {
   const { options, value, onChange, ...rest } = props
   const customStyles = {
     option: (provided, state) => ({

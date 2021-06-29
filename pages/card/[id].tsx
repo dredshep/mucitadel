@@ -395,12 +395,7 @@ function Product2(props) {
               userAddress: props.userAddress,
             }}
           />
-          <SellModal
-            visible={showSellModal}
-            tokenId={nft.ipfsurl}
-            properties={nft}
-            onCloseModal={handleCloseSellModal}
-          />
+          <SellModal visible={showSellModal} tokenId={nft.id} nft={nft} onCloseModal={handleCloseSellModal} />
         </div>
       </div>
     </div>
@@ -624,7 +619,7 @@ export default function Home(
         <SellModal
           visible={showSellModal}
           tokenId={currentNFT.id}
-          properties={currentNFT}
+          nft={currentNFT}
           onCloseModal={() => setShowSellModal(false)}
         />
       </div>

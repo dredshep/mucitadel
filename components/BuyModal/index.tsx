@@ -1,45 +1,135 @@
+import WhiteButton from 'components/styled/WhiteButton'
+import Selector from 'components/UI/Selector'
+import { ethers } from 'ethers'
 import { ErrorMessage, Formik } from 'formik'
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import WhiteButton from '../../components/styled/WhiteButton'
-import { NFT } from '../../types/nft'
+import marketcontractAbi from '../../config/abi/marketplace.json'
+import contractAbi from '../../config/abi/meme.json'
+import tokencontractAbi from '../../config/abi/token.json'
+import {
+  contractAdd,
+  contractAddB,
+  marketcontractAdd,
+  marketcontractAddB,
+  tokencontractAdd,
+  tokencontractAddB,
+} from '../../constant/blockchain'
 import Modal from '../UI/Modal'
-import Selector from '../UI/Selector'
-import smartContractBuy from './smartContractBuy'
 
 var window = require('global/window')
 
 let chainID = ''
 
-const BuyModal = ({
-  visible,
-  tokenId,
-  nft,
-  onCloseModal,
-}: {
-  visible: boolean
-  tokenId: string
-  nft: NFT
-  onCloseModal: () => void
-}) => {
-  const handleBuy = async (values: { formData: { price: number; currency: string; amount: number }; nft: NFT }) => {
+const BuyModal = ({ visible, tokenId, nft, onCloseModal }) => {
+  const handleBuy = async (values) => {
     if (window.ethereum) {
-      smartContractBuy(values)
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+      /* Selecting the right Blockchain */
+      let ContractInteraction = ''
+      let MarketPlaceAddress = ''
+      let nftAddress = ''
+
+      if (nft.blockchain == 'ethereum') {
+        ContractInteraction = tokencontractAdd
+        MarketPlaceAddress = marketcontractAdd
+        nftAddress = contractAdd
+      } else if (nft.blockchain == 'binance') {
+        ContractInteraction = tokencontractAddB
+        MarketPlaceAddress = marketcontractAddB
+        nftAddress = contractAddB
+      }
+
+      /* Taking Mannual Approach for Test */
+      // const currencyAmount = 5560
+      // const currencySymbol = 'DANK'
+      // const currencyAmount = 1;
+      // const currencySymbol = "ETH";
+      const currencyAmount = selectedPrice.value
+      const currencySymbol = selectedPrice.symbol
+
+      let contract = new ethers.Contract(MarketPlaceAddress, marketcontractAbi, provider.getSigner())
+
+      let nftcontract = new ethers.Contract(nftAddress, contractAbi, provider.getSigner())
+
+      let contractToken = new ethers.Contract(ContractInteraction, tokencontractAbi, provider.getSigner())
+
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
+
+      /* Fetch Token ID using Token Hash */
+
+      const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(nft.id))
+
+      const userAsk = await contract.functions.getAsksByUser(
+        (
+          await window.ethereum.request({
+            method: 'eth_requestAccounts',
+          })
+        ).toString(),
+      )
+
+      const userAskOrder = await contract.functions.getOrdersKeyFromUser(
+        (
+          await window.ethereum.request({
+            method: 'eth_requestAccounts',
+          })
+        ).toString(),
+      )
+
+      if (currencySymbol == 'DANK') {
+        /* Check if Contract is Approved */
+        const approval = await contractToken.functions.allowance(accounts.toString(), MarketPlaceAddress)
+        console.log(parseInt(approval))
+
+        if (parseInt(approval) < currencyAmount * 1e18) {
+          /* If Token is not appoved for selling in contract approval dialog box will appear */
+          await contractToken.functions.approve(MarketPlaceAddress, 1e30)
+          return false
+        }
+
+        for (var i = 0; i < userAsk[0].length; i++) {
+          if (parseInt(userAsk[0][i][3]) == tokenID) {
+            var OrderID = parseInt(userAskOrder[0][i])
+
+            /* This Will Buy The Token */
+            await contract.functions
+              .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
+              .then(async function (result) {
+                console.log(result)
+                return false
+              })
+          } else {
+            alert('No Sell Order for the NFT Found')
+            return false
+          }
+        }
+      } else if (currencySymbol == 'ETH') {
+        for (var i = 0; i < userAsk[0].length; i++) {
+          if (parseInt(userAsk[0][i][3]) == tokenID) {
+            var OrderID = parseInt(userAskOrder[0][i])
+
+            /* This Will Buy The Token */
+            await contract.functions
+              .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
+                value: (currencyAmount * 1e18).toString(),
+              })
+              .then(async function (result) {
+                console.log(result)
+                return false
+              })
+          } else {
+            alert('No Sell Order for the NFT Found')
+            return false
+          }
+        }
+      }
     } else {
       alert('Connect Metamask')
     }
   }
-
-  // const priceOptions = [
-  //   { label: '25690 DANK', value: 25690, currency: 'DANK' },
-  //   { label: '0.8 ETH', value: 0.8, currency: 'ETH' },
-  //   { label: '456.18 USD', value: 456.18, currency: 'USD' },
-  // ]
-  const priceOptions = Object.entries(nft.price).map((pricePair: [string, number]) => ({
-    label: pricePair[1] + ' ' + pricePair[0],
-    value: pricePair[1],
-    currency: pricePair[0],
-  }))
 
   const [selectedPrice, setSelectedPrice] = useState(null)
   const [amount, setAmount] = useState(null)
@@ -48,6 +138,17 @@ const BuyModal = ({
     price: selectedPrice?.value,
     amount: amount,
   }
+
+  const priceOptions = Object.keys(nft.price)
+    .filter((e) => e != 'USD')
+    .map((e) => {
+      return {
+        key: nft.id,
+        label: nft.price[e] + ' ' + e,
+        value: nft.price[e],
+        symbol: e,
+      }
+    })
 
   const validationSchema = Yup.object().shape({
     price: Yup.number().required('Price is required'),
@@ -63,16 +164,10 @@ const BuyModal = ({
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values: { price: number; currency: string; amount: number }, { setSubmitting }) => {
-          // handleBuy(values)
-          // setSubmitting(false)
-          const returnValue = {
-            formData: { price: selectedPrice, currency: values.currency, amount: values.amount },
-            nft,
-          }
-          handleBuy(returnValue)
-
-          console.log('submit', JSON.stringify(returnValue, null, 2))
+        onSubmit={(values, { setSubmitting }) => {
+          setSubmitting(true)
+          handleBuy(values)
+          setSubmitting(false)
         }}
       >
         {(props) => {
@@ -97,12 +192,12 @@ const BuyModal = ({
                   <p className="text-secondary text-sm mt-2">
                     Mints for Sale:
                     <span className="text-white ml-2">
-                      {nft.mints.forSale} out of {nft.mints.available}
+                      {nft.mints.sold} out of {nft.mints.totalMints}
                     </span>
                   </p>
 
                   <div className="mt-4">
-                    <p className="text-secondary text-sm mt-2">Price</p>
+                    <p className="text-secondary text-sm my-1">Price</p>
                     <Selector
                       options={priceOptions}
                       value={selectedPrice}
@@ -111,15 +206,15 @@ const BuyModal = ({
                         setFieldValue('price', selectedPrice.value)
                       }}
                       placeholder="Choose a price"
-                      // className="text-sm"
+                      className="text-sm"
                     />
                     <ErrorMessage name="price">{(msg) => <span className="text-xs text-red">{msg}</span>}</ErrorMessage>
                   </div>
 
                   <div className="mt-4">
-                    <p className="text-secondary text-sm mt-2">Buy amount</p>
+                    <p className="text-secondary text-sm my-1">Buy amount</p>
                     <input
-                      className="shadow w-full h-10 text-sm rounded-md mb-2 bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover transition-colors duration-75 text-center focus:outline-none"
+                      className="shadow w-full h-10 text-sm rounded-md bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover transition-colors duration-75 text-center focus:outline-none"
                       type="number"
                       placeholder="Please enter amount to buy"
                       value={amount ?? ''}
@@ -133,7 +228,11 @@ const BuyModal = ({
                     </ErrorMessage>
                   </div>
 
-                  <WhiteButton type="submit" className="text-lg mt-2">
+                  <WhiteButton
+                    type="submit"
+                    className={`text-lg mt-2 ${isSubmitting && 'cursor-not-allowed'}`}
+                    disabled={isSubmitting}
+                  >
                     Buy
                   </WhiteButton>
                 </div>
