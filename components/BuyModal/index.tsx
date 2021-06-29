@@ -22,9 +22,28 @@ const BuyModal = ({
   nft: NFT
   onCloseModal: () => void
 }) => {
-  const handleBuy = async (values: { formData: { price: number; currency: string; amount: number }; nft: NFT }) => {
+  const handleBuy = async (values: { formData: { price: {value: number; currency: string; label: string}; currency: string; amount: number }; nft: NFT }) => {
     if (window.ethereum) {
-      smartContractBuy(values)
+      /* ETH Main - 1,Ropstem - 3, Binance Main :56	, Binance Testnet :97 */
+      const chainID = parseInt(await window.ethereum.chainId)
+      console.log(chainID)
+
+      if (values.nft.blockchain == 'ethereum') {
+        if (chainID == 1 || chainID == 4) {
+          smartContractBuy(values)
+        } else {
+          alert('Wrong Blockchain Connected switch to Ethereum Blockchain')
+          return false
+        }
+      } else if (values.nft.blockchain == 'binance') {
+        if (chainID == 56 || chainID == 97) {
+          smartContractBuy(values)
+        } else {
+          alert('Wrong Blockchain Connected switch to Binance Blockchain')
+          return false
+        }
+      }
+      
     } else {
       alert('Connect Metamask')
     }

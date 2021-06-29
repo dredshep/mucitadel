@@ -254,17 +254,6 @@ const MemeCreationForm = ({ role }) => {
                       "application/x-www-form-urlencoded"
                     );
 
-                    /* Currencies Division */
-                    // var symbols = "";
-                    // var prices = [];
-                    // console.log(values.Currencies[0]);
-                    // for (var i = 0; i < values.Currencies.length; i++) {
-                    //   prices[i] = parseInt(
-                    //     parseFloat(values.Currencies[i]) * 1e18
-                    //   );
-                    // }
-                    // console.log(prices.join());
-
                     var fd1 = new URLSearchParams();
                     fd1.append(
                       "owneraddress",

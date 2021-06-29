@@ -15,7 +15,7 @@ import {
 var window = require('global/window')
 
 export default async function smartContractBuy(values: {
-  formData: { price: number; currency: string; amount: number }
+  formData: { price: {value: number; currency: string; label: string}; currency: string; amount: number }
   nft: NFT
 }) {
   const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -36,9 +36,11 @@ export default async function smartContractBuy(values: {
   }
 
   /* Taking Mannual Approach for Test */
-  const priceSlab = values.formData.currency.split(' ')
-  const currencyAmount = parseInt((parseFloat(priceSlab[0]) * 1e5).toString())
-  const currencySymbol = priceSlab[1]
+  const priceSlab = values.formData.price.label;
+  console.log(values.formData.price.value);
+  const currencyAmount = (values.formData.price.value * 1e5)
+
+  const currencySymbol = (values.formData.price.currency)
   // const currencyAmount = 1;
   // const currencySymbol = "ETH";
   console.log(String(currencyAmount).concat('0000000000000'), currencySymbol)
@@ -54,6 +56,7 @@ export default async function smartContractBuy(values: {
   })
 
   /* Fetch Token ID using Token Hash */
+  console.log(values.nft.ipfsurl)
 
   const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(values.nft.ipfsurl))
 
@@ -81,7 +84,15 @@ export default async function smartContractBuy(values: {
         console.log(OrderID)
         console.log(String(parseInt(userAsk[0][i][5][0][1]) / 1e18).concat('000000000000000000'))
 
-        if (parseInt(approval) < parseInt(userAsk[0][i][2])) {
+        const balanceOf = parseInt(await contractToken.functions.balanceOf(
+          accounts.toString()
+        ));
+        if(balanceOf < (parseInt(userAsk[0][i][5][0][1]))){
+          alert("You Dont have enough DANK to make a Purchase")
+          return false;
+        }
+
+        if (parseInt(approval) < parseInt(userAsk[0][i][5][0][1])) {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
           const tokenApproval = await contractToken.functions.approve(
             MarketPlaceAddress,
@@ -93,6 +104,7 @@ export default async function smartContractBuy(values: {
         /* 2nd Step (Buying NFT) - ProgressBar to be added Below this comment */
 
         /* This Will Buy The Token */
+        console.log(parseInt(userAsk[0][i][2]))
         await contract.functions
           .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
           .then(async function (result) {
@@ -135,7 +147,7 @@ export default async function smartContractBuy(values: {
         // return false;
       }
     }
-  } else if (currencySymbol == 'ETH') {
+  } else if (currencySymbol == 'ETH' || currencySymbol == 'BNB') {
     /* 1st Step (Buying NFT) - ProgressBar to be added Below this comment */
     for (var i = 0; i < userAsk[0].length; i++) {
       if (
@@ -144,6 +156,13 @@ export default async function smartContractBuy(values: {
       ) {
         var OrderID = parseInt(userAskOrder[0][i])
         console.log(OrderID)
+
+        const balanceOf = (await provider.getBalance(accounts.toString()));
+        
+        if(Number(balanceOf) < parseInt(userAsk[0][i][4])){
+          alert("You Dont have enough Funds to make a Purchase")
+          return false;
+        }
 
         /* This Will Buy The Token */
         await contract.functions
