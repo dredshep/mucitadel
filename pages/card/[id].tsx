@@ -258,8 +258,8 @@ function RelatedSection(props: { cards: NFT[]; currentNFT: NFT }) {
   const cards = (
     <div className="flex flex-col md:flex-row mx-auto justify-center w-max md:w-full box-border">
       {(() => {
-        return toDisplay.map((card) => (
-          <div>
+        return toDisplay.map((card, index) => (
+          <div key={index}>
             <NFTCard
               {...card}
               href={`/card/${card.id}`}
@@ -330,7 +330,7 @@ function Product2(props) {
               {currencyButton} */}
               <Selector
                 placeholder="Select Price"
-                options={getPriceListFromPriceObj(nft.price).map((price) => ({
+                options={!nft.price ? [] : getPriceListFromPriceObj(nft.price).map((price) => ({
                   label: price,
                   value: price,
                 }))}
