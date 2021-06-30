@@ -626,7 +626,7 @@ export default function Home(props: AuthProps & { nftList: NFT[]; milliseconds: 
                 />
               </div>
             </div>
-            : (<CardNotFound />)
+            {/* : (<CardNotFound />) */}
             <Footer />
           </main>
         ) : (
