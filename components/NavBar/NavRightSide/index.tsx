@@ -1,5 +1,5 @@
 import { faPlusSquare } from '@fortawesome/free-regular-svg-icons'
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+import { faBug, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import Explained from '../../Explainer/Explained'
@@ -48,6 +48,16 @@ export default function NavRightSide(props: {
         onClick={handleOpenMintModal}
       >
         <FontAwesomeIcon icon={faPlusSquare} />
+      </Explained>
+      <Explained
+        explanation="Suggestions/Bug Report"
+        href="https://forms.gle/aUn3pqEXMG53HVNn7"
+        // className={`hidden${props.authData?.address ? ' lg:flex' : ''}`}
+        // onClick={handleOpenMintModal}
+      >
+        <a href="https://forms.gle/aUn3pqEXMG53HVNn7" target="_blank">
+          <FontAwesomeIcon icon={faBug} />
+        </a>
       </Explained>
       <MintModal
         role={props.authData.role}
