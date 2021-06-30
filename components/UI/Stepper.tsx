@@ -26,9 +26,9 @@ const FormStepper = (props) => {
       activeStep={activeStep}
       className={className}
       styleConfig={{
-        activeBgColor: '#ed1d24',
+        activeBgColor: '#9b50ff',
         activeTextColor: '#ffffff',
-        completedBgColor: '#a10308',
+        completedBgColor: '#4d6f0b',
         completedTextColor: '#ffffff',
         inactiveBgColor: '#e0e0e0',
         inactiveTextColor: '#ffffff',
