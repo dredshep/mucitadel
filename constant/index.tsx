@@ -1,10 +1,10 @@
 const TIERS = ['titanic', 'unprecedented', 'rare', 'epic', 'legendary', 'nani']
 
-const CURRENCIES = ['ETH', 'DANK', 'USD']
+const CURRENCIES = ['ETH', 'DANK', 'USD', 'BNB']
 
 const CURRENCIES_BY_BLOCKCHAIN = [
   { blockchain: 'ethereum', currencies: ['ETH', 'DANK'] },
-  { blockchain: 'binance', currencies: ['BNB', 'DANK'] },
+  { blockchain: 'binance', currencies: ['BNB'] },
 ]
 
 const SORT_TYPES = [
