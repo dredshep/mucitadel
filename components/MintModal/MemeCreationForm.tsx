@@ -88,7 +88,7 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
   const initialValues = {
     Name: '',
     Description: '',
-    Tier: '',
+    Tier: 'titanic',
     Blockchain: 'ethereum',
     ForSale: true,
     Currencies: [{ Price: '', Currency: '' }],
@@ -279,7 +279,7 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
                     fd1.append('name', values.Name)
                     fd1.append('tier', values.Tier)
                     fd1.append('description', values.Description)
-                    fd1.append('amount', '1')
+                    fd1.append('amount', String(values.Amount))
                     fd1.append('blockchain', values.Blockchain)
                     fd1.append('collection', 'mucitadel')
                     fd1.append('tokenid', nextTokenID)

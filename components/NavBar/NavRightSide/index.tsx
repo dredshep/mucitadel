@@ -1,36 +1,36 @@
-import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
-import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import Explained from "../../Explainer/Explained";
-import MintModal from "../../MintModal";
-import Button from "../../styled/Button";
-import { AuthData, LogIn, LogOut } from "../../types/AuthenticationProvider";
-import LoginModal from "../LoginModal";
-import PopDown from "../PopDown";
+import { faPlusSquare } from '@fortawesome/free-regular-svg-icons'
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React from 'react'
+import Explained from '../../Explainer/Explained'
+import MintModal from '../../MintModal'
+import Button from '../../styled/Button'
+import { AuthData, LogIn, LogOut } from '../../types/AuthenticationProvider'
+import LoginModal from '../LoginModal'
+import PopDown from '../PopDown'
 
 export default function NavRightSide(props: {
-  logIn: LogIn;
-  logOut: LogOut;
-  authData: AuthData;
-  hasMetamask: boolean;
+  logIn: LogIn
+  logOut: LogOut
+  authData: AuthData
+  hasMetamask: boolean
 }) {
-  const [loginModalIsVisible, showLoginModal] = React.useState(false);
-  const [visibleMintModal, setVisibleMintModal] = React.useState(false);
+  const [loginModalIsVisible, showLoginModal] = React.useState(false)
+  const [visibleMintModal, setVisibleMintModal] = React.useState(false)
 
-  const showLoginModalCommand = () => showLoginModal(!loginModalIsVisible);
-  const handleCloseMintModal = () => setVisibleMintModal(!visibleMintModal);
-  const handleOpenMintModal = () => setVisibleMintModal(true);
+  const showLoginModalCommand = () => showLoginModal(!loginModalIsVisible)
+  const handleCloseMintModal = () => setVisibleMintModal(!visibleMintModal)
+  const handleOpenMintModal = () => setVisibleMintModal(true)
 
-  console.log("ant : authData => ", props.authData);
+  console.log('ant : authData => ', props.authData)
 
   return (
     <div className="text-xl ml-auto lg:ml-0 flex mr-3 h-full">
       <div
         className={
           !loginModalIsVisible
-            ? "hidden"
-            : "fixed origin-top-left top-0 left-0 z-20 h-screen w-screen bg-mupurple opacity-60"
+            ? 'hidden'
+            : 'fixed origin-top-left top-0 left-0 z-20 h-screen w-screen bg-mupurple opacity-60'
         }
         onClick={showLoginModalCommand}
       ></div>
@@ -44,9 +44,10 @@ export default function NavRightSide(props: {
       />
       <Explained
         explanation="Add NFT"
-        className={`hidden${props.authData?.address ? " lg:flex" : ""}`}
+        className={`hidden${props.authData?.address ? ' lg:flex' : ''}`}
+        onClick={handleOpenMintModal}
       >
-        <FontAwesomeIcon icon={faPlusSquare} onClick={handleOpenMintModal} />
+        <FontAwesomeIcon icon={faPlusSquare} />
       </Explained>
       <MintModal
         role={props.authData.role}
@@ -69,9 +70,7 @@ export default function NavRightSide(props: {
       {/* cursor-pointer bg-mupurple py-4 px-4 rounded-full text-xl  font-title tracking-wide font-semibold leading-3 h-11 */}
       <Button
         className={
-          props.authData?.address
-            ? "hidden"
-            : "text-lg font-title self-center lg:ml-4 pl-2 pr-2 lg:pl-4 lg:pr-4"
+          props.authData?.address ? 'hidden' : 'text-lg font-title self-center lg:ml-4 pl-2 pr-2 lg:pl-4 lg:pr-4'
         }
         onClick={showLoginModalCommand}
       >
@@ -92,5 +91,5 @@ export default function NavRightSide(props: {
         }}
       />
     </div>
-  );
+  )
 }

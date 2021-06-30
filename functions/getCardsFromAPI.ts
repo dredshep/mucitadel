@@ -1,43 +1,40 @@
-import axios from "axios";
-import { NFT, RawNFT } from "../types/nft";
+import axios from 'axios'
+import { NFT, RawNFT } from '../types/nft'
+import divide from './divide'
 
-type Prices = { [key: string]: number };
+type Prices = { [key: string]: number }
 
 export function shortenAddress(address: string) {
-  const firstPart = address.slice(0, 15);
-  const secondPart = address.slice(address.length - 4, address.length);
-  return [firstPart, secondPart].join("...");
+  const firstPart = address.slice(0, 15)
+  const secondPart = address.slice(address.length - 4, address.length)
+  return [firstPart, secondPart].join('...')
 }
 
 type DankPrice = {
-  dank_price_eth: string;
-  eth_price: string;
-  dank_price_usd: number;
-};
+  dank_price_eth: string
+  eth_price: string
+  dank_price_usd: number
+}
 
-const isEthy = (s: string) => "ETH,DANK,BNB,MIA,MUU".split(",").includes(s);
-const isNullish = (s: string | null) => s == null || s === "null";
+const isEthy = (s: string) => 'ETH,DANK,BNB,MIA,MUU'.split(',').includes(s)
+const isNullish = (s: string | null) => s == null || s === 'null'
 // const isNotNull = (s: string) => s !== null && s !== "null";
 
-const nullIfNull = <T>(notNull: string, returnValue: T): T | null =>
-  !isNullish(notNull) ? returnValue : null;
+const nullIfNull = <T>(notNull: string, returnValue: T): T | null => (!isNullish(notNull) ? returnValue : null)
 
 const baseUrlFromBlockchain = (blockchain) => {
-  if (blockchain === "ethereum") return "https://rinkeby.etherscan.io/";
-  if (blockchain === "binance") return "https://testnet.bscscan.com/";
-};
+  if (blockchain === 'ethereum') return 'https://rinkeby.etherscan.io/'
+  if (blockchain === 'binance') return 'https://testnet.bscscan.com/'
+}
 
-const forceMaxTwoDecimals = (n: number) => Number(n.toFixed(2));
+const forceMaxTwoDecimals = (n: number) => Number(n.toFixed(2))
 
-const mergePrices = (
-  premergePrices: string[],
-  premergeSymbols: string[]
-): Prices =>
+const mergePrices = (premergePrices: string[], premergeSymbols: string[]): Prices =>
   premergePrices.reduce((prices, price, i) => {
-    const symbol = premergeSymbols[i];
-    const actualPrice = isEthy(symbol) ? Number(price) / 1e18 : Number(price);
-    return Object.assign(prices, { [premergeSymbols[i]]: actualPrice });
-  }, {});
+    const symbol = premergeSymbols[i]
+    const actualPrice = isEthy(symbol) ? divide(BigInt(price), 1e18) : Number(price)
+    return Object.assign(prices, { [premergeSymbols[i]]: actualPrice })
+  }, {})
 
 export default async function getCardsFromAPI() {
   // const getData = (): Promise<RawNFT[]> =>
@@ -50,19 +47,12 @@ export default async function getCardsFromAPI() {
   const getAll = (): Promise<[RawNFT[], any]> =>
     new Promise((resolve, reject) =>
       axios
-        .all([
-          axios.get("https://api.mucitadel.io/v1/nft/listnfts"),
-          axios.get("https://dankprice.memeunity.com"),
-        ])
-        .then(
-          axios.spread((obj1, obj2) =>
-            resolve([obj1.data.data.data as RawNFT[], obj2.data as DankPrice])
-          )
-        )
-        .catch(reject)
-    );
+        .all([axios.get('https://api.mucitadel.io/v1/nft/listnfts'), axios.get('https://dankprice.memeunity.com')])
+        .then(axios.spread((obj1, obj2) => resolve([obj1.data.data.data as RawNFT[], obj2.data as DankPrice])))
+        .catch(reject),
+    )
 
-  const [data, rates] = await getAll();
+  const [data, rates] = await getAll()
 
   async function processNFTs(rawNFTs: RawNFT[]): Promise<NFT[]> {
     return rawNFTs.map(function (NFT: RawNFT): NFT {
@@ -93,25 +83,22 @@ export default async function getCardsFromAPI() {
         sold,
         updated_at,
         txhash,
-      } = NFT;
-      const premergePrices = price.split(",");
-      const premergeSymbols = symbol.split(",");
+      } = NFT
+      const premergePrices = price.split(',')
+      const premergeSymbols = symbol.split(',')
 
-      const mergedPrices = isNullish(price)
-        ? null
-        : mergePrices(premergePrices, premergeSymbols);
+      const mergedPrices = isNullish(price) ? null : mergePrices(premergePrices, premergeSymbols)
 
-      const blockExplorerBaseUrl = baseUrlFromBlockchain(blockchain);
+      const blockExplorerBaseUrl = baseUrlFromBlockchain(blockchain)
 
-      const shortOwner = shortenAddress(owneraddress);
+      const shortOwner = shortenAddress(owneraddress)
 
       if (mergedPrices?.DANK) {
-        const usdPrice =
-          Number(rates.dank_price_usd) * Number(mergedPrices.DANK);
-        mergedPrices.USD = forceMaxTwoDecimals(usdPrice);
+        const usdPrice = Number(rates.dank_price_usd) * Number(mergedPrices.DANK)
+        mergedPrices.USD = forceMaxTwoDecimals(usdPrice)
       } else if (mergedPrices?.ETH) {
-        const usdPrice = Number(rates.eth_price) * Number(mergedPrices.ETH);
-        mergedPrices.USD = forceMaxTwoDecimals(usdPrice);
+        const usdPrice = Number(rates.eth_price) * Number(mergedPrices.ETH)
+        mergedPrices.USD = forceMaxTwoDecimals(usdPrice)
       }
       return {
         name,
@@ -119,29 +106,28 @@ export default async function getCardsFromAPI() {
         id,
         ipfsurl,
         tokenid,
-        listedUntil: "1985-03-31T00:00:00",
+        listedUntil: '1985-03-31T00:00:00',
         mintDate: mintdate,
         mints: {
           forSale: Number(forsale),
           sold: Number(sold),
           totalMints: Number(amount),
-          notForSale:
-            (Number(amount) || 0) - (Number(sold) || 0) - Number(forsale),
+          notForSale: (Number(amount) || 0) - (Number(sold) || 0) - Number(forsale),
           available: (Number(amount) || 0) - (Number(sold) || 0),
         },
         owner: owneraddress,
         price: mergedPrices,
         tier,
         trending: Number(trending),
-        url: "https://ipfs.io/ipfs/" + ipfsurl,
+        url: 'https://ipfs.io/ipfs/' + ipfsurl,
         shortOwner,
         blockchain,
         contractAddress: contractadd,
         blockExplorerBaseUrl,
-        creator: NFT.creator === "true",
+        creator: NFT.creator === 'true',
         listDate: listdate,
-      };
-    });
+      }
+    })
   }
-  return processNFTs(data);
+  return processNFTs(data)
 }

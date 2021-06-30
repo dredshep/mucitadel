@@ -127,7 +127,7 @@ const BuyModal = ({
                   <p className="text-secondary text-sm mt-2">
                     Mints for Sale:
                     <span className="text-white ml-2">
-                      {nft.mints.sold} out of {nft.mints.totalMints}
+                      {nft.mints.forSale} out of {nft.mints.available}
                     </span>
                   </p>
 

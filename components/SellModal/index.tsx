@@ -18,7 +18,7 @@ import {
   marketcontractAdd,
   marketcontractAddB,
   tokencontractAdd,
-  tokencontractAddB
+  tokencontractAddB,
 } from '../../constant/blockchain'
 import Modal from '../UI/Modal'
 
@@ -62,14 +62,13 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
         const accounts = await window.ethereum.request({
           method: 'eth_requestAccounts',
         })
-
         /* Fetch Token ID using Token Hash */
         const tokenID = parseInt(await nftcontract.functions.getTokenIdFromHash(nft.ipfsurl))
         console.log('TokenID', tokenID)
         // const tokenID = 3;
         var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
         if (cardOwner.toString() == 'false') {
-          toastify('Token has already been sold, or is already being sold, by the user.')
+          alert('Token has already been sold, or is already being sold, by the user.')
           return false
         }
 
@@ -77,7 +76,6 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
         const approval = await nftcontract.functions.isApprovedForAll(accounts.toString(), MarketPlaceAddress)
         console.log(approval.toString())
         /* 1st Step (Approving Token For Sell) - ProgressBar to be added Below this comment */
-        setActiveStep(0)
 
         if (approval.toString() == 'false') {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
@@ -86,27 +84,26 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
         }
 
         /* Sell Section */
-        if (values.Currencies.length == 1 && values.Currencies[0].Currency == 'DANK') {
+        if (values.currencies.length == 1 && values.currencies[0] == 'DANK') {
           /* Approve Token */
           const approval = await contractToken.functions.allowance(accounts.toString(), MarketPlaceAddress)
           var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
           if (cardOwner.toString() == 'false') {
-            toastify('Token Sold by user or already on sale')
+            alert('Token Sold by user or already on sale')
             return false
           }
 
-          var dbSymbol = String(values.Currencies[0].Currency)
-          // var dbTotal = parseInt(String(values.Currencies[0].Price).toString().concat('000000000000000000'))
+          var dbSymbol = String(values.currencies[0])
+          // var dbTotal = parseInt(String(values.prices[0]).toString().concat('000000000000000000'))
 
           console.log(parseInt(approval))
 
           var fee = parseInt(await contract.functions.makerFee())
           console.log(fee)
-          var feePayment = parseInt(String((values.Currencies[0].Price * fee) / 1000))
+          var feePayment = parseInt(String((values.prices[0] * fee) / 1000))
 
           /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
-          setActiveStep(1)
-          if (parseInt(approval) < parseInt(String(values.Currencies[0].Price * 1e18))) {
+          if (parseInt(approval) < parseInt(String(values.prices[0] * 1e18))) {
             /* If Token is not appoved for selling in contract approval dialog box will appear */
             const tokenApproval = await contractToken.functions.approve(
               MarketPlaceAddress,
@@ -117,38 +114,34 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           }
 
           /* Card Approval Ends */
-          var dbSymbol = String(values.Currencies[0].Currency)
-          var dbTotal = values.Currencies[0].Price as string
+          var dbSymbol = String(values.currencies[0])
+          var dbTotal = values.prices[0] as string
 
           var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
           if (cardOwner.toString() == 'false') {
-            toastify('Token Sold by user or already on sale')
+            alert('Token Sold by user or already on sale')
             return false
           }
-
           /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
-          setActiveStep(2)
           await contract.functions
             .readyToSellToken(
               tokenID,
-              1,
+              values.amount,
               0,
-              values.Currencies[0].Currency.split(' '),
-              parseInt(String(values.Currencies[0].Price).toString().concat('000000000000000000')),
+              values.currencies[0].split(' '),
+              parseInt(String(values.prices[0]).toString().concat('000000000000000000')),
             )
             .then(async function (result) {
               /* Waits for Transaction to complete */
               await provider.waitForTransaction(result.hash, 1)
-
               /* 4th Step (Recording NFT) - ProgressBar to be added Below this comment */
-              setActiveStep(3)
 
               var myHeaders = new Headers()
               myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
               var fd1 = new URLSearchParams()
               fd1.append('id', nft.id)
-              fd1.append('amount', '1') // Default Mint -1
+              fd1.append('amount', values.amount)
               fd1.append('price', String(dbTotal))
               fd1.append('symbol', dbSymbol)
 
@@ -165,7 +158,6 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
                 .then((result) => {
                   /* End Result 100% */
                   /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                  setActiveStep(4)
                   console.log(result)
                 })
                 .catch((error) => {
@@ -175,28 +167,27 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
             .catch((error) => {
               console.log('error', error)
             })
-        } else if (values.Currencies.length == 1 && values.Currencies[0].Currency == 'ETH') {
+        } else if (values.currencies.length == 1 && values.currencies[0] == 'ETH') {
           var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
-          var dbSymbol = String(values.Currencies[0].Currency)
-          var dbTotal = parseInt(String(values.Currencies[0].Price * 1e5))
+          var dbSymbol = String(values.currencies[0])
+          var dbTotal = parseInt(String(values.prices[0] * 1e5))
             .toString()
             .concat('0000000000000')
 
           if (cardOwner.toString() == 'false') {
-            toastify('Token Sold by user or already on sale')
+            alert('Token Sold by user or already on sale')
             return false
           }
 
           var fee = parseInt(await contract.functions.makerFee())
           console.log(fee)
-          var feePayment = parseInt(String((Number(values.Currencies[0].Price) * fee) / 1000))
+          var feePayment = parseInt(String((Number(values.prices[0]) * fee) / 1000))
           /* 2nd Step (Selling NFT) - ProgressBar to be added Below this comment */
-          setActiveStep(1)
           await contract.functions
             .readyToSellToken(
               tokenID,
-              1,
-              parseInt(String(values.Currencies[0].Price).toString().concat('000000000000000000')),
+              values.amount,
+              parseInt(String(values.prices[0]).toString().concat('000000000000000000')),
               [],
               [],
               { value: (feePayment * 1e5).toString().concat('0000000000000') },
@@ -204,15 +195,13 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
             .then(async function (result) {
               /* Waits for Transaction to complete */
               await provider.waitForTransaction(result.hash, 1)
-
               /* 3rd Step (Recording NFT) - ProgressBar to be added Below this comment */
-              setActiveStep(2)
               var myHeaders = new Headers()
               myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
               var fd1 = new URLSearchParams()
               fd1.append('id', nft.id)
-              fd1.append('amount', '1') // Default Mint -1
+              fd1.append('amount', values.amount) // Default Mint -1
               fd1.append('price', String(dbTotal))
               fd1.append('symbol', dbSymbol)
 
@@ -229,7 +218,6 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
                 .then((result) => {
                   /* End Result 100% */
                   /* 4th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                  setActiveStep(3)
                   console.log(result)
                 })
                 .catch((error) => {
@@ -244,12 +232,12 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           let currencyPrice = '' as unknown as string | string[]
           var ethPrice = ''
 
-          var dbSymbol = String(values.Currencies[0].Currency).concat(',').concat(values.Currencies[1].Currency)
-          var dbTotal = parseInt(String(values.Currencies[0].Price * 1e5))
+          var dbSymbol = String(values.currencies[0]).concat(',').concat(values.currencies[1])
+          var dbTotal = parseInt(String(values.prices[0] * 1e5))
             .toString()
             .concat('0000000000000')
             .concat(',')
-            .concat(String(parseInt(String(values.Currencies[1].Price * 1e5))))
+            .concat(String(parseInt(String(values.prices[1] * 1e5))))
             .concat('0000000000000')
 
           console.log('Symbols: ', dbSymbol)
@@ -257,37 +245,36 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
 
           var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
           if (cardOwner.toString() == 'false') {
-            toastify('Token Sold by user or already on sale')
+            alert('Token Sold by user or already on sale')
             return false
           }
 
-          for (var i = 0; i < values.Currencies.length; i++) {
-            if (values.Currencies[i].Currency == 'DANK') {
-              currencyPrice = parseInt(String(values.Currencies[i].Price * 1e5))
+          for (var i = 0; i < values.currencies.length; i++) {
+            if (values.currencies[i] == 'DANK') {
+              currencyPrice = parseInt(String(values.prices[i] * 1e5))
                 .toString()
                 .concat('0000000000000')
                 .split(' ')
-              currencySymbol = values.Currencies[i].Currency.split(' ')
+              currencySymbol = values.currencies[i].split(' ')
               console.log(currencyPrice)
               console.log(currencySymbol)
             } else {
-              ethPrice = parseInt(String(values.Currencies[i].Price * 1e5))
+              ethPrice = parseInt(String(values.prices[i] * 1e5))
                 .toString()
                 .concat('0000000000000')
             }
           }
 
-          for (var j = 0; j < values.Currencies.length; j++) {
-            if (values.Currencies[j].Currency == 'DANK') {
+          for (var j = 0; j < values.currencies.length; j++) {
+            if (values.currencies[j] == 'DANK') {
               /* Approve Token */
               const approval = await contractToken.functions.allowance(accounts.toString(), MarketPlaceAddress)
               console.log('Approved Amount', parseInt(approval))
 
               var fee = parseInt(await contract.functions.makerFee())
               console.log(fee)
-              var feePayment = parseInt(String((values.Currencies[j].Price * fee) / 1000))
+              var feePayment = parseInt(String((values.prices[j] * fee) / 1000))
               /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
-              setActiveStep(1)
               if (parseInt(approval) < parseInt(String(feePayment)) * 1e18) {
                 /* If Token is not appoved for selling in contract approval dialog box will appear */
                 const tokenApproval = await contractToken.functions.approve(
@@ -305,20 +292,18 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           console.log(ethPrice.toString() + ',' + currencyPrice.toString() + '')
           console.log('ETH'.toString() + ',' + currencySymbol.toString() + '')
           /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
-          setActiveStep(2)
           await contract.functions
-            .readyToSellToken(tokenID, 1, ethPrice, currencySymbol, currencyPrice)
+            .readyToSellToken(tokenID, values.amount, ethPrice, currencySymbol, currencyPrice)
             .then(async function (result) {
               /* Waits for Transaction to complete */
               await provider.waitForTransaction(result.hash, 1)
               /* 4th Step (Recording NFT) - ProgressBar to be added Below this comment */
-              setActiveStep(3)
               var myHeaders = new Headers()
               myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
               var fd1 = new URLSearchParams()
               fd1.append('id', nft.id)
-              fd1.append('amount', '1') // Default Mint -1
+              fd1.append('amount', values.amount) // Default Mint -1
               fd1.append('price', String(dbTotal))
               fd1.append('symbol', dbSymbol)
 
@@ -335,7 +320,6 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
                 .then((result) => {
                   /* End Result 100% */
                   /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                  setActiveStep(4)
                   console.log(result)
                 })
                 .catch((error) => {
@@ -417,7 +401,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
                   <p className="text-secondary text-sm mt-2">
                     Mints for Sale:
                     <span className="text-white ml-2">
-                      {nft.mints.sold} out of {nft.mints.totalMints}
+                      {nft.mints.forSale} out of {nft.mints.available}
                     </span>
                   </p>
 

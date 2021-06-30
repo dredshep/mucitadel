@@ -9,13 +9,13 @@ import {
   marketcontractAdd,
   marketcontractAddB,
   tokencontractAdd,
-  tokencontractAddB
+  tokencontractAddB,
 } from '../../constant/blockchain'
 
 var window = require('global/window')
 
 export default async function smartContractBuy(values: {
-  formData: { price: {value: number; currency: string; label: string}; currency: string; amount: number }
+  formData: { price: { value: number; currency: string; label: string }; currency: string; amount: number }
   nft: NFT
 }) {
   const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -36,14 +36,14 @@ export default async function smartContractBuy(values: {
   }
 
   /* Taking Mannual Approach for Test */
-  const priceSlab = values.formData.price.label;
-  console.log(values.formData.price.value);
-  const currencyAmount = (values.formData.price.value * 1e5)
+  const priceSlab = values.formData.price.label
+  console.log(values.formData.price.value)
+  const currencyAmount = values.formData.price.value * 1e5
 
-  const currencySymbol = (values.formData.price.currency)
+  const currencySymbol = values.formData.price.currency
   // const currencyAmount = 1;
   // const currencySymbol = "ETH";
-  console.log(String(currencyAmount).concat('0000000000000'), currencySymbol)
+  console.log(String(currencyAmount).concat('0000000000000'), currencySymbol, values.formData.amount)
 
   let contract = new ethers.Contract(MarketPlaceAddress, marketcontractAbi, provider.getSigner())
 
@@ -84,12 +84,10 @@ export default async function smartContractBuy(values: {
         console.log(OrderID)
         console.log(String(parseInt(userAsk[0][i][5][0][1]) / 1e18).concat('000000000000000000'))
 
-        const balanceOf = parseInt(await contractToken.functions.balanceOf(
-          accounts.toString()
-        ));
-        if(balanceOf < (parseInt(userAsk[0][i][5][0][1]))){
-          toastify("You Dont have enough DANK to make a Purchase")
-          return false;
+        const balanceOf = parseInt(await contractToken.functions.balanceOf(accounts.toString()))
+        if (balanceOf < parseInt(userAsk[0][i][5][0][1])) {
+          alert('You Dont have enough DANK to make a Purchase')
+          return false
         }
 
         if (parseInt(approval) < parseInt(userAsk[0][i][5][0][1])) {
@@ -102,11 +100,15 @@ export default async function smartContractBuy(values: {
           await provider.waitForTransaction(tokenApproval.hash, 1)
         }
         /* 2nd Step (Buying NFT) - ProgressBar to be added Below this comment */
+        if (Number(values.formData.amount) > parseInt(userAsk[0][i][2])) {
+          alert('Invalid Buy Amount for the Order')
+          return false
+        }
 
         /* This Will Buy The Token */
         console.log(parseInt(userAsk[0][i][2]))
         await contract.functions
-          .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
+          .buyToken(OrderID, currencySymbol, Number(values.formData.amount))
           .then(async function (result) {
             console.log(result)
             await provider.waitForTransaction(result.hash, 1)
@@ -117,8 +119,8 @@ export default async function smartContractBuy(values: {
 
             var fd1 = new URLSearchParams()
             fd1.append('id', values.nft.id)
-            fd1.append('owneraddress', accounts.toString()) // Default Mint -1
-            fd1.append('amount', String(parseInt(userAsk[0][i][2])))
+            fd1.append('owneraddress', accounts.toString())
+            fd1.append('amount', String(Number(values.formData.amount)))
             fd1.append('txhash', result.hash)
 
             console.log('form values & file => ', fd1)
@@ -143,7 +145,7 @@ export default async function smartContractBuy(values: {
             console.log('error', error)
           })
       } else {
-        // toastify("No Sell Order for the NFT Found");
+        // alert("No Sell Order for the NFT Found");
         // return false;
       }
     }
@@ -157,17 +159,22 @@ export default async function smartContractBuy(values: {
         var OrderID = parseInt(userAskOrder[0][i])
         console.log(OrderID)
 
-        const balanceOf = (await provider.getBalance(accounts.toString()));
-        
-        if(Number(balanceOf) < parseInt(userAsk[0][i][4])){
-          toastify("You Dont have enough Funds to make a Purchase")
-          return false;
+        const balanceOf = await provider.getBalance(accounts.toString())
+
+        if (Number(balanceOf) < parseInt(userAsk[0][i][4]) * Number(values.formData.amount)) {
+          alert('You Dont have enough Funds to make a Purchase')
+          return false
+        }
+
+        if (Number(values.formData.amount) > parseInt(userAsk[0][i][2])) {
+          alert('Invalid Buy Amount for the Order')
+          return false
         }
 
         /* This Will Buy The Token */
         await contract.functions
-          .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
-            value: parseInt(userAsk[0][i][4]).toString(),
+          .buyToken(OrderID, currencySymbol, Number(values.formData.amount), {
+            value: Number(userAsk[0][i][4] * Number(values.formData.amount)).toString(),
           })
           .then(async function (result) {
             console.log(result)
@@ -179,7 +186,7 @@ export default async function smartContractBuy(values: {
             var fd1 = new URLSearchParams()
             fd1.append('id', values.nft.id)
             fd1.append('owneraddress', accounts.toString()) // Default Mint -1
-            fd1.append('amount', String(parseInt(userAsk[0][i][2])))
+            fd1.append('amount', String(Number(values.formData.amount)))
             fd1.append('txhash', result.hash)
 
             console.log('form values & file => ', fd1)
