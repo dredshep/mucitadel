@@ -15,6 +15,7 @@ import Link from '../../components/styled/Link'
 import WhiteButton from '../../components/styled/WhiteButton'
 import Tabs from '../../components/Tabs'
 import capitalizeFirstLetter from '../../functions/capitalizeFirstLetter'
+import getCardsFromAPI from "../../functions/getCardsFromAPI"
 import { NFT } from '../../types/nft'
 
 type NoLinkPair = {
@@ -583,20 +584,10 @@ function MiniExplorer(props) {
 export default function Home(props) {
   useEffect(() => console.log(JSON.stringify({ milliseconds: props.milliseconds, id: props.id }, null, 2)))
 
-  let nftList = []
-  if(typeof window !== 'undefined'){
-    nftList = JSON.parse(localStorage.getItem('nftlist'))
-  }
-
-  // const [nftList, setNftList] = useState([])
-  // useEffect(() => {
-  //   setNftList(nftList)
-  // }, [])
-
-  if (!nftList.length) return <div>Loading...</div>
+  if (!props.nftList.length) return <div>Loading...</div>
 
   const router = useRouter()
-  const currentNFT = nftList.find((card) => card.id === router.query.id)
+  const currentNFT = props.nftList.find((card) => card.id === router.query.id)
 
   const mainProps: (LinkPair | NoLinkPair)[] = [
     {
@@ -656,7 +647,7 @@ export default function Home(props) {
           <div className="w-full text-center">
             <RelatedSection
               currentNFT={currentNFT}
-              cards={nftList.filter((x: NFT) => x.tier === (currentNFT as NFT).tier)}
+              cards={props.nftList.filter((x: NFT) => x.tier === (currentNFT as NFT).tier)}
             />
           </div>
         </div>
@@ -683,7 +674,7 @@ export default function Home(props) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = context.query.id
   const before = new Date().getTime()
-  const nftList: NFT[] = [] //await getCardsFromAPI()
+  const nftList: NFT[] = await getCardsFromAPI()
   const after = new Date().getTime()
   var milliseconds = Math.abs(before - after)
   return { props: { nftList, milliseconds, id } }

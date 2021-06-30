@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import NFTList from "../components/NFTList";
@@ -85,10 +85,6 @@ export default function Home(props: {
   nftList: NFT[]
 }) {
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    localStorage.setItem("nftlist", JSON.stringify(props.nftList));
-  }, [props.nftList]);
 
   return (
     <div className="App text-white bg-mainbg min-h-screen overflow-y-hidden font-body">
