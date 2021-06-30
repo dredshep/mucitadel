@@ -97,9 +97,7 @@ export function NFTCard(props: NFT & { href: string; currency: string }) {
               </div>
               <div className="flex flex-row justify-between items-center">
                 <div className="font-title text-secondary text-xs md:text-sm font-semibold">Mints for sale</div>
-                <div className="font-base font-body">{`${props.mints.totalMints - props.mints.sold} of ${
-                  props.mints.available
-                }`}</div>
+                <div className="font-base font-body">{`${props.mints.forSale} of ${props.mints.available}`}</div>
               </div>
               <div className="flex flex-row justify-between items-center">
                 <div className="font-title text-secondary text-xs md:text-sm font-semibold">Price</div>

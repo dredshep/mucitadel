@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 import { Formik } from 'formik'
 import html2canvas from 'html2canvas'
 import React, { useMemo, useRef, useState } from 'react'
+import { MintFormValues } from 'types/formValues'
 import * as Yup from 'yup'
 import { RequiredStringSchema } from 'yup/lib/string'
 import contractAbi from '../../config/abi/meme.json'
@@ -144,7 +145,7 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
   // };
   // chainChange();
 
-  const handleMintToken = async (values, ref, setSubmitting) => {
+  const handleMintToken = async (values: MintFormValues, ref, setSubmitting) => {
     let chainID
     if (fileBuffer) {
       setSubmitting(true)
@@ -187,7 +188,7 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
         }
 
         setIsSaving(true)
-        /* Step 1 - Create a image Blob File 0% */
+        /* Step 1 - Create an image Blob File 0% */
         const blob = await fetch(croppedImageUrl).then((res) => res.blob())
         const fd = new FormData()
         const file = new File([blob], values.Name + '.jpeg')
@@ -239,9 +240,11 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
                   nextTokenID = parseInt(result[0]._hex, 16)
                 })
 
+                console.log('TRYING TO MINT ' + values.Amount + ' NFT')
+
                 /* Mint Token - 1/1 NFT  */
                 await contract.functions
-                  .mint(account, 1, hash, [])
+                  .mint(account, values.Amount, hash, [])
                   .then(async function (result) {
                     console.log(result)
                     /* Waits for Transaction to complete */
@@ -331,7 +334,7 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
     }
   }
 
-  const handleSave = async (values, setSubmitting) => {
+  const handleSave = async (values: MintFormValues, setSubmitting) => {
     if (!fileBuffer) {
       setShowEmptyFileError(true)
     } else {

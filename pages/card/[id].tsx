@@ -256,17 +256,14 @@ function BuySell(props: {
   const wHalf = amountOfButtons.length === 2
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 mr-5">
       {showBuy && (
-        <WhiteButton className={(wFull ? 'w-full' : '') + (wHalf ? 'w-1/2' : '') + ' text-lg mr-3'} onClick={handleBuy}>
+        <WhiteButton className={(wFull ? 'w-full' : '') + (wHalf ? 'w-1/2' : '') + ' text-lg'} onClick={handleBuy}>
           Buy
         </WhiteButton>
       )}
       {showSell && (
-        <Button
-          className={(wFull ? 'w-full' : '') + (wHalf ? 'w-1/2' : '') + ' w-1/2 text-lg mr-6'}
-          onClick={handleSell}
-        >
+        <Button className={(wFull ? 'w-full' : '') + (wHalf ? 'w-1/2' : '') + ' w-1/2 text-lg'} onClick={handleSell}>
           Sell
         </Button>
       )}
@@ -552,9 +549,7 @@ function CardNotFound() {
 //   )
 // }
 
-export default function Home(
-  props: AuthProps & { nftList: NFT[]; userAddress: string; milliseconds: number; id: string },
-) {
+export default function Home(props: AuthProps & { nftList: NFT[]; milliseconds: number; id: string }) {
   const [showBuyModal, setShowBuyModal] = useState(false)
   const [showSellModal, setShowSellModal] = useState(false)
   useEffect(() => console.log(JSON.stringify({ milliseconds: props.milliseconds, id: props.id }, null, 2)))
@@ -588,12 +583,16 @@ export default function Home(
     mainProps.push(makeProp('Description', currentNFT.description))
   }
 
-  const { userAddress } = props
-  const isOwner = cards.isOwner(currentNFT, userAddress)
+  const userAddress = props.authData.address
+  // const { userAddress } = props
+
+  // console.log({ userAddress })
+  const isOwner = userAddress && cards.isOwner(currentNFT, userAddress)
   const isForSale = cards.isForSale(currentNFT)
-  const someNotForSale = currentNFT.mints.notForSale > 0
+  // const someNotForSale = currentNFT.mints.notForSale > 0
+  const canBeSold = cards.canBeSold(currentNFT)
   const showBuy = !isOwner && isForSale
-  const showSell = isOwner && someNotForSale
+  const showSell = isOwner && canBeSold
 
   return (
     <>
