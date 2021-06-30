@@ -21,8 +21,12 @@ const BuyModal = ({
   nft: NFT
   onCloseModal: () => void
 }) => {
-  const steps = []
-  const [activeStep, setActiveStep] = useState(3)
+  const steps = {
+    DANK: [{label: 'Ready'}, {label: 'Approving'}, {label: 'Buying NFT'}, {label: 'Recording'}, {label: 'Completed'}],
+    ETH: [{label: 'Ready'}, {label: 'Buying NFT'}, {label: 'Recording'}, {label: 'Completed'}],
+    BNB: [{label: 'Ready'}, {label: 'Buying NFT'}, {label: 'Recording'}, {label: 'Completed'}]
+  }
+  const [activeStep, setActiveStep] = useState(0)
 
   const handleBuy = async (values: {
     formData: { price: { value: number; currency: string; label: string }; currency: string; amount: number }
@@ -35,14 +39,14 @@ const BuyModal = ({
 
       if (values.nft.blockchain == 'ethereum') {
         if (chainID == 1 || chainID == 4) {
-          smartContractBuy(values)
+          smartContractBuy(values, setActiveStep)
         } else {
           toastify('Wrong Blockchain Connected switch to Ethereum Blockchain')
           return false
         }
       } else if (values.nft.blockchain == 'binance') {
         if (chainID == 56 || chainID == 97) {
-          smartContractBuy(values)
+          smartContractBuy(values, setActiveStep)
         } else {
           toastify('Wrong Blockchain Connected switch to Binance Blockchain')
           return false
@@ -106,10 +110,10 @@ const BuyModal = ({
       >
         {(props) => {
           const { handleSubmit, values, errors, touched, handleChange, handleBlur, setFieldValue, isSubmitting } = props
-
+          console.log('werwerwer', selectedPrice)
           return (
             <form onSubmit={handleSubmit}>
-              {<FormStepper activeStep={activeStep} />}
+              {<FormStepper steps={steps[selectedPrice?.value]} activeStep={activeStep} />}
               <div className="w-full max-w-2xl sm:grid sm:grid-cols-5 sm:gap-4">
                 <div className="w-full sm:col-span-2">
                   <img src={nft.url} alt="meme" className="object-contain w-full h-full" />
@@ -134,7 +138,7 @@ const BuyModal = ({
                   <div className="mt-4">
                     <p className="text-secondary text-sm my-1">Price</p>
                     <Selector
-                      options={priceOptions}
+                      options={priceOptions??[]}
                       value={selectedPrice}
                       onChange={(selectedPrice) => {
                         setSelectedPrice(selectedPrice)
