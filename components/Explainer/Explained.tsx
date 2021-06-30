@@ -4,7 +4,7 @@ import Explainer from '.'
 export default function Explained(props: {
   children: any
   explanation: string
-  onClick: () => void
+  onClick?: () => void
   className?: string
 }) {
   const [hidden, setHidden] = useState(true)

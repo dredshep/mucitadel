@@ -1,59 +1,60 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
+import { toastify } from 'utils/toastify'
 
 interface Window {
-  ethereum: any;
+  ethereum: any
 }
 
 export default function MadChild() {
   // const ethereum = ((window as unknown) as Window).ethereum;
-  const [string, setString] = useState("nothingyet");
+  const [string, setString] = useState('nothingyet')
   useEffect(() => {
-    const ethereum = ((window as unknown) as Window).ethereum;
+    const ethereum = (window as unknown as Window).ethereum
     try {
       if (ethereum.isMetaMask) {
-        handleEthereum();
+        handleEthereum()
       } else if (ethereum && ethereum.isTrust) {
-        handleMobile();
+        handleMobile()
       } else {
-        window.addEventListener("ethereum#initialized", handleEthereum, {
+        window.addEventListener('ethereum#initialized', handleEthereum, {
           once: true,
-        });
+        })
 
         // If the event is not dispatched by the end of the timeout,
         // the user probably doesn't have MetaMask installed.
-        setTimeout(handleEthereum, 3000); // 3 seconds
+        setTimeout(handleEthereum, 3000) // 3 seconds
       }
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
 
     async function handleEthereum() {
       if (ethereum && ethereum.isMetaMask) {
-        console.log("Ethereum successfully detected!");
+        console.log('Ethereum successfully detected!')
         var addresses = await ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        setString(JSON.stringify(addresses));
+          method: 'eth_requestAccounts',
+        })
+        setString(JSON.stringify(addresses))
       } else {
-        toastify("Please install MetaMask!");
+        toastify('Please install MetaMask!')
       }
     }
 
     async function handleMobile() {
       if (ethereum && ethereum.isTrust) {
-        console.log("TrustWallet successfully detected!");
+        console.log('TrustWallet successfully detected!')
         var addresses = await ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        setString(JSON.stringify(addresses));
+          method: 'eth_requestAccounts',
+        })
+        setString(JSON.stringify(addresses))
       } else {
-        console.log("Please install MetaMask!");
+        console.log('Please install MetaMask!')
       }
     }
-  });
+  })
   // getAddy();
 
-  return <>{string}</>;
+  return <>{string}</>
 
   // (async () => {
   //   try {
