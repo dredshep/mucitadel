@@ -380,6 +380,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           setSubmitting(true)
           handleSell(values)
           setSubmitting(false)
+          console.log(' VALUES VALUES VALUES VALUES VALUES VALUES ', values)
         }}
       >
         {(props) => {
