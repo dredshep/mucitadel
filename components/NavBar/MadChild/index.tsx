@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { toastify } from 'utils/toastify';
 interface Window {
   ethereum: any;
 }
