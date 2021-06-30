@@ -22,7 +22,7 @@ const BuyModal = ({
   onCloseModal: () => void
 }) => {
   const steps = []
-  const [activeStep, setActiveStep] = useState(3)
+  const [activeStep, setActiveStep] = useState(0)
 
   const handleBuy = async (values: {
     formData: { price: { value: number; currency: string; label: string }; currency: string; amount: number }

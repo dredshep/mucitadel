@@ -181,7 +181,9 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
 
           var fee = parseInt(await contract.functions.makerFee())
           console.log(fee)
+          console.log(values)
           var feePayment = parseInt(String((Number(values.prices[0]) * fee) / 1000))
+          console.log(feePayment)
           /* 2nd Step (Selling NFT) - ProgressBar to be added Below this comment */
           await contract.functions
             .readyToSellToken(
