@@ -167,7 +167,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
             .catch((error) => {
               console.log('error', error)
             })
-        } else if (values.currencies.length == 1 && values.currencies[0] == 'ETH') {
+        } else if (values.currencies.length == 1 && values.currencies[0] == 'ETH' || values.currencies[0] == 'BNB') {
           var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
           var dbSymbol = String(values.currencies[0])
           var dbTotal = parseInt(String(values.prices[0] * 1e5))
