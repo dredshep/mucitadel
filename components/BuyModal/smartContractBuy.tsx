@@ -9,15 +9,18 @@ import {
   marketcontractAdd,
   marketcontractAddB,
   tokencontractAdd,
-  tokencontractAddB,
+  tokencontractAddB
 } from '../../constant/blockchain'
 
 var window = require('global/window')
 
-export default async function smartContractBuy(values: {
-  formData: { price: { value: number; currency: string; label: string }; currency: string; amount: number }
-  nft: NFT
-}) {
+export default async function smartContractBuy(
+  values: {
+    formData: { price: { value: number; currency: string; label: string }; currency: string; amount: number }
+    nft: NFT
+  },
+  setActiveStep,
+) {
   const provider = new ethers.providers.Web3Provider(window.ethereum)
 
   /* Selecting the right Blockchain */
@@ -68,6 +71,7 @@ export default async function smartContractBuy(values: {
   if (currencySymbol == 'DANK') {
     /* Check if Contract is Approved */
     /* 1st Step (Approving Dank)- ProgressBar to be added Below this comment */
+    setActiveStep(1)
 
     const approval = await contractToken.functions.allowance(accounts.toString(), MarketPlaceAddress)
     console.log(parseInt(approval))
@@ -100,6 +104,7 @@ export default async function smartContractBuy(values: {
           await provider.waitForTransaction(tokenApproval.hash, 1)
         }
         /* 2nd Step (Buying NFT) - ProgressBar to be added Below this comment */
+        setActiveStep(2)
         if (Number(values.formData.amount) > parseInt(userAsk[0][i][2])) {
           alert('Invalid Buy Amount for the Order')
           return false
@@ -114,6 +119,7 @@ export default async function smartContractBuy(values: {
             await provider.waitForTransaction(result.hash, 1)
 
             /* 3rd Step (Recording Database) - ProgressBar to be added Below this comment */
+            setActiveStep(3)
             var myHeaders = new Headers()
             myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
@@ -135,6 +141,7 @@ export default async function smartContractBuy(values: {
               .then((result) => {
                 /* End Result 100% */
                 /* 4th Step (Completing Purchase) - ProgressBar to be added Below this comment */
+                setActiveStep(4)
                 console.log(result)
               })
               .catch((error) => {
@@ -151,6 +158,7 @@ export default async function smartContractBuy(values: {
     }
   } else if (currencySymbol == 'ETH' || currencySymbol == 'BNB') {
     /* 1st Step (Buying NFT) - ProgressBar to be added Below this comment */
+    setActiveStep(1)
     for (var i = 0; i < userAsk[0].length; i++) {
       if (
         parseInt(userAsk[0][i][3]) == tokenID &&
@@ -180,6 +188,7 @@ export default async function smartContractBuy(values: {
             console.log(result)
             await provider.waitForTransaction(result.hash, 1)
             /* 2nd Step (Recording NFT) - ProgressBar to be added Below this comment */
+            setActiveStep(2)
             var myHeaders = new Headers()
             myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
@@ -201,6 +210,7 @@ export default async function smartContractBuy(values: {
               .then((result) => {
                 /* End Result 100% */
                 /* 3rd Step (Completing Purchase) - ProgressBar to be added Below this comment */
+                setActiveStep(3)
                 console.log(result)
               })
               .catch((error) => {

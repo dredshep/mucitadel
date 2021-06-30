@@ -1,25 +1,7 @@
 import { Step, Stepper } from 'react-form-stepper'
 
 const FormStepper = (props) => {
-  // const {steps, activeStep} = props
-  const { activeStep, className } = props
-  const steps = [
-    {
-      label: 'first',
-    },
-    {
-      label: 'second',
-    },
-    {
-      label: 'third',
-    },
-    {
-      label: 'forth',
-    },
-    {
-      label: 'fifth',
-    },
-  ]
+  const { steps, activeStep, className } = props
 
   return (
     <Stepper
@@ -47,7 +29,7 @@ const FormStepper = (props) => {
         style: 'solid',
       }}
     >
-      {steps.map((step, index) => (
+      {steps?.map((step, index) => (
         <Step key={index} label={step.label} className="p-0"/>
       ))}
     </Stepper>
