@@ -21,6 +21,7 @@ const BuyModal = ({
   nft: NFT
   onCloseModal: () => void
 }) => {
+  //prettier-ignore
   const steps = {
     DANK: [{label: 'Ready'}, {label: 'Approving'}, {label: 'Buying NFT'}, {label: 'Recording'}, {label: 'Completed'}],
     ETH: [{label: 'Ready'}, {label: 'Buying NFT'}, {label: 'Recording'}, {label: 'Completed'}],
@@ -138,7 +139,7 @@ const BuyModal = ({
                   <div className="mt-4">
                     <p className="text-secondary text-sm my-1">Price</p>
                     <Selector
-                      options={priceOptions??[]}
+                      options={priceOptions ?? []}
                       value={selectedPrice}
                       onChange={(selectedPrice) => {
                         setSelectedPrice(selectedPrice)
