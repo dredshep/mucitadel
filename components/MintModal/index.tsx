@@ -43,7 +43,6 @@ export default function MintModal(props: {
                 <FontAwesomeIcon icon={faTimes} />
               </div>
             </div>
-            {/* <div className="max-w-max pb-3">Choose your login method:</div> */}
             <div className={clsx('space-x-5 py-10 bg-asidebg max-w-7xl p-8 overflow-auto', classes.form)}>
               <MemeCreationForm role={props.role} closeModal={props.closeMintModal} />
             </div>

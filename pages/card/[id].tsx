@@ -1,3 +1,4 @@
+import Selector from 'components/UI/Selector'
 import moment from 'moment'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
@@ -210,8 +211,8 @@ function RelatedSection(props: { cards: NFT[]; currentNFT: NFT }) {
   const cards = (
     <div className="flex flex-col md:flex-row mx-auto justify-center w-max md:w-full box-border">
       {(() => {
-        return toDisplay.map((card) => (
-          <div key={card.name}>
+        return toDisplay.map((card, index) => (
+          <div key={index}>
             <NFTCard
               {...card}
               href={`/card/${card.id}`}
@@ -335,27 +336,21 @@ function Product2(props: {
           <div className="flex flex-col w-7/12 xs:w-2/3 md:w-44">
             <div className={keyTextClass + ' mb-2'}>Price</div>
             <div className={valueTextClass + ' font-semibold text-lg'}>
-              {/* {nft.soul} */}
-              {/* {currencyButton} */}
-              {nft.mints.forSale > 0 ? (
-                // <Select
-                //   placeholder="Select Price"
-                //   value={currency}
-                //   options={(nft.price
-                //     ? getPriceListFromPriceObj(nft.price)
-                //     : []
-                //   )
-                //     .filter((price) => !price.endsWith("USD"))
-                //     .map((price) => ({
-                //       label: price,
-                //       value: price,
-                //     }))}
-                //     onChange={currency}
-                // />
-                'price is bugged'
-              ) : (
-                <p>Not for sale </p>
-              )}
+              {/* {nft.soul}
+              {currencyButton} */}
+              <Selector
+                placeholder="Select Price"
+                options={
+                  !nft.price
+                    ? []
+                    : getPriceListFromPriceObj(nft.price).map((price) => ({
+                        label: price,
+                        value: price,
+                      }))
+                }
+                value={currency}
+                onChange={(currency) => setCurrency(currency)}
+              />
             </div>
           </div>
           <div className="flex flex-col w-5/12 xs:w-1/3 md:w-44 ">

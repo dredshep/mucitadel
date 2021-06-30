@@ -18,7 +18,7 @@ import {
   marketcontractAdd,
   marketcontractAddB,
   tokencontractAdd,
-  tokencontractAddB,
+  tokencontractAddB
 } from '../../constant/blockchain'
 import Modal from '../UI/Modal'
 
@@ -360,11 +360,11 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
   }
 
   const validationSchema = Yup.object().shape({
-    prices: Yup.array().of(
-      Yup.object({
-        price: Yup.number().nullable().min(0, 'Amount should not be negative').required('Price is required'),
-      }),
-    ),
+    // prices: Yup.array().of(
+    //   Yup.object({
+    //     price: Yup.number().nullable().min(0, 'Amount should not be negative').required('Price is required'),
+    //   }),
+    // ),
     // currency: Yup.string().required('Currency is required'),
     amount: Yup.number()
       .min(1, 'Amount should be greater than 0')
@@ -382,6 +382,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           setSubmitting(true)
           handleSell(values)
           setSubmitting(false)
+          console.log(' VALUES VALUES VALUES VALUES VALUES VALUES ', values)
         }}
       >
         {(props) => {
@@ -426,6 +427,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
                                   newPrices[index] = e.target.value
                                   setPrices(newPrices)
                                   // setFieldValue(`prices[${index}].price`, e.target.value)
+                                  setFieldValue('prices', newPrices)
                                 }}
                               />
                               <ErrorMessage name={`prices[${index}].price`}>

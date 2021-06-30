@@ -60,11 +60,10 @@ export default function LoginModal(props: {
                 <FontAwesomeIcon icon={faTimes} />
               </div>
             </div>
-            {/* <div className="max-w-max pb-3">Choose your login method:</div> */}
             <div className="flex justify-center space-x-5 py-10 bg-asidebg">
               <MetamaskButton />
               <div className="px-4 py-2 font-semibold bg-phantasmablue border-white border-opacity-50 hover:border-opacity-100 border-solid border-2 text-white rounded-full cursor-pointer">
-                Poltergeist
+                BSC
               </div>
             </div>
           </div>

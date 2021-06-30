@@ -100,6 +100,20 @@ export default async function getCardsFromAPI() {
         const usdPrice = Number(rates.eth_price) * Number(mergedPrices.ETH)
         mergedPrices.USD = forceMaxTwoDecimals(usdPrice)
       }
+
+      const n = {
+        amount: Number(amount),
+        sold: Number(sold),
+        forsale: Number(forsale),
+        bought: Number(bought),
+      }
+
+      const isCreator = NFT.creator === 'true'
+
+      const originalAmount = isCreator ? n.amount : 0
+      const available = originalAmount + n.bought + n.forsale - n.sold
+      const notForSale = originalAmount + n.bought - n.sold
+
       return {
         name,
         description,
@@ -109,11 +123,11 @@ export default async function getCardsFromAPI() {
         listedUntil: '1985-03-31T00:00:00',
         mintDate: mintdate,
         mints: {
-          forSale: Number(forsale),
-          sold: Number(sold),
-          totalMints: Number(amount),
-          notForSale: (Number(amount) || 0) - (Number(sold) || 0) - Number(forsale),
-          available: (Number(amount) || 0) - (Number(sold) || 0),
+          forSale: n.forsale,
+          sold: n.sold,
+          totalMints: n.amount,
+          notForSale,
+          available,
         },
         owner: owneraddress,
         price: mergedPrices,
@@ -124,7 +138,7 @@ export default async function getCardsFromAPI() {
         blockchain,
         contractAddress: contractadd,
         blockExplorerBaseUrl,
-        creator: NFT.creator === 'true',
+        creator: isCreator,
         listDate: listdate,
       }
     })
