@@ -38,7 +38,7 @@ const profileTabs: ProfileTab[] = [
 function UserTab(props: { tab: ProfileTab; handleTabChange: () => void; active: boolean }) {
   const onClick = () => props.handleTabChange()
   return (
-    <>
+    <div key={props.tab.label}>
       {props.active ? (
         <div
           className="border-b-2 text-white border-white h-8 select-none"
@@ -52,7 +52,7 @@ function UserTab(props: { tab: ProfileTab; handleTabChange: () => void; active: 
           {props.tab.label}
         </div>
       )}
-    </>
+    </div>
   )
 }
 
