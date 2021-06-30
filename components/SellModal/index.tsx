@@ -110,7 +110,8 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
 
           /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
           setActiveStep(1)
-          if (parseInt(approval) < parseInt(String(values.prices[0] * 1e18))) {
+          console.log(feePayment.toString().concat('000000000000000000'))
+          if (parseInt(approval) < Number(feePayment.toString().concat('000000000000000000'))) {
             /* If Token is not appoved for selling in contract approval dialog box will appear */
             const tokenApproval = await contractToken.functions.approve(
               MarketPlaceAddress,
@@ -300,7 +301,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
               var feePayment = parseInt(String((values.prices[j] * fee) / 1000))
               /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
               setActiveStep(1)
-              if (parseInt(approval) < parseInt(String(feePayment)) * 1e18) {
+              if (parseInt(approval) < Number(feePayment.toString().concat('000000000000000000'))) {
                 /* If Token is not appoved for selling in contract approval dialog box will appear */
                 const tokenApproval = await contractToken.functions.approve(
                   MarketPlaceAddress,
@@ -393,7 +394,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
     // ),
     // currency: Yup.string().required('Currency is required'),
     amount: Yup.number()
-      .min(1, 'Amount should be greater than 0')
+      .min(100, 'Amount should be greater than 99')
       .max(nft.mints.totalMints - nft.mints.sold, `Amount should not be over ${nft.mints.totalMints - nft.mints.sold}`)
       .nullable(true)
       .required('Amount is required'),
