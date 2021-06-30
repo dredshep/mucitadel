@@ -1,8 +1,10 @@
+import Selector from 'components/UI/Selector'
 import moment from 'moment'
 import { GetServerSideProps } from 'next'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import ReactPaginate from 'react-paginate'
+import ReactTimeAgo from 'react-time-ago'
 import BuyModal from '../../components/BuyModal'
 import Footer from '../../components/Footer'
 import NavBar from '../../components/NavBar'
@@ -12,15 +14,8 @@ import Button from '../../components/styled/Button'
 import Link from '../../components/styled/Link'
 import WhiteButton from '../../components/styled/WhiteButton'
 import Tabs from '../../components/Tabs'
-import { AuthProps } from '../../components/types/AuthenticationProvider'
 import capitalizeFirstLetter from '../../functions/capitalizeFirstLetter'
-import cards from '../../functions/cards'
-import getCardsFromAPI from '../../functions/getCardsFromAPI'
 import { NFT } from '../../types/nft'
-
-interface Window {
-  ethereum: any
-}
 
 type NoLinkPair = {
   pairKey: string
@@ -36,11 +31,67 @@ type LinkPair = {
   info?: string
 }
 
+// function Link(props: { href: string; text: string }) {
+//   return (
+//     <a className="text-mupurple" href={props.href}>
+//       {props.text}
+//     </a>
+//   );
+// }
+
+// const CurrencySelector = styled(Select)``;
+
 function ExternalMarker(props: { href: string }) {
   return (
     <a href={props.href} className="text-mupurple">
       <i className="fas fa-external-link-alt"></i>
     </a>
+  )
+}
+
+function BuySection() {
+  return (
+    <>
+      {/* CURRENCY SECTION */}
+      <div className="flex flex-row justify-between w-full mb-8">
+        <div className="font-semibold font-title tracking-wide text-secondary">Currency</div>
+        <div className="max-w-sm flex flex-row flex-wrap">
+          {'SOUL DANK ETH USD'.split(' ').map((currency, i) => (
+            <div
+              key={currency}
+              className={
+                'flex flex-col justify-around mb-px rounded-full items-center py-1 px-3 font-bold ' +
+                (i === 0 ? 'bg-mupurple' : 'bg-white text-mupurple') +
+                ' ml-2'
+              }
+            >
+              <div>{currency}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* PRICE SECTION */}
+      <div className="flex flex-row justify-between w-full mb-8">
+        <div className="font-semibold font-title tracking-wide text-secondary">Price</div>
+        <div className="max-w-sm flex flex-col flex-wrap font-bold">
+          <div>
+            120&nbsp;<span className="text-phantasmablue">SOUL</span>
+          </div>
+          <div>
+            100&nbsp;<span className="text-kcalred">kcal</span>
+          </div>
+        </div>
+      </div>
+      {/* BUY BUTTONS SECTION */}
+      <div className="mx-auto flex flex-row justify-around font-semibold text-xl">
+        <div className="py-2 px-4 rounded-full bg-white text-mupurple flex justify-around items-center">
+          <div className="mb-1">Add to cart</div>
+        </div>
+        <div className="py-2 px-4 rounded-full bg-mupurple text-white flex justify-around items-center ml-6">
+          <div className="mb-px">Buy</div>
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -142,10 +193,6 @@ function NFTDetails(props: NFT) {
       pairKey: 'NFT ID',
       value: props.id,
     } as NoLinkPair,
-    {
-      pairKey: 'Minted amount',
-      value: props.mints.totalMints.toString(),
-    } as NoLinkPair,
     // {
     //   pairKey: "Blockchain",
     //   value: "Phantasma",
@@ -211,15 +258,11 @@ function RelatedSection(props: { cards: NFT[]; currentNFT: NFT }) {
     <div className="flex flex-col md:flex-row mx-auto justify-center w-max md:w-full box-border">
       {(() => {
         return toDisplay.map((card) => (
-          <div key={card.name}>
+          <div>
             <NFTCard
               {...card}
               href={`/card/${card.id}`}
-              currency={(() => {
-                if (card.price) {
-                  return card.price?.USD ? 'USD' : Object.keys(card.price)[0]
-                } else return null
-              })()}
+              currency={card.price ? card.price?.USD ? 'USD' : Object.keys(card.price)[0] : null}
               key={card.id}
             />
           </div>
@@ -237,55 +280,11 @@ function RelatedSection(props: { cards: NFT[]; currentNFT: NFT }) {
 const keyTextClass = 'text-secondary font-semibold font-title'
 const valueTextClass = 'text-white font-body'
 
-function BuySell(props: {
-  handleSell: () => void
-  handleBuy: () => void
-  nft: NFT
-  userAddress: string
-  showBuy: boolean
-  showSell: boolean
-}) {
-  const { showBuy, showSell } = props
-  const amountOfButtons = [showBuy, showSell].filter((x) => x)
+function Product2(props) {
+  const { nft, setShowBuyModal, setShowSellModal } = props
+  console.log('nft', nft)
 
-  const { handleBuy, handleSell } = props
-
-  console.log({ showBuy, showSell })
-
-  const wFull = amountOfButtons.length === 1
-  const wHalf = amountOfButtons.length === 2
-
-  return (
-    <div className="mt-5 mr-5">
-      {showBuy && (
-        <WhiteButton className={(wFull ? 'w-full' : '') + (wHalf ? 'w-1/2' : '') + ' text-lg'} onClick={handleBuy}>
-          Buy
-        </WhiteButton>
-      )}
-      {showSell && (
-        <Button className={(wFull ? 'w-full' : '') + (wHalf ? 'w-1/2' : '') + ' w-1/2 text-lg'} onClick={handleSell}>
-          Sell
-        </Button>
-      )}
-    </div>
-  )
-}
-function Product2(props: {
-  nft: NFT
-  setShowBuyModal: any
-  setShowSellModal: any
-  showBuyModal: boolean
-  showSellModal: boolean
-  showBuy: boolean
-  showSell: boolean
-  userAddress: string
-}) {
-  const { nft, setShowBuyModal, setShowSellModal, showBuyModal, showSellModal, showBuy, showSell } = props
-
-  const [currency, setCurrency] = useState({
-    label: '',
-    value: '',
-  })
+  const [currency, setCurrency] = useState('dank')
 
   const getPriceListFromPriceObj = (priceObj: { [key: string]: number }) =>
     Object.entries(priceObj).map((pricePair) => pricePair[1] + ' ' + pricePair[0].toUpperCase())
@@ -313,21 +312,12 @@ function Product2(props: {
             />
           </div>
           <div>
-            <div className="text-success font-semibold text-lg leading-3 font-body mt-3">
-              {(() => {
-                switch (nft.blockchain) {
-                  case 'ethereum':
-                    return 'Ethereum blockchain'
-                  case 'binance':
-                    return 'Binance Smart Chain'
-                  default:
-                    return capitalizeFirstLetter(nft.blockchain)
-                }
-              })()}
-            </div>
+            {/* <div className="text-success font-semibold text-lg leading-3 font-body">
+              Market Rank: 137
+            </div> */}
             <div className="mt-4 text-white font-bold text-2xl xs:text-4xl leading-9 font-title">{nft.name}</div>
             <div className="mt-3 text-secondary font-semibold text-lg leading-3 font-body">
-              {nft.tier?.charAt(0).toUpperCase() + nft.tier?.slice(1)}
+              {nft.tier.charAt(0).toUpperCase() + nft.tier.slice(1)}
             </div>
           </div>
         </div>
@@ -335,32 +325,24 @@ function Product2(props: {
           <div className="flex flex-col w-7/12 xs:w-2/3 md:w-44">
             <div className={keyTextClass + ' mb-2'}>Price</div>
             <div className={valueTextClass + ' font-semibold text-lg'}>
-              {/* {nft.soul} */}
-              {/* {currencyButton} */}
-              {nft.mints.forSale > 0 ? (
-                // <Select
-                //   placeholder="Select Price"
-                //   value={currency}
-                //   options={(nft.price
-                //     ? getPriceListFromPriceObj(nft.price)
-                //     : []
-                //   )
-                //     .filter((price) => !price.endsWith("USD"))
-                //     .map((price) => ({
-                //       label: price,
-                //       value: price,
-                //     }))}
-                //     onChange={currency}
-                // />
-                'price is bugged'
-              ) : (
-                <p>Not for sale </p>
-              )}
+              {/* {nft.soul}
+              {currencyButton} */}
+              <Selector
+                placeholder="Select Price"
+                options={getPriceListFromPriceObj(nft.price).map((price) => ({
+                  label: price,
+                  value: price,
+                }))}
+                value={currency}
+                onChange={(currency) => setCurrency(currency)}
+              />
             </div>
           </div>
           <div className="flex flex-col w-5/12 xs:w-1/3 md:w-44 ">
-            <div className={keyTextClass + ' mb-2'}>Mints for sale</div>
-            <div className={valueTextClass}>{`${nft.mints.forSale} out of ${nft.mints.available}`}</div>
+            <div className={keyTextClass + ' mb-2'}>Mint Edition</div>
+            <div className={valueTextClass}>{`${nft.mints.totalMints - nft.mints.sold} out of ${
+              nft.mints.totalMints
+            }`}</div>
           </div>
         </div>
         <div className="flex flex-col-reverse md:flex-col h-56">
@@ -373,11 +355,7 @@ function Product2(props: {
               <div className="flex flex-row justify-between font-body">
                 <div className={keyTextClass}>Owner</div>
                 <div className="text-white">
-                  <Link
-                    className="text-mupurple"
-                    href={`/${nft.owner}`}
-                    // href={`${nft.blockExplorerBaseUrl}address/${nft.owner}`}
-                  >
+                  <Link className="text-mupurple" href={`${nft.blockExplorerBaseUrl}address/${nft.owner}`}>
                     {nft.shortOwner}
                   </Link>
                 </div>
@@ -397,167 +375,229 @@ function Product2(props: {
               </div>
             </div>
           </Tabs>
-          <BuySell
-            {...{
-              handleSell: () => setShowSellModal(true),
-              handleBuy: () => setShowBuyModal(true),
-              nft,
-              userAddress: props.userAddress,
-              showBuy,
-              showSell,
-            }}
-          />
-          <SellModal visible={showSellModal} tokenId={nft.id} nft={nft} onCloseModal={handleCloseSellModal} />
+          {/* <div>
+            <div className="flex h-12 text-base font-body mt-2 text-secondary">
+              <div className="border-b-2 border-inputbg w-40 h-full flex items-center box-content">
+                Description
+              </div>
+              <div className="border-b-2 border-mupurple h-full flex items-center w-full box-content pl-5">
+                Details
+              </div>
+            </div>
+            <div className="flex flex-col space-y-3 mt-5 pr-5">
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Owner</div>
+                <div className="text-white">
+                  <Link className="text-mupurple">{nft.owner}</Link>
+                </div>
+              </div>
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Mint date</div>
+                <div className="text-white">
+                  {moment.utc(nft.mintDate).format("MMM DD, YYYY")}
+                </div>
+              </div>
+              <div className="flex flex-row justify-between font-body">
+                <div className={keyTextClass}>Listed until</div>
+                <div className="text-white">
+                  {moment.utc(nft.listedUntil).format("MMM DD, YYYY")}
+                </div>
+              </div>
+            </div>
+          </div> */}
+          {/* BUY BUTTONS SECTION */}
+          {/* <div className="flex flex-row font-semibold text-xl justify-start md:justify-center space-x-5 mt-4 w-full">
+          <div className="w-1/2 md:w-auto px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Buy</div></div>
+          <div className="w-1/2 md:w-auto px-6 rounded-full bg-mupurple text-white flex justify-around items-center"><div className="pt-1 pb-1 md:pt-1 md:pb-1.5 leading-loose align-middle">Add to wishlist</div></div>
+        </div> mt-6 md:mt-4 */}
+          <div className="flex row w-full h-full items-end justify-center">
+            <WhiteButton className="w-1/2 text-lg mr-3" onClick={() => setShowBuyModal(true)}>
+              Buy
+            </WhiteButton>
+            <Button className="w-1/2 text-lg mr-6" onClick={() => setShowSellModal(true)}>
+              Sell
+            </Button>
+            {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
+              Add to wishlist
+            </Button> */}
+          </div>
+          {/* <div className="flex row w-full h-full items-end justify-center"> */}
+          {/* <WhiteButton className="w-1/2 text-lg mr-6">Buy</WhiteButton> */}
+          {/* <Button className="w-full ml-4 mr-4 text-lg"> // ant: disable wishlist feature
+              Add to wishlist
+            </Button> */}
+          {/* </div> */}
+          {/* <div className="flex flex-row font-semibold text-sm xs:text-xl justify-start md:justify-center space-x-2 xs:space-x-5  my-4 w-full">
+            <div className="w-1/2 md:w-auto px-3 tiny:px-6 rounded-full bg-white text-mupurple flex justify-around items-center ml-0 md:ml-6">
+              <div className="pt-1 pb-1 md:pt-1 md:pb-1 leading-loose align-middle">
+                Buy
+              </div>
+            </div>
+            <div className="w-1/2 md:w-auto px-3 tiny:px-6 rounded-full bg-mupurple text-white flex justify-around items-center">
+              <div className="pt-1 pb-1 md:pt-1 md:pb-1 leading-loose align-middle">
+                Add to wishlist
+              </div>
+            </div>
+          </div> */}
         </div>
       </div>
     </div>
   )
 }
 
-function CardNotFound() {
+function MiniExplorer(props) {
+  const metaData = {
+    totalCount: 100,
+    pageCount: 25,
+    currentPage: 1,
+    perPage: 4,
+  }
+
+  const paginationHandler = (page) => {
+    // Will uncomment this once the API for event segregation is added
+    // const currentPath = props.router.pathname;
+    // const currentQuery = props.router.query;
+    // currentQuery.page = page.selected + 1;
+    // props.router.push({
+    //     pathname: currentPath,
+    //     query: currentQuery,
+    // });
+  }
+  type Event = {
+    totalCount: number
+    pageCount: number
+    currentPage: number
+    perPage: number
+    type: 'cancelled' | 'minted' | 'infused' | 'listed'
+    date: Date
+    username: string
+    account: string
+    amount?: string
+    transaction: string
+  }
+  const exampleEvents = [
+    {
+      totalCount: 6,
+      pageCount: 2,
+      currentPage: 1,
+      perPage: 4,
+      type: 'listed',
+      date: new Date('Sat, 27 Feb 2021 18:48:43 GMT'),
+      username: 'moonsawyer1331',
+      account: 'P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg',
+      amount: '420.69 DANK',
+      transaction: 'F7A1FEB2A2525F373427AC9027B0ADED2E4B51C4A1F9559B85B4DB969173608D',
+    } as Event,
+    {
+      totalCount: 6,
+      pageCount: 2,
+      currentPage: 1,
+      perPage: 4,
+      type: 'infused',
+      date: new Date('Sat, 27 Feb 2021 18:48:43 GMT '),
+      username: 'moonsawyer1331',
+      account: 'P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg',
+      amount: '1 KCAL',
+      transaction: 'F7A1FEB2A2525F373427AC9027B0ADED2E4B51C4A1F9559B85B4DB969173608D',
+    } as Event,
+    {
+      totalCount: 6,
+      pageCount: 2,
+      currentPage: 1,
+      perPage: 4,
+      type: 'minted',
+      date: new Date('Sat, 27 Feb 2021 18:48:43 GMT '),
+      username: 'moonsawyer1331',
+      account: 'P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg',
+      transaction: 'F7A1FEB2A2525F373427AC9027B0ADED2E4B51C4A1F9559B85B4DB969173608D',
+    } as Event,
+    {
+      totalCount: 6,
+      pageCount: 2,
+      currentPage: 1,
+      perPage: 4,
+      type: 'cancelled',
+      date: new Date('Mon, 01 Mar 2021 22:18:32 GMT'),
+      username: 'moonsawyer1331',
+      account: 'P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg',
+      transaction: 'F7A1FEB2A2525F373427AC9027B0ADED2E4B51C4A1F9559B85B4DB969173608D',
+    } as Event,
+  ]
+
+  function Phrasing(event: Event, key: number) {
+    const surroundOrSpace = (s: string) => (s.length > 1 ? ` ${s} ${event.amount} ` : ` `)
+    const appendedWord = event.type === 'infused' ? 'with' : event.type === 'listed' ? 'for' : ''
+    const joiner = surroundOrSpace(appendedWord)
+
+    return (
+      <div className="whitespace-pre-wrap mb-3" key={key}>
+        <Link className="text-mupurple" href={'https://ghostmarket.io/account/pha/' + event.account}>
+          {event.username}
+        </Link>{' '}
+        {event.type}
+        {joiner}
+        <Link className="text-mupurple ml-auto" href={'https://https://explorer.phantasma.io/tx/' + event.transaction}>
+          <ReactTimeAgo date={event.date} locale="en-US" />
+        </Link>
+      </div>
+    )
+  }
+
   return (
-    <div className="w-full flex flex-col items-center mt-10 mb-20">
-      <h1 className="mx-auto mt-20 text-4xl font-bold">404 - Card not found</h1>
-      <a href="/" className="mt-10 mb-20">
-        <Button href="/">Click here to go back home</Button>
-      </a>
+    <div className="flex flex-col bg-asidebg rounded-none w-full lg:w-max lg:rounded-xl p-8 font-body">
+      <div className="text-3xl font-bold mb-5 font-title">Event History</div>
+      {exampleEvents.map((event, index) => Phrasing(event, index))}
+
+      {/* Pagination Starts from Here */}
+      <div className="whitespace-pre-wrap mb-3 paginationClass">
+        <ReactPaginate
+          previousLabel={'<<'}
+          nextLabel={'>>'}
+          breakLabel={'...'}
+          breakClassName={'break-me'}
+          activeClassName={'active'}
+          containerClassName={'pagination'}
+          subContainerClassName={'pages pagination'}
+          initialPage={metaData.currentPage - 1}
+          pageCount={metaData.pageCount}
+          marginPagesDisplayed={1}
+          pageRangeDisplayed={5}
+          onPageChange={paginationHandler}
+        />
+      </div>
     </div>
   )
 }
 
-// function MiniExplorer(props) {
-//   const metaData = {
-//     totalCount: 100,
-//     pageCount: 25,
-//     currentPage: 1,
-//     perPage: 4,
-//   }
+//
+// <div className="flex flex-row h-full mt-10 p-8 bg-asidebg rounded-xl">
+// {/* <div className="w-96"><img className="w-full" src="/images/pete-card.jpg" /></div> */}
+// {/* <div className="text-lg font-bold">Voiceover Pete</div> */}
+// <div className="flex flex-col items-center">
+//   <div className="text-3xl font-bold">Voiceover Pete</div>
+//   {Card}
+// </div>
+// {propsSection}
+// </div>
 
-//   const paginationHandler = (page) => {
-//     // Will uncomment this once the API for event segregation is added
-//     // const currentPath = props.router.pathname;
-//     // const currentQuery = props.router.query;
-//     // currentQuery.page = page.selected + 1;
-//     // props.router.push({
-//     //     pathname: currentPath,
-//     //     query: currentQuery,
-//     // });
-//   }
-//   type Event = {
-//     totalCount: number
-//     pageCount: number
-//     currentPage: number
-//     perPage: number
-//     type: 'cancelled' | 'minted' | 'infused' | 'listed'
-//     date: Date
-//     username: string
-//     account: string
-//     amount?: string
-//     transaction: string
-//   }
-//   const exampleEvents = [
-//     {
-//       totalCount: 6,
-//       pageCount: 2,
-//       currentPage: 1,
-//       perPage: 4,
-//       type: 'listed',
-//       date: new Date('Sat, 27 Feb 2021 18:48:43 GMT'),
-//       username: 'moonsawyer1331',
-//       account: 'P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg',
-//       amount: '420.69 DANK',
-//       transaction: 'F7A1FEB2A2525F373427AC9027B0ADED2E4B51C4A1F9559B85B4DB969173608D',
-//     } as Event,
-//     {
-//       totalCount: 6,
-//       pageCount: 2,
-//       currentPage: 1,
-//       perPage: 4,
-//       type: 'infused',
-//       date: new Date('Sat, 27 Feb 2021 18:48:43 GMT '),
-//       username: 'moonsawyer1331',
-//       account: 'P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg',
-//       amount: '1 KCAL',
-//       transaction: 'F7A1FEB2A2525F373427AC9027B0ADED2E4B51C4A1F9559B85B4DB969173608D',
-//     } as Event,
-//     {
-//       totalCount: 6,
-//       pageCount: 2,
-//       currentPage: 1,
-//       perPage: 4,
-//       type: 'minted',
-//       date: new Date('Sat, 27 Feb 2021 18:48:43 GMT '),
-//       username: 'moonsawyer1331',
-//       account: 'P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg',
-//       transaction: 'F7A1FEB2A2525F373427AC9027B0ADED2E4B51C4A1F9559B85B4DB969173608D',
-//     } as Event,
-//     {
-//       totalCount: 6,
-//       pageCount: 2,
-//       currentPage: 1,
-//       perPage: 4,
-//       type: 'cancelled',
-//       date: new Date('Mon, 01 Mar 2021 22:18:32 GMT'),
-//       username: 'moonsawyer1331',
-//       account: 'P2K6h65yT8rx5pgAjSkAfhTAhRU7mRCJWYv6AbHewyGQQrg',
-//       transaction: 'F7A1FEB2A2525F373427AC9027B0ADED2E4B51C4A1F9559B85B4DB969173608D',
-//     } as Event,
-//   ]
-
-//   function Phrasing(event: Event, key: number) {
-//     const surroundOrSpace = (s: string) => (s.length > 1 ? ` ${s} ${event.amount} ` : ` `)
-//     const appendedWord = event.type === 'infused' ? 'with' : event.type === 'listed' ? 'for' : ''
-//     const joiner = surroundOrSpace(appendedWord)
-
-//     return (
-//       <div className="whitespace-pre-wrap mb-3" key={key}>
-//         <Link className="text-mupurple" href={'https://ghostmarket.io/account/pha/' + event.account}>
-//           {event.username}
-//         </Link>{' '}
-//         {event.type}
-//         {joiner}
-//         <Link className="text-mupurple ml-auto" href={'https://https://explorer.phantasma.io/tx/' + event.transaction}>
-//           <ReactTimeAgo date={event.date} locale="en-US" />
-//         </Link>
-//       </div>
-//     )
-//   }
-
-//   return (
-//     <div className="flex flex-col bg-asidebg rounded-none w-full lg:w-max lg:rounded-xl p-8 font-body">
-//       <div className="text-3xl font-bold mb-5 font-title">Event History</div>
-//       {exampleEvents.map((event, index) => Phrasing(event, index))}
-
-//       {/* Pagination Starts from Here */}
-//       <div className="whitespace-pre-wrap mb-3 paginationClass">
-//         <ReactPaginate
-//           previousLabel={'<<'}
-//           nextLabel={'>>'}
-//           breakLabel={'...'}
-//           breakClassName={'break-me'}
-//           activeClassName={'active'}
-//           containerClassName={'pagination'}
-//           subContainerClassName={'pages pagination'}
-//           initialPage={metaData.currentPage - 1}
-//           pageCount={metaData.pageCount}
-//           marginPagesDisplayed={1}
-//           pageRangeDisplayed={5}
-//           onPageChange={paginationHandler}
-//         />
-//       </div>
-//     </div>
-//   )
-// }
-
-export default function Home(props: AuthProps & { nftList: NFT[]; milliseconds: number; id: string }) {
-  const [showBuyModal, setShowBuyModal] = useState(false)
-  const [showSellModal, setShowSellModal] = useState(false)
+export default function Home(props) {
   useEffect(() => console.log(JSON.stringify({ milliseconds: props.milliseconds, id: props.id }, null, 2)))
 
-  if (!props.nftList.length) return <div>Loading...</div>
+  let nftList = []
+  if(typeof window !== 'undefined'){
+    nftList = JSON.parse(localStorage.getItem('nftlist'))
+  }
+
+  // const [nftList, setNftList] = useState([])
+  // useEffect(() => {
+  //   setNftList(nftList)
+  // }, [])
+
+  if (!nftList.length) return <div>Loading...</div>
 
   const router = useRouter()
-  const currentNFT = props.nftList.find((card) => card.id === router.query.id)
+  const currentNFT = nftList.find((card) => card.id === router.query.id)
+
   const mainProps: (LinkPair | NoLinkPair)[] = [
     {
       pairKey: 'Current Owner',
@@ -583,81 +623,67 @@ export default function Home(props: AuthProps & { nftList: NFT[]; milliseconds: 
     mainProps.push(makeProp('Description', currentNFT.description))
   }
 
-  const userAddress = props.authData.address
-  // const { userAddress } = props
+  const propsSection = (
+    <div className="flex flex-col items-start w-full ml-10">
+      {mainProps.map((props) => (
+        <KeyValue {...props} />
+      ))}
+      <BuySection />
+    </div>
+  )
 
-  // console.log({ userAddress })
-  const isOwner = userAddress && cards.isOwner(currentNFT, userAddress)
-  const isForSale = cards.isForSale(currentNFT)
-  // const someNotForSale = currentNFT.mints.notForSale > 0
-  const canBeSold = cards.canBeSold(currentNFT)
-  const showBuy = !isOwner && isForSale
-  const showSell = isOwner && canBeSold
+  const [showBuyModal, setShowBuyModal] = useState(false)
+  const [showSellModal, setShowSellModal] = useState(false)
 
   return (
-    <>
-      <Head>
-        <title>{currentNFT?.name || '404 Card Not Found' + ' — MU Citadel'}</title>
-      </Head>
-      <div className="App text-white bg-mainbg min-h-screen font-body">
-        {currentNFT ? (
-          <main className={`${(showBuyModal || showSellModal) && 'filter blur-sm'}`}>
-            <NavBar {...props} />
-            <div className="px-0 xl:px-32 flex flex-col pb-16">
-              <Product2
-                nft={currentNFT}
-                setShowBuyModal={setShowBuyModal}
-                setShowSellModal={setShowSellModal}
-                showBuyModal={showBuyModal}
-                showSellModal={showSellModal}
-                userAddress={props.authData.address}
-                showBuy={showBuy}
-                showSell={showSell}
-              />
-              <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
-                <div className="mb-0 lg:mb-10 max-w-full">
-                  <NFTDetails {...currentNFT} />
-                </div>
-              </div>
-              <div className="w-full text-center">
-                <RelatedSection
-                  currentNFT={currentNFT}
-                  cards={props.nftList.filter((x: NFT) => x.tier === (currentNFT as NFT).tier)}
-                />
-              </div>
-            </div>
-            : (<CardNotFound />)
-            <Footer />
-          </main>
-        ) : (
-          <CardNotFound />
-        )}
+    <div className="App text-white bg-mainbg min-h-screen font-body">
+      <main className={`${(showBuyModal || showSellModal) && 'filter blur-sm'}`}>
+        <NavBar {...props} />
 
-        {showBuy && (
-          <BuyModal
-            visible={showBuyModal}
-            tokenId={currentNFT.id}
-            nft={currentNFT}
-            onCloseModal={() => setShowBuyModal(false)}
-          />
-        )}
-        {showSell && (
-          <SellModal
-            visible={showSellModal}
-            tokenId={currentNFT.id}
-            nft={currentNFT}
-            onCloseModal={() => setShowSellModal(false)}
-          />
-        )}
-      </div>
-    </>
+        <div className="px-0 xl:px-32 flex flex-col pb-16">
+          <Product2 nft={currentNFT} setShowBuyModal={setShowBuyModal} setShowSellModal={setShowSellModal} />
+          <div className="flex flex-col lg:flex-row flex-wrap lg:space-x-10 justify-start lg:justify-center w-full space-y-3 lg:space-y-0 mt-3 lg:mt-10 mx-auto">
+            <div className="mb-0 lg:mb-10 max-w-full">
+              <NFTDetails {...currentNFT} />
+            </div>
+            {/* <div className="mb-0 lg:mb-10 max-w-full">
+            <SeriesDetails />
+          </div>
+          <div className="mb-0 lg:mb-10 max-w-full">
+            <MiniExplorer />
+          </div> */}
+          </div>
+          <div className="w-full text-center">
+            <RelatedSection
+              currentNFT={currentNFT}
+              cards={nftList.filter((x: NFT) => x.tier === (currentNFT as NFT).tier)}
+            />
+          </div>
+        </div>
+
+        <Footer />
+      </main>
+
+      <BuyModal
+        visible={showBuyModal}
+        tokenId={currentNFT.id}
+        nft={currentNFT}
+        onCloseModal={() => setShowBuyModal(false)}
+      />
+      <SellModal
+        visible={showSellModal}
+        tokenId={currentNFT.id}
+        nft={currentNFT}
+        onCloseModal={() => setShowSellModal(false)}
+      />
+    </div>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = context.query.id
   const before = new Date().getTime()
-  const nftList: NFT[] = await getCardsFromAPI()
+  const nftList: NFT[] = [] //await getCardsFromAPI()
   const after = new Date().getTime()
   var milliseconds = Math.abs(before - after)
   return { props: { nftList, milliseconds, id } }
