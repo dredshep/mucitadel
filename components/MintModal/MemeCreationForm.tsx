@@ -5,6 +5,7 @@ import { Formik } from 'formik'
 import html2canvas from 'html2canvas'
 import React, { useMemo, useRef, useState } from 'react'
 import { MintFormValues } from 'types/formValues'
+import { toastify } from 'utils/toastify'
 import * as Yup from 'yup'
 import { RequiredStringSchema } from 'yup/lib/string'
 import contractAbi from '../../config/abi/meme.json'
@@ -175,14 +176,14 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
           if (chainID == 1 || chainID == 4) {
             /* Do Nothing */
           } else {
-            alert('Wrong Blockchain Connected switch to Ethereum Blockchain')
+            toastify('Wrong Blockchain Connected switch to Ethereum Blockchain')
             return false
           }
         } else if (values.Blockchain == 'binance') {
           if (chainID == 56 || chainID == 97) {
             /* Do Nothing */
           } else {
-            alert('Wrong Blockchain Connected switch to Binance Blockchain')
+            toastify('Wrong Blockchain Connected switch to Binance Blockchain')
             return false
           }
         }
@@ -317,7 +318,7 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
                     console.log('error', error)
                   })
               } else {
-                alert('Please install MetaMask or Trust Wallet in order to use blockchain features.')
+                toastify('Please install MetaMask or Trust Wallet in order to use blockchain features.')
               }
             }
             final()
@@ -329,7 +330,7 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
             console.log('error', error)
           })
       } else {
-        alert('Connect Metamask')
+        toastify('Connect Metamask')
       }
     }
   }
