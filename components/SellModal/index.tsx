@@ -124,11 +124,14 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           var dbSymbol = String(values.currencies[0])
           var dbTotal = values.prices[0] as string
 
+          console.log(values.currencies[0].split(' '))
+
           var cardOwner = await nftcontract.functions.ownerOf(accounts.toString(), tokenID)
           if (cardOwner.toString() == 'false') {
             alert('Token Sold by user or already on sale')
             return false
           }
+          console.log(String(parseInt(values.prices[0]).toString().concat('000000000000000000')))
           /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
           setActiveStep(3)
           await contract.functions
@@ -137,7 +140,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
               values.amount,
               0,
               values.currencies[0].split(' '),
-              parseInt(String(values.prices[0]).toString().concat('000000000000000000')),
+              String(parseInt(values.prices[0]).toString().concat('000000000000000000')).split(' '),
             )
             .then(async function (result) {
               /* Waits for Transaction to complete */
@@ -191,8 +194,8 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
 
           var fee = parseInt(await contract.functions.makerFee())
           console.log(fee)
-          console.log(values)
-          var feePayment = parseInt(String((Number(values.prices[0]) * fee) / 1000))
+          console.log(values.prices[0])
+          var feePayment = parseFloat(String((Number(values.prices[0]) * fee ) / 1000))
           console.log(feePayment)
           /* 2nd Step (Selling NFT) - ProgressBar to be added Below this comment */
           setActiveStep(2)
@@ -200,10 +203,10 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
             .readyToSellToken(
               tokenID,
               values.amount,
-              parseInt(String(values.prices[0]).toString().concat('000000000000000000')),
+              String(parseInt(String(values.prices[0]).toString().concat('000000000000000000'))),
               [],
               [],
-              { value: (feePayment * 1e5).toString().concat('0000000000000') },
+              { value: String((Number(feePayment * 1e5)).toString().concat('0000000000000')) },
             )
             .then(async function (result) {
               /* Waits for Transaction to complete */
