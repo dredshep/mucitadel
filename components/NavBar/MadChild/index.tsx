@@ -35,7 +35,7 @@ export default function MadChild() {
         });
         setString(JSON.stringify(addresses));
       } else {
-        alert("Please install MetaMask!");
+        toastify("Please install MetaMask!");
       }
     }
 

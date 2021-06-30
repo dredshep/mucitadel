@@ -9,7 +9,7 @@ import {
   marketcontractAdd,
   marketcontractAddB,
   tokencontractAdd,
-  tokencontractAddB,
+  tokencontractAddB
 } from '../../constant/blockchain'
 
 var window = require('global/window')
@@ -88,7 +88,7 @@ export default async function smartContractBuy(values: {
           accounts.toString()
         ));
         if(balanceOf < (parseInt(userAsk[0][i][5][0][1]))){
-          alert("You Dont have enough DANK to make a Purchase")
+          toastify("You Dont have enough DANK to make a Purchase")
           return false;
         }
 
@@ -143,7 +143,7 @@ export default async function smartContractBuy(values: {
             console.log('error', error)
           })
       } else {
-        // alert("No Sell Order for the NFT Found");
+        // toastify("No Sell Order for the NFT Found");
         // return false;
       }
     }
@@ -160,7 +160,7 @@ export default async function smartContractBuy(values: {
         const balanceOf = (await provider.getBalance(accounts.toString()));
         
         if(Number(balanceOf) < parseInt(userAsk[0][i][4])){
-          alert("You Dont have enough Funds to make a Purchase")
+          toastify("You Dont have enough Funds to make a Purchase")
           return false;
         }
 

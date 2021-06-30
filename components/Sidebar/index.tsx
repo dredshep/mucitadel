@@ -15,7 +15,7 @@ export default function Sidebar(props: {
   const [sidebarIsHidden, showSidebar] = React.useState(true);
 
   function showSidebarCommand() {
-    // alert(sidebarIsHidden)
+    // toastify(sidebarIsHidden)
     if (sidebarIsHidden === false) {
       console.log("showing");
       showSidebar(true);
