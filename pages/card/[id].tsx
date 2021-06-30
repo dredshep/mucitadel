@@ -262,7 +262,7 @@ function RelatedSection(props: { cards: NFT[]; currentNFT: NFT }) {
             <NFTCard
               {...card}
               href={`/card/${card.id}`}
-              currency={card.price ? card.price?.USD ? 'USD' : Object.keys(card.price)[0] : null}
+              currency={card.price ? (card.price?.USD ? 'USD' : Object.keys(card.price)[0]) : null}
               key={card.id}
             />
           </div>
@@ -584,7 +584,7 @@ export default function Home(props) {
   useEffect(() => console.log(JSON.stringify({ milliseconds: props.milliseconds, id: props.id }, null, 2)))
 
   let nftList = []
-  if(typeof window !== 'undefined'){
+  if (typeof window !== 'undefined') {
     nftList = JSON.parse(localStorage.getItem('nftlist'))
   }
 
