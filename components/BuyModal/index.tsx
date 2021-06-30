@@ -23,9 +23,15 @@ const BuyModal = ({
 }) => {
   //prettier-ignore
   const steps = {
-    DANK: [{label: 'Ready'}, {label: 'Approving'}, {label: 'Buying NFT'}, {label: 'Recording'}, {label: 'Completed'}],
-    ETH: [{label: 'Ready'}, {label: 'Buying NFT'}, {label: 'Recording'}, {label: 'Completed'}],
-    BNB: [{label: 'Ready'}, {label: 'Buying NFT'}, {label: 'Recording'}, {label: 'Completed'}]
+    DANK: [
+      { label: 'Ready' },
+      { label: 'Approving' },
+      { label: 'Buying NFT' },
+      { label: 'Recording' },
+      { label: 'Completed' },
+    ],
+    ETH: [{ label: 'Ready' }, { label: 'Buying NFT' }, { label: 'Recording' }, { label: 'Completed' }],
+    BNB: [{ label: 'Ready' }, { label: 'Buying NFT' }, { label: 'Recording' }, { label: 'Completed' }],
   }
   const [activeStep, setActiveStep] = useState(0)
 
@@ -40,14 +46,14 @@ const BuyModal = ({
 
       if (values.nft.blockchain == 'ethereum') {
         if (chainID == 1 || chainID == 4) {
-          smartContractBuy(values, setActiveStep)
+          await smartContractBuy(values, setActiveStep)
         } else {
           toastify('Wrong Blockchain Connected switch to Ethereum Blockchain')
           return false
         }
       } else if (values.nft.blockchain == 'binance') {
         if (chainID == 56 || chainID == 97) {
-          smartContractBuy(values, setActiveStep)
+          await smartContractBuy(values, setActiveStep)
         } else {
           toastify('Wrong Blockchain Connected switch to Binance Blockchain')
           return false
@@ -93,7 +99,7 @@ const BuyModal = ({
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true)
           const [price, symbol]: [string, string] = values.price.split(' ')
           const returnValue = {
@@ -105,16 +111,16 @@ const BuyModal = ({
             nft,
           }
           console.log(returnValue)
-          handleBuy(returnValue)
+          await handleBuy(returnValue)
           setSubmitting(false)
         }}
       >
         {(props) => {
           const { handleSubmit, values, errors, touched, handleChange, handleBlur, setFieldValue, isSubmitting } = props
-          console.log('werwerwer', selectedPrice)
+
           return (
             <form onSubmit={handleSubmit}>
-              {<FormStepper steps={steps[selectedPrice?.value]} activeStep={activeStep} />}
+              {<FormStepper steps={steps[selectedPrice?.symbol]} activeStep={activeStep} />}
               <div className="w-full max-w-2xl sm:grid sm:grid-cols-5 sm:gap-4">
                 <div className="w-full sm:col-span-2">
                   <img src={nft.url} alt="meme" className="object-contain w-full h-full" />
@@ -170,9 +176,12 @@ const BuyModal = ({
 
                   <WhiteButton
                     type="submit"
-                    className={`text-lg mt-2 ${isSubmitting && 'cursor-not-allowed'}`}
+                    className={`flex justify-center items-center text-lg mt-2 ${isSubmitting && 'cursor-not-allowed'}`}
                     disabled={isSubmitting}
                   >
+                    {isSubmitting && (
+                      <svg className="animate-spin w-4 h-4 border rounded-md mx-2" viewBox="0 0 24 24"></svg>
+                    )}
                     Buy
                   </WhiteButton>
                 </div>
