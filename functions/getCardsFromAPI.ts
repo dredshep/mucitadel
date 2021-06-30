@@ -111,8 +111,8 @@ export default async function getCardsFromAPI() {
       const isCreator = NFT.creator === 'true'
 
       const originalAmount = 0 // isCreator ? n.amount : 0
-      const available = originalAmount + n.bought + n.forsale - n.sold
-      const notForSale = originalAmount + n.bought - n.sold
+      const available = originalAmount + n.bought + n.forsale // - n.sold
+      const notForSale = originalAmount + n.bought // - n.sold
 
       return {
         name,

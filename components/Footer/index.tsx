@@ -1,11 +1,11 @@
 // import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import {
-    faDiscord,
-    faLinkedinIn,
-    faRedditAlien,
-    faTelegramPlane,
-    faTwitter,
-    faYoutube
+  faDiscord,
+  faLinkedinIn,
+  faRedditAlien,
+  faTelegramPlane,
+  faTwitter,
+  faYoutube,
 } from '@fortawesome/free-brands-svg-icons'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -16,7 +16,7 @@ import Button from '../styled/Button'
 import Link from '../styled/Link'
 
 function MainLogo() {
-  return <img src="/images/mucitadel-white.png" className="object-cover" alt="MemeUnity Logo" />
+  return <img src="/images/mucitadel-beta.svg" className="object-cover" alt="MemeUnity Logo" />
 }
 
 function Logo() {
@@ -187,21 +187,21 @@ export default function Footer() {
                         type="text"
                         name="name"
                         placeholder="name"
-                        onChange={(e)=>{
-                            setFieldValue('name', e.target.value)
+                        onChange={(e) => {
+                          setFieldValue('name', e.target.value)
                         }}
                       />
                       <ErrorMessage name="name">
                         {(msg) => <span className="text-xs text-red">{msg}</span>}
                       </ErrorMessage>
-                      
+
                       <input
                         className="bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover focus:outline-none transition-colors duration-75 px-4 py-2 rounded-lg shadow-md mt-2"
                         type="email"
                         name="email"
                         placeholder="email"
-                        onChange={(e)=>{
-                            setFieldValue('email', e.target.value)
+                        onChange={(e) => {
+                          setFieldValue('email', e.target.value)
                         }}
                       />
                       <ErrorMessage name="email">

@@ -81,7 +81,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
         const approval = await nftcontract.functions.isApprovedForAll(accounts.toString(), MarketPlaceAddress)
         console.log(approval.toString())
         /* 1st Step (Approving Token For Sell) - ProgressBar to be added Below this comment */
-        setActiveStep(1)
+        setActiveStep(0)
 
         if (approval.toString() == 'false') {
           /* If Token is not appoved for selling in contract approval dialog box will appear */
@@ -109,7 +109,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           var feePayment = parseInt(String((values.prices[0] * fee) / 1000))
 
           /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
-          setActiveStep(2)
+          setActiveStep(1)
           if (parseInt(approval) < parseInt(String(values.prices[0] * 1e18))) {
             /* If Token is not appoved for selling in contract approval dialog box will appear */
             const tokenApproval = await contractToken.functions.approve(
@@ -133,7 +133,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           }
           console.log(String(parseInt(values.prices[0]).toString().concat('000000000000000000')))
           /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
-          setActiveStep(3)
+          setActiveStep(2)
           await contract.functions
             .readyToSellToken(
               tokenID,
@@ -146,7 +146,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
               /* Waits for Transaction to complete */
               await provider.waitForTransaction(result.hash, 1)
               /* 4th Step (Recording NFT) - ProgressBar to be added Below this comment */
-              setActiveStep(4)
+              setActiveStep(3)
 
               var myHeaders = new Headers()
               myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
@@ -170,7 +170,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
                 .then((result) => {
                   /* End Result 100% */
                   /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                  setActiveStep(5)
+                  setActiveStep(4)
                   console.log(result)
                 })
                 .catch((error) => {
@@ -195,10 +195,10 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           var fee = parseInt(await contract.functions.makerFee())
           console.log(fee)
           console.log(values.prices[0])
-          var feePayment = parseFloat(String((Number(values.prices[0]) * fee ) / 1000))
+          var feePayment = parseFloat(String((Number(values.prices[0]) * fee) / 1000))
           console.log(feePayment)
           /* 2nd Step (Selling NFT) - ProgressBar to be added Below this comment */
-          setActiveStep(2)
+          setActiveStep(1)
           await contract.functions
             .readyToSellToken(
               tokenID,
@@ -206,13 +206,19 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
               String(parseInt(String(values.prices[0]).toString().concat('000000000000000000'))),
               [],
               [],
-              { value: String((Number(feePayment * 1e5)).toString().concat('0000000000000')) },
+              {
+                value: String(
+                  Number(feePayment * 1e5)
+                    .toString()
+                    .concat('0000000000000'),
+                ),
+              },
             )
             .then(async function (result) {
               /* Waits for Transaction to complete */
               await provider.waitForTransaction(result.hash, 1)
               /* 3rd Step (Recording NFT) - ProgressBar to be added Below this comment */
-              setActiveStep(3)
+              setActiveStep(2)
               var myHeaders = new Headers()
               myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
@@ -235,7 +241,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
                 .then((result) => {
                   /* End Result 100% */
                   /* 4th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                  setActiveStep(4)
+                  setActiveStep(3)
                   console.log(result)
                 })
                 .catch((error) => {
@@ -293,7 +299,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
               console.log(fee)
               var feePayment = parseInt(String((values.prices[j] * fee) / 1000))
               /* 2nd Step (Approving Token) - ProgressBar to be added Below this comment */
-              setActiveStep(2)
+              setActiveStep(1)
               if (parseInt(approval) < parseInt(String(feePayment)) * 1e18) {
                 /* If Token is not appoved for selling in contract approval dialog box will appear */
                 const tokenApproval = await contractToken.functions.approve(
@@ -311,14 +317,14 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           console.log(ethPrice.toString() + ',' + currencyPrice.toString() + '')
           console.log('ETH'.toString() + ',' + currencySymbol.toString() + '')
           /* 3rd Step (Selling NFT) - ProgressBar to be added Below this comment */
-          setActiveStep(3)
+          setActiveStep(2)
           await contract.functions
             .readyToSellToken(tokenID, values.amount, ethPrice, currencySymbol, currencyPrice)
             .then(async function (result) {
               /* Waits for Transaction to complete */
               await provider.waitForTransaction(result.hash, 1)
               /* 4th Step (Recording NFT) - ProgressBar to be added Below this comment */
-              setActiveStep(4)
+              setActiveStep(3)
               var myHeaders = new Headers()
               myHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
 
@@ -341,7 +347,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
                 .then((result) => {
                   /* End Result 100% */
                   /* 5th Step (Listed Sucessfully) - ProgressBar to be added Below this comment */
-                  setActiveStep(5)
+                  setActiveStep(4)
                   console.log(result)
                 })
                 .catch((error) => {
