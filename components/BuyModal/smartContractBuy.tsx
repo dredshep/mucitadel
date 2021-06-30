@@ -3,6 +3,8 @@ import { NFT } from 'types/nft'
 import marketcontractAbi from '../../config/abi/marketplace.json'
 import contractAbi from '../../config/abi/meme.json'
 import tokencontractAbi from '../../config/abi/token.json'
+// import React, { useState } from 'react'
+
 import {
   contractAdd,
   contractAddB,
@@ -13,6 +15,8 @@ import {
 } from '../../constant/blockchain'
 
 var window = require('global/window')
+// const [activeStep, setActiveStep] = useState(0)
+
 
 export default async function smartContractBuy(
   values: {

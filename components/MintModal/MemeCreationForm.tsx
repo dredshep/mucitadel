@@ -88,7 +88,7 @@ const MemeCreationForm = ({ role, closeModal }: { role: 'user' | 'admin' | 'gues
   const initialValues = {
     Name: '',
     Description: '',
-    Tier: 'titanic',
+    Tier: 'common',
     Blockchain: 'ethereum',
     ForSale: true,
     Currencies: [{ Price: '', Currency: '' }],
