@@ -43,7 +43,7 @@ export default async function smartContractBuy(values: {
   const currencySymbol = (values.formData.price.currency)
   // const currencyAmount = 1;
   // const currencySymbol = "ETH";
-  console.log(String(currencyAmount).concat('0000000000000'), currencySymbol)
+  console.log(String(currencyAmount).concat('0000000000000'), currencySymbol, values.formData.amount)
 
   let contract = new ethers.Contract(MarketPlaceAddress, marketcontractAbi, provider.getSigner())
 
@@ -102,11 +102,15 @@ export default async function smartContractBuy(values: {
           await provider.waitForTransaction(tokenApproval.hash, 1)
         }
         /* 2nd Step (Buying NFT) - ProgressBar to be added Below this comment */
+        if(Number(values.formData.amount)>parseInt(userAsk[0][i][2])){
+          alert("Invalid Buy Amount for the Order")
+          return false;
+        }
 
         /* This Will Buy The Token */
         console.log(parseInt(userAsk[0][i][2]))
         await contract.functions
-          .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]))
+          .buyToken(OrderID, currencySymbol, Number(values.formData.amount))
           .then(async function (result) {
             console.log(result)
             await provider.waitForTransaction(result.hash, 1)
@@ -117,8 +121,8 @@ export default async function smartContractBuy(values: {
 
             var fd1 = new URLSearchParams()
             fd1.append('id', values.nft.id)
-            fd1.append('owneraddress', accounts.toString()) // Default Mint -1
-            fd1.append('amount', String(parseInt(userAsk[0][i][2])))
+            fd1.append('owneraddress', accounts.toString()) 
+            fd1.append('amount', String(Number(values.formData.amount)))
             fd1.append('txhash', result.hash)
 
             console.log('form values & file => ', fd1)
@@ -159,15 +163,20 @@ export default async function smartContractBuy(values: {
 
         const balanceOf = (await provider.getBalance(accounts.toString()));
         
-        if(Number(balanceOf) < parseInt(userAsk[0][i][4])){
+        if(Number(balanceOf) < parseInt(userAsk[0][i][4])*Number(values.formData.amount)){
           alert("You Dont have enough Funds to make a Purchase")
+          return false;
+        }
+
+        if(Number(values.formData.amount)>parseInt(userAsk[0][i][2])){
+          alert("Invalid Buy Amount for the Order")
           return false;
         }
 
         /* This Will Buy The Token */
         await contract.functions
-          .buyToken(OrderID, currencySymbol, parseInt(userAsk[0][i][2]), {
-            value: parseInt(userAsk[0][i][4]).toString(),
+          .buyToken(OrderID, currencySymbol, Number(values.formData.amount), {
+            value: Number(userAsk[0][i][4] * Number(values.formData.amount)).toString(),
           })
           .then(async function (result) {
             console.log(result)
@@ -179,7 +188,7 @@ export default async function smartContractBuy(values: {
             var fd1 = new URLSearchParams()
             fd1.append('id', values.nft.id)
             fd1.append('owneraddress', accounts.toString()) // Default Mint -1
-            fd1.append('amount', String(parseInt(userAsk[0][i][2])))
+            fd1.append('amount', String(Number(values.formData.amount)))
             fd1.append('txhash', result.hash)
 
             console.log('form values & file => ', fd1)
