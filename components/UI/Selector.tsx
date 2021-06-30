@@ -10,7 +10,7 @@ function Selector(props: {
   value: any
   onChange: any
   placeholder: string
-  className: string
+  className?: string
 }): JSX.Element {
   const { options, value, onChange, ...rest } = props
   const customStyles = {
