@@ -39,7 +39,6 @@ export default function Modal(props: { title: string; children: any; visible: bo
                 </div>
               )}
             </div>
-            {/* <div className="max-w-max pb-3">Choose your login method:</div> */}
             <div className={clsx('space-x-5 bg-asidebg max-w-7xl rounded-xl px-8 py-4 overflow-auto', classes.form)}>
               {props.children}
             </div>
