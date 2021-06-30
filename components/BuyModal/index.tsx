@@ -1,8 +1,10 @@
 import WhiteButton from 'components/styled/WhiteButton'
 import Selector from 'components/UI/Selector'
+import FormStepper from 'components/UI/Stepper'
 import { ErrorMessage, Formik } from 'formik'
 import React, { useState } from 'react'
 import { NFT } from 'types/nft'
+import { toastify } from 'utils/toastify'
 import * as Yup from 'yup'
 import Modal from '../UI/Modal'
 import smartContractBuy from './smartContractBuy'
@@ -19,6 +21,9 @@ const BuyModal = ({
   nft: NFT
   onCloseModal: () => void
 }) => {
+  const steps = []
+  const [activeStep, setActiveStep] = useState(0)
+
   const handleBuy = async (values: {
     formData: { price: { value: number; currency: string; label: string }; currency: string; amount: number }
     nft: NFT
@@ -32,19 +37,19 @@ const BuyModal = ({
         if (chainID == 1 || chainID == 4) {
           smartContractBuy(values)
         } else {
-          alert('Wrong Blockchain Connected switch to Ethereum Blockchain')
+          toastify('Wrong Blockchain Connected switch to Ethereum Blockchain')
           return false
         }
       } else if (values.nft.blockchain == 'binance') {
         if (chainID == 56 || chainID == 97) {
           smartContractBuy(values)
         } else {
-          alert('Wrong Blockchain Connected switch to Binance Blockchain')
+          toastify('Wrong Blockchain Connected switch to Binance Blockchain')
           return false
         }
       }
     } else {
-      alert('Connect Metamask')
+      toastify('Connect Metamask')
     }
   }
 
@@ -104,13 +109,14 @@ const BuyModal = ({
 
           return (
             <form onSubmit={handleSubmit}>
+              {<FormStepper activeStep={activeStep} />}
               <div className="w-full max-w-2xl sm:grid sm:grid-cols-5 sm:gap-4">
                 <div className="w-full sm:col-span-2">
                   <img src={nft.url} alt="meme" className="object-contain w-full h-full" />
                 </div>
                 <div className="w-full max-w-md sm:col-span-3 flex flex-col">
-                  <p className="text-success text-md capitalize">{nft.blockchain} blockchain</p>
-                  <p className="text-white text-4xl mt-2">{nft.name}</p>
+                  <p className="text-white text-4xl mt-6">{nft.name}</p>
+                  <p className="text-success text-md capitalize mt-2">{nft.blockchain} blockchain</p>
                   <p className="text-secondary text-md capitalize mt-2">{nft.tier}</p>
                   <p className="text-secondary text-sm truncate mt-4">
                     Token ID: <span className="text-white ml-2">{nft.id}</span>

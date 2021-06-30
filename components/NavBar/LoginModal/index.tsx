@@ -15,7 +15,7 @@ export default function LoginModal(props: {
         .logIn("metamask")
         .then((bool) => bool && props.showLoginModalCommand());
     } else {
-      alert("We can't detect the Metamask extension on your browser.");
+      toastify("We can't detect the Metamask extension on your browser.");
     }
   };
 

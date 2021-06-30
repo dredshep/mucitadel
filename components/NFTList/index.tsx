@@ -2,6 +2,7 @@ import { faInfoCircle, faShareAlt, faShoppingCart } from '@fortawesome/free-soli
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useRef } from 'react'
+import { toastify } from 'utils/toastify'
 import { ORDER_TYPES } from '../../constant'
 import capitalizeFirstLetter from '../../functions/capitalizeFirstLetter'
 import { NFT } from '../../types/nft'
@@ -38,17 +39,17 @@ export function NFTCard(props: NFT & { href: string; currency: string }) {
 
   const handleViewInfo = (event) => {
     event.stopPropagation()
-    alert('Info button clicked')
+    toastify('Info button clicked')
   }
 
   const handleAddShoppingCart = (event) => {
     event.stopPropagation()
-    alert('Shopping cart button clicked')
+    toastify('Shopping cart button clicked')
   }
 
   const handleShare = (event) => {
     event.stopPropagation()
-    alert('Share button clicked')
+    toastify('Share button clicked')
   }
 
   const handleClick = (e: any) => {

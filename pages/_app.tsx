@@ -1,6 +1,7 @@
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
+import Toastify from 'components/UI/Toastify';
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { AppProps } from "next/dist/next-server/lib/router/router";
@@ -51,6 +52,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <Toastify />
         <AuthenticationProvider>
           <Component {...pageProps} />
         </AuthenticationProvider>

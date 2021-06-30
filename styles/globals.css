@@ -305,3 +305,12 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* custom component css*/
+.RFS-StepperContainer {
+  padding: 0px !important
+}
+
+.RFS-Label {
+  margin-top: 5px !important
+}

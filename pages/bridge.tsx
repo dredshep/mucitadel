@@ -1,6 +1,7 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState } from 'react'
+import { toastify } from 'utils/toastify'
 import Button from '../components/styled/Button'
 import Selector from '../components/UI/Selector'
 
@@ -20,7 +21,7 @@ export default function DankBridge() {
     if (props.hasMetamask) {
       props.logIn('metamask').then((bool) => bool && props.showLoginModalCommand())
     } else {
-      alert("We can't detect the Metamask extension on your browser.")
+      toastify("We can't detect the Metamask extension on your browser.")
     }
   }
 
@@ -32,14 +33,14 @@ export default function DankBridge() {
   const [BSCApproved, setBSCApproved] = useState(false)
   const [ETHApproved, setETHApproved] = useState(false)
   const handleApprove = () => {
-    if (direction.value === 'BSC') alert('approved ETH contract'), setETHApproved(true)
-    if (direction.value === 'ETH') alert('approved BSC contract'), setBSCApproved(true)
+    if (direction.value === 'BSC') toastify('approved ETH contract'), setETHApproved(true)
+    if (direction.value === 'ETH') toastify('approved BSC contract'), setBSCApproved(true)
   }
 
   const tokenAmount = useRef(null)
   const handleBridge = () => {
-    if (direction.value === 'BSC') alert(`Bridged ${tokenAmount.current.value || 0} DANK from Ethereum to BSC`)
-    if (direction.value === 'ETH') alert(`Bridged ${tokenAmount.current.value || 0} DANK from BSC to Ethereum`)
+    if (direction.value === 'BSC') toastify(`Bridged ${tokenAmount.current.value || 0} DANK from Ethereum to BSC`)
+    if (direction.value === 'ETH') toastify(`Bridged ${tokenAmount.current.value || 0} DANK from BSC to Ethereum`)
   }
 
   const openInNewTab = (url) => {

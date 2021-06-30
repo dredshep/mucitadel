@@ -4,6 +4,7 @@ import copy from 'copy-to-clipboard'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { toastify } from 'utils/toastify'
 import Footer from '../components/Footer'
 import NavBar from '../components/NavBar'
 import NFTList from '../components/NFTList'
@@ -89,7 +90,7 @@ function Content(props: ContentProps & { userAddress: string }) {
         <p
           className="mt-3 text-mupurple cursor-pointer hover:text-mupurple-hover"
           onClick={() =>
-            copy(props.userAddress) ? alert('Successfully copied address') : alert('Failed to copy address')
+            copy(props.userAddress) ? toastify('Successfully copied address') : toastify('Failed to copy address')
           }
         >
           {shortenAddress(props.userAddress)} <FontAwesomeIcon icon={faCopy} className="ml-1" />
