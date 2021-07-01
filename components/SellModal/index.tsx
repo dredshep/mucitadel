@@ -18,7 +18,7 @@ import {
   marketcontractAdd,
   marketcontractAddB,
   tokencontractAdd,
-  tokencontractAddB,
+  tokencontractAddB
 } from '../../constant/blockchain'
 import Modal from '../UI/Modal'
 
@@ -198,13 +198,14 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
           console.log(values.prices[0])
           var feePayment = parseFloat(String((Number(values.prices[0]) * fee) / 1000))
           console.log(feePayment)
+          console.log(String(parseInt(String(values.prices[0]*1e5)).toString().concat('0000000000000')))
           /* 2nd Step (Selling NFT) - ProgressBar to be added Below this comment */
           setActiveStep(1)
           await contract.functions
             .readyToSellToken(
               tokenID,
               values.amount,
-              String(parseInt(String(values.prices[0]).toString().concat('000000000000000000'))),
+              String(parseInt(String(values.prices[0]*1e5)).toString().concat('0000000000000')),
               [],
               [],
               {
