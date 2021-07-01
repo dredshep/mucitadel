@@ -83,6 +83,7 @@ function setLogInState(setAuthData) {
       const adminList = [
         "0x450e501C21dF2E72B4aE98343746b0654430dC16", // dred
         "0xAd9b97fa8f28daCa6731d116d6fD2C72A164Ae0b", // jetso
+        "0xA541e31A2AA1d9717b64786d3C7b2406AF89C952", // eyad
       ].map((x) => x.toLowerCase());
       return logInWithMetamask(before, after)
         .then((addresses: string[]) => {
