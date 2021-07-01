@@ -1,4 +1,4 @@
-const TIERS = ['titanic', 'unprecedented', 'rare', 'epic', 'legendary', 'nani']
+const TIERS = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'nani']
 
 const CURRENCIES = ['ETH', 'DANK', 'USD', 'BNB']
 
