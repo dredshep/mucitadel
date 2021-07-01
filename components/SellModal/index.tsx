@@ -394,7 +394,7 @@ const SellModal = ({ visible, tokenId, nft, onCloseModal }) => {
     // ),
     // currency: Yup.string().required('Currency is required'),
     amount: Yup.number()
-      .min(100, 'Amount should be greater than 99')
+      .min(1, 'Amount should be greater than 0')
       .max(nft.mints.totalMints - nft.mints.sold, `Amount should not be over ${nft.mints.totalMints - nft.mints.sold}`)
       .nullable(true)
       .required('Amount is required'),
