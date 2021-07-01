@@ -99,6 +99,9 @@ export default async function getCardsFromAPI() {
       } else if (mergedPrices?.ETH) {
         const usdPrice = Number(rates.eth_price) * Number(mergedPrices.ETH)
         mergedPrices.USD = forceMaxTwoDecimals(usdPrice)
+      } else if (mergedPrices?.BNB) {
+        const usdPrice = Number(rates.bnb_price) * Number(mergedPrices.BNB)
+        mergedPrices.USD = forceMaxTwoDecimals(usdPrice)
       }
 
       const n = {
