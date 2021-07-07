@@ -44,7 +44,7 @@ export default function NavRightSide(props: {
       />
       <Explained
         explanation="Add NFT"
-        className={`hidden${props.authData?.address ? ' flex' : ''}`}
+        className={`${props.authData?.address ? ' flex' : 'hidden'}`}
         onClick={handleOpenMintModal}
       >
         <FontAwesomeIcon icon={faPlusSquare} />
