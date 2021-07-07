@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Cookies from "universal-cookie";
-import { AuthProps } from "../types/AuthenticationProvider";
+import React, { useEffect, useState } from 'react'
+import Cookies from 'universal-cookie'
+import { AuthProps } from '../types/AuthenticationProvider'
 
 interface Window {
-  ethereum: any;
+  ethereum: any
 }
 
-const stringToBool = (str: string) => str === "true";
+const stringToBool = (str: string) => str === 'true'
 
 /*
 The model that I want is the following:
@@ -37,18 +37,18 @@ address the user has associated.
 // const log = (v) => (console.log(v), v);
 
 async function logInWithMetamask(before: () => void, after: () => void) {
-  const ethereum = (window as unknown as Window).ethereum;
+  const ethereum = (window as unknown as Window).ethereum
   try {
-    before();
-    await ethereum.request({ method: "eth_requestAccounts" });
-    const addy = await ethereum.request({ method: "eth_accounts" });
-    after();
+    before()
+    await ethereum.request({ method: 'eth_requestAccounts' })
+    const addy = await ethereum.request({ method: 'eth_accounts' })
+    after()
     // console.log({ addy });
-    return addy;
+    return addy
   } catch (e) {
     // Metamask error. Null means "error, reload window and try again".
     // console.log("breach of construct");
-    return null;
+    return null
   }
 }
 
@@ -56,61 +56,61 @@ function setLogOutState(setAuthData) {
   const logOut = () => {
     setAuthData({
       address: undefined,
-      authenticationMethod: "none",
-      role: "guest",
-    });
-    const cookies = new Cookies();
-    cookies.set("authentication_method", "none");
-  };
-  return logOut;
+      authenticationMethod: 'none',
+      role: 'guest',
+    })
+    const cookies = new Cookies()
+    cookies.set('authentication_method', 'none')
+  }
+  return logOut
 }
 
 function setLogInState(setAuthData) {
-  return async function logIn(newMethod?: "metamask"): Promise<void | boolean> {
-    const cookies = new Cookies();
-    const cookiedMethod = cookies.get("authentication_method");
-    if (newMethod === "metamask" || cookiedMethod === "metamask") {
+  return async function logIn(newMethod?: 'metamask'): Promise<void | boolean> {
+    const cookies = new Cookies()
+    const cookiedMethod = cookies.get('authentication_method')
+    if (newMethod === 'metamask' || cookiedMethod === 'metamask') {
       // if (newMethod === "metamask")
       // cookies.set("authentication_method", "metamask");
       const before = () => {
         // console.log("trying to log in");
-        cookies.set("authentication_method", "none");
-      };
+        cookies.set('authentication_method', 'none')
+      }
       const after = () => {
         // console.log("logged in successfully");
-        cookies.set("authentication_method", "metamask");
-      };
+        cookies.set('authentication_method', 'metamask')
+      }
       const adminList = [
-        "0x450e501C21dF2E72B4aE98343746b0654430dC16", // dred
-        "0xAd9b97fa8f28daCa6731d116d6fD2C72A164Ae0b", // jetso
-      ].map((x) => x.toLowerCase());
+        '0x450e501C21dF2E72B4aE98343746b0654430dC16', // dred
+        '0xAd9b97fa8f28daCa6731d116d6fD2C72A164Ae0b', // jetso
+      ].map((x) => x.toLowerCase())
       return logInWithMetamask(before, after)
         .then((addresses: string[]) => {
-          const address = addresses[0]?.toLowerCase();
-          const isAdmin = adminList.includes(address);
-          const role = isAdmin ? "admin" : "user";
+          const address = addresses[0]?.toLowerCase()
+          const isAdmin = adminList.includes(address.toLowerCase())
+          const role = isAdmin ? 'admin' : 'user'
           if (address !== null) {
             setAuthData({
               address,
-              authenticationMethod: "metamask",
+              authenticationMethod: 'metamask',
               role,
-            });
+            })
             // Later on, we can put more API-retrieved user info here for all essential details.
             // However, I don't know if this renders with every page, which would make us
             // delay each page load by loading user info instead of making it persist.
             // One solution is to store an address-encrypted user info localStorage element
             // and every time the user loads a page, we get the addy from metamask, and then
             // we get the information right from localStorage which will make things faster.
-            return true;
+            return true
           } else {
-            cookies.set("authentication_method", "metamask");
-            window.location.reload();
+            cookies.set('authentication_method', 'metamask')
+            window.location.reload()
             // setAuthData({ address: undefined, authenticationMethod: "none" });
           }
         })
-        .catch(console.error);
+        .catch(console.error)
     }
-  };
+  }
 }
 
 export default function AuthenticationProvider(props) {
@@ -119,23 +119,23 @@ export default function AuthenticationProvider(props) {
   // We need to make logOut() modify this authenticationData.
   // We need to retrieve this modifiable authenticationData and then pass it to the children again.
   // Maybe it can be done with a `const [authData, setAuthData] = useState({})`
-  const [authData, setAuthData] = useState({ address: undefined });
-  const [hasMetamask, setHasMetamask] = useState(false);
+  const [authData, setAuthData] = useState({ address: undefined })
+  const [hasMetamask, setHasMetamask] = useState(false)
   useEffect(() => {
-    if ((window as unknown as Window).ethereum) setHasMetamask(true);
-    else setHasMetamask(false);
-  }, []);
-  const logIn = setLogInState(setAuthData);
-  const logOut = setLogOutState(setAuthData);
-  const cookie = new Cookies();
-  const authMethod = cookie.get("authentication_method");
-  if (authMethod === "metamask" && hasMetamask && !authData.address) {
+    if ((window as unknown as Window).ethereum) setHasMetamask(true)
+    else setHasMetamask(false)
+  }, [])
+  const logIn = setLogInState(setAuthData)
+  const logOut = setLogOutState(setAuthData)
+  const cookie = new Cookies()
+  const authMethod = cookie.get('authentication_method')
+  if (authMethod === 'metamask' && hasMetamask && !authData.address) {
     try {
       // console.log("logging in");
-      logIn("metamask");
+      logIn('metamask')
     } catch (e) {
       // console.log("logged out");
-      logOut();
+      logOut()
     }
   }
 
@@ -144,7 +144,7 @@ export default function AuthenticationProvider(props) {
     logIn,
     logOut,
     hasMetamask,
-  };
+  }
 
-  return <>{React.cloneElement(props.children, authProps)}</>;
+  return <>{React.cloneElement(props.children, authProps)}</>
 }
