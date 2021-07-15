@@ -11,6 +11,7 @@ import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ErrorMessage, Formik } from 'formik'
 import React from 'react'
+import { toastify } from 'utils/toastify'
 import * as Yup from 'yup'
 import Button from '../styled/Button'
 import Link from '../styled/Link'
@@ -86,7 +87,7 @@ export default function Footer() {
                   <FontAwesomeIcon icon={faLink} className="mr-3" />
                   Tokenomics
                 </Link>
-                ?
+                {/* ? */}
               </li>
               <li>
                 <Link
@@ -96,7 +97,7 @@ export default function Footer() {
                   <FontAwesomeIcon icon={faLink} className="mr-3" />
                   Whitepaper
                 </Link>
-                ?
+                {/* ? */}
               </li>
               <li>
                 <Link href="https://www.phantasma.io/wallets" target="_blank">
@@ -171,7 +172,28 @@ export default function Footer() {
               }
               onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(true)
+                const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+                const entryPoint = baseUrl + '/v1/form/landingform'
 
+                var myHeaders = new Headers()
+                myHeaders.append('Accept-Language', 'sl-SI')
+                myHeaders.append('Authorization', '')
+
+                var urlencoded = new URLSearchParams()
+                typeof values.name && values.name.length && urlencoded.append('name', values.name)
+                urlencoded.append('email', values.email)
+                console.log(entryPoint, values)
+                var requestOptions = {
+                  method: 'POST',
+                  headers: myHeaders,
+                  body: urlencoded,
+                  redirect: 'follow' as 'follow',
+                }
+
+                fetch(entryPoint, requestOptions)
+                  .then((response) => response.text())
+                  .then((result) => (console.log(result), toastify('Subscribed successfully :)')))
+                  .catch((error) => console.log('error', error))
                 setSubmitting(false)
               }}
             >
@@ -186,7 +208,7 @@ export default function Footer() {
                         className="bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover focus:outline-none transition-colors duration-75 px-4 py-2 rounded-lg shadow-md mt-2"
                         type="text"
                         name="name"
-                        placeholder="name"
+                        placeholder="name (optional)"
                         onChange={(e) => {
                           setFieldValue('name', e.target.value)
                         }}
@@ -208,7 +230,9 @@ export default function Footer() {
                         {(msg) => <span className="text-xs text-red">{msg}</span>}
                       </ErrorMessage>
 
-                      <Button className="mt-2 w-full">Stay in the loop</Button>
+                      <Button className="mt-2 w-full" type="submit">
+                        Stay in the loop
+                      </Button>
                     </div>
                   </form>
                 )
