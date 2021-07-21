@@ -42,18 +42,52 @@ function GenericTextField(props: {
   setFieldValue: (key: string, value: string) => any
   identifier: string
   placeholder: string
+  textarea: boolean
+  username: boolean
+  discord: boolean
 }) {
+  const className =
+    'bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover focus:outline-none transition-colors duration-75 px-4 py-2 rounded-lg shadow-md mt-2'
+  const type = 'text'
+  const name = props.identifier
+  const placeholder = props.placeholder + ''
+  const onChange = (e) => {
+    props.setFieldValue(props.identifier, e.target.value)
+  }
+  const inputProps = { className, type, name, placeholder, onChange }
+
+  const field = (() => {
+    if (props.username)
+      return (
+        <div className="flex">
+          <div className="rounded-l-md flex justify-center items-center w-10 bg-mainbg mt-2 font-bold font-title text-secondary shadow-md">
+            @
+          </div>
+          <input
+            type={type}
+            name={props.identifier}
+            placeholder={props.placeholder}
+            onChange={onChange}
+            className="bg-inputbg  focus:bg-inputbg-focus hover:bg-inputbg-hover focus:outline-none transition-colors duration-75 px-4 py-2 rounded-r-lg shadow-md mt-2 w-full"
+          />
+        </div>
+      )
+    if (props.discord) {
+      return <input {...inputProps} />
+    } else if (props.textarea) {
+      return <textarea {...inputProps} />
+    }
+    return <input {...inputProps} />
+    // return <textarea {...inputProps} placeholder={props.textarea} />
+  })()
+
   return (
     <>
-      <input
-        className="bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover focus:outline-none transition-colors duration-75 px-4 py-2 rounded-lg shadow-md mt-2"
-        type="text"
-        name={props.identifier}
-        placeholder={props.placeholder + ' (optional)'}
-        onChange={(e) => {
-          props.setFieldValue(props.identifier, e.target.value)
-        }}
-      />
+      {/* {props.textarea
+      ? <textarea {...inputProps} />
+      : props.username ?
+        <input {...inputProps} />} */}
+      {field}
       <ErrorMessage name={props.identifier}>{(msg) => <span className="text-xs text-red">{msg}</span>}</ErrorMessage>
     </>
   )
@@ -111,6 +145,7 @@ function Content(props: ContentProps) {
         <div className="flex flex-col sm:max-w-2xl lg:max-w-max mx-auto sm:flex-row flex-wrap lg:flex-nowrap -m-5 pt-5 pb-10 text-center sm:text-left ">
           <FooterElement>
             <Title>Edit your profile</Title>
+            {/* <p>All fields are optional.</p> */}
             {/* <p>Listen to our tales of woe and glory and stay in touch with the latest memes! Your info will remain safe. ☺️ </p> */}
             <Formik
               initialValues={initialValues}
@@ -171,32 +206,40 @@ function Content(props: ContentProps) {
                   <form onSubmit={handleSubmit}>
                     <div className="flex flex-col">
                       {[
-                        ['username', 'username'],
+                        ['username', 'username', 'username'],
                         ['displayName', 'display name'],
-                        ['profilePicture', 'profile picture url'],
-                        ['banner', 'banner picture url'],
+                        // ['profilePicture', 'profile picture url'],
+                        // ['banner', 'banner picture url'],
                         // ['email', 'email address'],
-                        ['telegram', 'telegram username'],
-                        ['discord', 'discord username'],
-                        ['twitter', 'twitter profile url'],
-                        ['tiktok', 'tiktok profile url'],
+                        ['bio', 'about me', 'textarea'],
+                        ['discord', 'discord username', 'newline', 'discord'],
+                        ['twitter', 'twitter profile url', 'username'],
+                        ['tiktok', 'tiktok profile url', 'username'],
+                        ['telegram', 'telegram username', 'username'],
                         ['website', 'website url'],
                       ].map((pair) => (
                         // console.log(pair),
-                        <GenericTextField
-                          identifier={pair[0]}
-                          placeholder={pair[1]}
-                          setFieldValue={setFieldValue}
-                          key={pair[0]}
-                        />
+                        <>
+                          <h2 className={(pair[2] === 'newline' ? 'mt-10' : 'mt-2') + ' text-lg'}>{pair[1]}</h2>
+                          <GenericTextField
+                            identifier={pair[0]}
+                            placeholder=""
+                            setFieldValue={setFieldValue}
+                            key={pair[0]}
+                            textarea={pair[2] === 'textarea'}
+                            username={pair.includes('username')}
+                            discord={pair.includes('discord')}
+                          />
+                        </>
                       ))}
 
                       {/* Email */}
+                      <h2 className={'mt-10' + ' text-lg'}>email</h2>
                       <input
-                        className="bg-inputbg focus:bg-inputbg-focus hover:bg-inputbg-hover focus:outline-none transition-colors duration-75 px-4 py-2 rounded-lg shadow-md mt-2"
+                        className="bg-inputbg mb-5 focus:bg-inputbg-focus hover:bg-inputbg-hover focus:outline-none transition-colors duration-75 px-4 py-2 rounded-lg shadow-md mt-2"
                         type="email"
                         name="email"
-                        placeholder="email (optional)"
+                        placeholder=""
                         onChange={(e) => {
                           setFieldValue('email', e.target.value)
                         }}
