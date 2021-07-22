@@ -31,7 +31,8 @@
     "components/UploadMedia/UploadArea.jsx",
     "components/UploadMedia/index.jsx",
     "components/MintModal/MemeDetailForm.jsx",
-    "components/MintModal/MemeCreationForm.tsx"
+    "components/MintModal/MemeCreationForm.tsx",
+    "pages/uploadForm.tsx.camel"
   ],
   "exclude": ["node_modules"],
   "compilerOptions": {
